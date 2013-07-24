@@ -5,10 +5,10 @@ use Module::Build;
 
 my $builder = Module::Build->new(
     module_name         => 'BluGenetic',
-    license             => 'Perl_5',
+    license             => 'perl',
     dist_author         => q{Pablo Valencia Gonzalez <hybrid-rollert@lavabit.com>},
     dist_version_from   => 'lib/BluGenetic.pm',
-    release_status      => 'stable',
+    release_status      => 'unstable',
     configure_requires => {
         'Module::Build' => 0,
     },
