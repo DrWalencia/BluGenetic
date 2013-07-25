@@ -1,62 +1,31 @@
 #
 #===============================================================================
 #
-#         FILE: RangeVector.pm
+#         FILE: Genotype.pm
 #
-#  DESCRIPTION: Concrete implementation of the Genotype::Genotype interface
-#  				that represents a genotype that only contents integers between
-#  				limits given by the ranges set.
+#  DESCRIPTION: Common INTERFACE for every genotype wanted to be implemented
+#  				by the library.
+#
+#  				So far implemented -> RangeVector, ListVector , BitVector 
 #
 #        FILES: ---
 #         BUGS: ---
-#        NOTES: ---
+#        NOTES: THIS CLASS SHOULD NEVER BE INSTANTIATED
 #       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
-#      CREATED: 07/24/2013 07:44:10 PM
+#      CREATED: 07/24/2013 07:43:59 PM
 #     REVISION: ---
 #===============================================================================
 
 use strict;
 use warnings;
+ 
+package Genotype;
 
-# Avoid warnings regarding class method overriding
-no warnings 'redefine';
-
-package RangeVector ;
-
-# RangeVector inherits from Genotype::Genotype
-use Genotype::Genotype;
-our @ISA = qw(Genotype);
-
-# List of ALLOWED fields for this class. If other files are tried to be used,
-# the program will horribly crash.
-use fields 'genotype', # list of genes belonging to an individual, e.g:[3,-2,4]
-		   'actualRanges'; # Set of possible values for each gen. In this case
-		   				   # it will contain the minimum and the maximum values.
-
-#===  FUNCTION  ================================================================
-#         NAME: new
-#      PURPOSE: Creates a newly allocated RangeVector genotype.
-#   PARAMETERS: lengthGen    -> length of the genotype to be created.
-#   			actualRanges -> set of possible values for each gen.
-#      RETURNS: A reference to the instance just created.
-#       THROWS: no exceptions
-#===============================================================================
-sub new {
-	my $class = shift; # Every method of a class passes first argument as class name
-
-	# Anonymous hash to store instance variables (AKA FIELDS)
-	my $this = {};
-
-	# Connect a class name with a hash is known as blessing an object
-	bless $this , $class;
-
-	return $this;
-} ## --- end sub new
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: RangeVector
+#        CLASS: Genotype 
 #       METHOD: setGen
 #       
 #   PARAMETERS: position -> the position where the gen value is to be modified.  
@@ -71,18 +40,13 @@ sub new {
 #     COMMENTS: locus -> value
 #===============================================================================
 sub setGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
-
-	# DO STUFF... 
-
-	return;
+	die "The function setGen must be implemented in a subclass.\n";
 } ## --- end sub setGen
 
 
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: RangeVector
+#        CLASS: Genotype 
 #       METHOD: getGen
 #
 #   PARAMETERS: position -> the position of the gen value wanted to be 
@@ -95,17 +59,12 @@ sub setGen {
 #     COMMENTS: none
 #===============================================================================
 sub getGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
-
-	# DO STUFF... 
-
-	return;
+	die "The function getGen must be implemented in a subclass.\n";
 } ## --- end sub getGen
 
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: RangeVector
+#        CLASS: Genotype 
 #       METHOD: getLength
 #   PARAMETERS: None
 #      RETURNS: The length of the genotype.
@@ -114,16 +73,12 @@ sub getGen {
 #     COMMENTS: none
 #===============================================================================
 sub getLength {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
-
-	# DO STUFF... 
-
-	return;
+	die "The function getLength must be implemented in a subclass.\n";
 } ## --- end sub getLength
 
+
 #===  CLASS METHOD  ============================================================
-#        CLASS: RangeVector
+#        CLASS: Genotype 
 #       METHOD: changeGen
 #   PARAMETERS: position -> indicates the position of the gen that will change.
 #      RETURNS: TRUE if the operation was performed successfully. FALSE 
@@ -135,17 +90,11 @@ sub getLength {
 #     SEE ALSO: n/a
 #===============================================================================
 sub changeGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
-
-	# DO STUFF... 
-
-	return;
+	die "The function changeGen must be implemented in a sublcass.\n";
 } ## --- end sub changeGen
 
-
 #===  CLASS METHOD  ============================================================
-#        CLASS: RangeVector 
+#        CLASS: Genotype
 #       METHOD: getRanges
 #   PARAMETERS: ????
 #      RETURNS: A list containing the possible values for a gen.
@@ -154,14 +103,7 @@ sub changeGen {
 #     COMMENTS: none
 #===============================================================================
 sub getRanges {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
-
-	# DO STUFF... 
-
-	return;
+	die "The function getRanges must be implemented in a subclass.\n";
 } ## --- end sub getRanges
-
-
 
 1;

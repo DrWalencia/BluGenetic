@@ -27,17 +27,9 @@ no warnings 'redefine';
 
 package Roulette;
 
-# Roulette inherits from SelectionStrategy::Interface 
-use SelectionStrategy::Interface;
-our @ISA = qw(Interface);
-
-# List of ALLOWED fields for this class. If other files are tried to be used,
-# the program will horribly crash.
-use fields 'population', 
-		   'returnPopulation',
-		   'sortedNormalizedPop';
-
-
+# Random inherits from Selection::SelectionStrategy
+use Selection::SelectionStrategy;
+our @ISA = qw(SelectionStrategy);
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Roulette

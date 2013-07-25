@@ -27,9 +27,9 @@ no warnings 'redefine';
 
 package TwoPoint;
  
-# TwoPoint inherits from CrossoverStrategy::Interface
-use CrossoverStrategy::Interface;
-our @ISA = qw(Interface);
+# TwoPoint inherits from Crossover::CrossoverStrategy
+use Crossover::CrossoverStrategy;
+our @ISA = qw(CrossoverStrategy);
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.

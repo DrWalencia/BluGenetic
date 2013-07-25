@@ -1,10 +1,12 @@
 #
 #===============================================================================
 #
-#         FILE: Interface.pm
+#         FILE: CrossoverStrategy.pm
 #
 #  DESCRIPTION: Common INTERFACE for every crossover strategy wanted to be
-#  				implemented by the library.
+#  				implemented by the library
+#
+#				So far implemented -> OnePoint, TwoPoint, Uniform
 #
 #        FILES: ---
 #         BUGS: ---
@@ -18,7 +20,7 @@
 use strict;
 use warnings;
 
-package Interface;
+package CrossoverStrategy;
 
 #===  FUNCTION  ================================================================
 #         NAME: crossIndividuals

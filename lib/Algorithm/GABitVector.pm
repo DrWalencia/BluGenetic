@@ -1,7 +1,7 @@
 #
 #===============================================================================
 #
-#         FILE: GARangeVector.pm
+#         FILE: GABitVector.pm
 #
 #  DESCRIPTION: 
 #
@@ -11,11 +11,11 @@
 #       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
-#      CREATED: 07/24/2013 07:48:45 PM
+#      CREATED: 07/24/2013 07:48:17 PM
 #     REVISION: ---
 #===============================================================================
 
 use strict;
 use warnings;
  
-
+1;

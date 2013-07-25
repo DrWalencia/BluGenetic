@@ -1,7 +1,7 @@
 #
 #===============================================================================
 #
-#         FILE: Interface.pm
+#         FILE: SelectionStrategy.pm
 #
 #  DESCRIPTION: Common INTERFACE for every selection strategy wanted to be 
 #  				implemented by the library.
@@ -19,7 +19,7 @@
 use strict;
 use warnings;
  
-package Interface;
+package SelectionStrategy;
 
 
 #===  FUNCTION  ================================================================

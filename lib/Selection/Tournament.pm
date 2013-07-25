@@ -27,14 +27,21 @@ no warnings 'redefine';
 
 package Roulette;
 
-# Random inherits from SelectionStrategy::Interface 
-use SelectionStrategy::Interface;
-our @ISA = qw(Interface);
+# Tournament inherits from Selection::SelectionStrategy
+use Selection::SelectionStrategy;
+our @ISA = qw(SelectionStrategs);
+
+# List of ALLOWED fields for this class. If other files are tried to be used,
+# the program will horribly crash.
+use fields 'numberOfIndividuals'; # Number of individuals that are going to fight
+								  # till death.
+
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Roulette
 #       METHOD: new
-#   PARAMETERS: None. 
+#   PARAMETERS: numberOfIndividuals -> the amount of individuals that will fight
+#   			till death.
 #      RETURNS: A reference to the instance just created. 
 #  DESCRIPTION:	Creates a newly allocated Roulette selection strategy.
 #       THROWS: no exceptions
@@ -54,6 +61,24 @@ sub new {
 } ## --- end sub new
 
 
+#===  CLASS METHOD  ============================================================
+#        CLASS: Tournament
+#       METHOD: fetchWinner
+#   PARAMETERS: battlefield -> the set of individuals that'll fight till death.
+#      RETURNS: An individual who is the winner of the tournament.
+#  DESCRIPTION: Given a battlefield, act as a referee and decide who won.
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub fetchWinner {
+	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
+	my $this = shift;
+	
+	#DO STUFF
+
+	return ;
+} ## --- end sub fetchWinner
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Roulette

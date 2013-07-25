@@ -25,9 +25,9 @@ package Uniform;
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
  
-# Uniform inherits from CrossoverStrategy::Interface
-use CrossoverStrategy::Interface;
-our @ISA = qw(Interface);
+# Uniform inherits from Crossover::CrossoverStrategy
+use Crossover::CrossoverStrategy;
+our @ISA = qw(CrossoverStrategy);
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
