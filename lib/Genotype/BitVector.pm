@@ -4,8 +4,8 @@
 #         FILE: BitVector.pm
 #
 #  DESCRIPTION: Concrete implementation of the Genotype::Genotype interface
-#  				that represents a genotype that only contents binary data,
-#  				this is, a list of zeros and ones.
+#               that represents a genotype that only contents binary data,
+#               this is, a list of zeros and ones.
 #
 #        FILES: ---
 #         BUGS: ---
@@ -28,7 +28,7 @@ no warnings 'redefine';
 
 # BitVector inherits from Genotype::Genotype
 use Genotype::Genotype;
-our @ISA = qw(Genotype);
+use base qw(Genotype);
 
 # Get a logger from the singleton
 our $log = Log::Log4perl::get_logger("BitVector");
@@ -86,12 +86,12 @@ sub new {
 #       METHOD: setGen
 #
 #   PARAMETERS: position -> the position where the gen value is to be modified.
-#   			value -> the value to be inserted in the gen.
+#               value -> the value to be inserted in the gen.
 #
 #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
 #
 #	  DESCRIPTION: Puts the value passed as a parameter in the gen specified
-#  				by the position parameter.
+#                  by the position parameter.
 #
 #       THROWS: no exceptions
 #     COMMENTS: locus -> value
@@ -114,16 +114,19 @@ sub setGen {
     my $genotypeRef = $hash{genotype};
     my @genotype    = @$genotypeRef;
 
-    my $genotypeMaxPos = scalar(@genotype) - 1;
+	my $genotypeMaxPos = scalar(@genotype) - 1;
 
-# If the position is something lower than 0 or bigger than the genotype size, die horribly
+    # If the position is something lower than 0 or bigger than the genotype
+    # size, die horribly.
     $log->confess(
-"The position passed as a parameter can only be between 0 and $genotypeMaxPos ($position inserted)"
+    "The position passed as a parameter can only be between 
+		0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
 
     $genotype[$position] = $value;
 
-	$this->{genotype} = \@genotype;
+    # Modify the field genotype inside the hash that contains it
+    $this->{genotype} = \@genotype;
 
     $log->info(
         "Setting gen in position $position from genotype (@genotype) to $value"
@@ -137,7 +140,7 @@ sub setGen {
 #       METHOD: getGen
 #
 #   PARAMETERS: position -> the position of the gen value wanted to be
-#   			retrieved.
+#               retrieved.
 #
 #      RETURNS: The value stored in the gen.
 #
@@ -160,9 +163,11 @@ sub getGen {
 
     my $genotypeMaxPos = scalar(@genotype) - 1;
 
-# If the position is something lower than 0 or bigger than the genotype size, die horribly
+    # If the position is something lower than 0 or bigger than the genotype
+    # size, die horribly.
     $log->confess(
-"The position passed as a parameter can only be between 0 and $genotypeMaxPos ($position inserted)"
+    "The position passed as a parameter can only be between 
+		0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
 
     my $gen = $genotype[$position];
@@ -192,7 +197,7 @@ sub getLength {
     my $genotypeRef = $hash{genotype};
     my @genotype    = @$genotypeRef;
 
-    return scalar(@genotype); 
+    return scalar(@genotype);
 }    ## --- end sub getLength
 
 #===  CLASS METHOD  ============================================================
@@ -201,7 +206,7 @@ sub getLength {
 #   PARAMETERS: position -> indicates the position of the gen that will change.
 #      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
-#  				mutation purposes only.
+#               mutation purposes only.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -219,15 +224,28 @@ sub changeGen {
     my $genotypeRef = $hash{genotype};
     my @genotype    = @$genotypeRef;
 
-	print "Pre-change: $genotype[$position] \n";
+    my $genotypeMaxPos = scalar(@genotype) - 1;
 
-	if ($genotype[$position] == 1){
-		$genotype[$position] = 0;
-	}else{
-		$genotype[$position] = 1;	
-	}	
+    $log->info("Going to flip bit $position on genotype (@genotype)");
 
-	print "Post-change: $genotype[$position] \n";
+    # If the position is something lower than 0 or bigger than the genotype
+    # size, die horribly.
+    $log->confess(
+    "The position passed as a parameter can only be between 
+		0 and $genotypeMaxPos ($position inserted)"
+    ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
+
+    if ( $genotype[$position] == 1 ) {
+        $genotype[$position] = 0;
+    }
+    else {
+        $genotype[$position] = 1;
+    }
+
+    # Modify the field genotype inside the hash that contains it
+    $this->{genotype} = \@genotype;
+
+    $log->info("Result of the change: (@genotype)");
 
     return 1;
 }    ## --- end sub changeGen
@@ -235,7 +253,7 @@ sub changeGen {
 #===  CLASS METHOD  ============================================================
 #        CLASS: BitVector
 #       METHOD: getRanges
-#   PARAMETERS: ????
+#   PARAMETERS: None
 #      RETURNS: A list containing the possible values for a gen.
 #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
 #       THROWS: no exceptions
@@ -243,12 +261,9 @@ sub changeGen {
 #===============================================================================
 sub getRanges {
 
-    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-    my $this = shift;
+    my @ranges = (0,1);
+    return @ranges;
 
-    # DO STUFF...
-
-    return;
 }    ## --- end sub getRanges
 
 1;

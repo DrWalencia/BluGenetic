@@ -4,9 +4,9 @@
 #         FILE: Genotype.pm
 #
 #  DESCRIPTION: Common INTERFACE for every genotype wanted to be implemented
-#  				by the library.
+#               by the library.
 #
-#  				So far implemented -> RangeVector, ListVector , BitVector 
+#               So far implemented -> RangeVector, ListVector , BitVector 
 #
 #        FILES: ---
 #         BUGS: ---
@@ -18,23 +18,22 @@
 #     REVISION: ---
 #===============================================================================
 
-use strict;
-use warnings;
- 
 package Genotype;
 
+use strict;
+use warnings;
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Genotype 
 #       METHOD: setGen
 #       
 #   PARAMETERS: position -> the position where the gen value is to be modified.  
-#   			value -> the value to be inserted in the gen.
+#               value -> the value to be inserted in the gen.
 #   			
 #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
 #
 #  DESCRIPTION: Puts the value passed as a parameter in the gen specified 
-#  				by the position parameter.
+#               by the position parameter.
 #
 #       THROWS: no exceptions
 #     COMMENTS: locus -> value
@@ -50,7 +49,7 @@ sub setGen {
 #       METHOD: getGen
 #
 #   PARAMETERS: position -> the position of the gen value wanted to be 
-#   			retrieved.
+#               retrieved.
 #
 #      RETURNS: The value stored in the gen.
 #
@@ -83,7 +82,7 @@ sub getLength {
 #   PARAMETERS: position -> indicates the position of the gen that will change.
 #      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
-#  				mutation purposes only.
+#               mutation purposes only.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a

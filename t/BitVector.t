@@ -4,7 +4,7 @@
 #         FILE: BitVector.t
 #
 #  DESCRIPTION: Basic set of tests that attempt to prove that the basic
-#  				functionality regarding the BitVector genotype is working.
+#               functionality regarding the BitVector genotype is working.
 #
 #        FILES: ---
 #         BUGS: ---
@@ -15,7 +15,7 @@
 #      CREATED: 07/23/2013 08:12:35 PM
 #===============================================================================
 
-use Test::More tests => 4;    # last test to print
+use Test::More tests => 19;    # last test to print
 use Log::Log4perl qw(get_logger);
 use Genotype::BitVector;
 
@@ -67,25 +67,31 @@ dies_ok { ( $genotype->setGen( -1, 1 ) ) };
 dies_ok { ( $genotype->setGen( 7,  0 ) ) };
 
 # getGen: Retrieve an element from a wrong position (over or above genotypeLength)
-dies_ok {($genotype->getGen(-1))};
-dies_ok {($genotype->getGen(7))};
+dies_ok { ( $genotype->getGen(-1) ) };
+dies_ok { ( $genotype->getGen(7) ) };
 
 # getLength: Create with a given size and then test if it retrieves the same
 my $genotype2 = BitVector->new(15);
-ok ( $genotype2->getLength() == 15);
+ok( $genotype2->getLength() == 15 );
 
 # getType: Create a BitVector element and check if the type corresponds to BITVECTOR
-ok ( $genotype2->isa("BitVector"));
+ok( $genotype2->isa("BitVector") );
 
 # changeGen: create a BitVector element, set its genes manually and flip a given bit
 my $genotype3 = BitVector->new(3);
-$genotype3->setGen(0,0);
-$genotype3->setGen(1,0);
-$genotype3->setGen(2,1);
+$genotype3->setGen( 0, 0 );
+$genotype3->setGen( 1, 0 );
+$genotype3->setGen( 2, 1 );
 $genotype3->changeGen(1);
 ok( $genotype3->getGen(1) == 1 );
 $genotype3->changeGen(1);
 ok( $genotype3->getGen(1) == 0 );
 
 # changeGen: try to flip bit in wrong position
+dies_ok { ( $genotype3->changeGen(-1) ) };
+dies_ok { ( $genotype3->changeGen(5) ) };
+
 # getRanges: get the list of ranges
+@ranges = $genotype3->getRanges();
+ok( $ranges[0] == 0 );
+ok( $ranges[1] == 1 );

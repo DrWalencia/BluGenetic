@@ -4,7 +4,7 @@
 #         FILE: Individual.pm
 #
 #  DESCRIPTION: Class that represents an Individual of a given population. It
-#  				is comprised by a genotype and its score.
+#               is comprised by a genotype and its score.
 #
 #        FILES: ---
 #         BUGS: ---
@@ -16,20 +16,20 @@
 #     REVISION: ---
 #===============================================================================
 
+package Individual;
+
 use strict;
 use warnings;
 use Log::Log4perl qw(get_logger);
-package Individual;
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields 'score', # FLOAT the score of the individual.
-		   'genotype', # REFERENCE the genotype of the individual.
-		   'scoreSet'; # BOOLEAN 1 if the score is set, 0 otherwise.
+use fields 'score',    # FLOAT the score of the individual.
+  'genotype',          # REFERENCE the genotype of the individual.
+  'scoreSet';          # BOOLEAN 1 if the score is set, 0 otherwise.
 
 # Get a logger from the singleton
 our $log = Log::Log4perl::get_logger("Individual");
-
 
 #=== FUNCTION  =================================================================
 #         NAME: new
@@ -39,154 +39,198 @@ our $log = Log::Log4perl::get_logger("Individual");
 #
 # PARAMETERS_2: genotype	-> the genotype of the individual (NO SCORE)
 #
-# PARAMETERS_3: score		-> the score of the individual 
+# PARAMETERS_3: score		-> the score of the individual
 # 				genotype 	-> the genotype of the individual
-#				
+#
 #      RETURNS: A reference to the instance just created.
 #       THROWS: no exceptions
 #===============================================================================
 sub new {
 
+    my ( $class, %args ) = @_
+      ; # Every method of a class passes as the first argument the hash of fields.
 
-	my $class = shift; # Every method of a class passes first argument as class name
+    # Anonymous hash to store instance variables (AKA FIELDS)
+    my $this;
 
-	my %args = @_; # After the class name is removed, take the hash of arguments
+    my $numberOfKeys = scalar keys %args;
 
-	# Anonymous hash to store instance variables (AKA FIELDS)
-	my $this;
+    $log->info("Arguments passed inside a hash: $numberOfKeys");
 
+    # Three cases of new are valid, according to the method signature.
+    if ( $numberOfKeys == 2 ) {
+        $log->confess("Cannot create an individual with undefined genotype")
+          if ( !( defined $args{genotype} ) );
 
-	# Three cases of new are valid, according to the method signature.
-	if ( scalar keys %args == 2 ){
+        $log->info("Creation of a new individual with two arguments started.");
+        $this = {
+            score    => $args{score},
+            genotype => $args{genotype},
+            scoreSet => 1
+        };
 
-		$log->info("Creation of a new individual with two arguments started.");
-		$this = {
-			score		=> $args{score},
-			genotype	=> $args{genotype},
-			scoreSet	=> 1
-		};
+    }
+    elsif ( $numberOfKeys == 1 ) {
 
-	}elsif ( scalar keys %args == 1 ){
+        $log->confess("Cannot create an individual with undefined genotype")
+          if ( !( defined $args{genotype} ) );
 
-		$log->info("Creation of a new individual with one argument started.");
-		$this = {
-			genotype	=> $args{genotype},
-			scoreSet 	=> 0
-		};
+        $log->confess("Cannot create an individual just with the score")
+          if ( !( exists $args{genotype} ) );
 
-	}else{
+        $log->info("Creation of a new individual with one argument started.");
+        $this = {
+            genotype => $args{genotype},
+            scoreSet => 0
+        };
 
-		$log->info("Creation of a new individual with zero arguments started.");
-		$this = {
-			scoreSet	=> 0
-		};
-	}
+    }
+    else {
 
-	# Connect a class name with a hash is known as blessing an object
-	bless $this , $class;
+        $log->info("Creation of a new individual with zero arguments started.");
+        $this = { scoreSet => 0 };
+    }
 
-	$log->info("Creation of a new individual finished.");
+    # Connect a class name with a hash is known as blessing an object
+    bless $this, $class;
 
-	return $this;
-} ## --- end sub new
+    $log->info("Creation of a new individual finished.");
 
+    return $this;
+}    ## --- end sub new
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Individual
 #       METHOD: getScore
-#   PARAMETERS: None. 
-#      RETURNS: FLOAT the score store in the individual as a field. 
+#   PARAMETERS: None.
+#      RETURNS: FLOAT the score store in the individual as a field.
 #  DESCRIPTION: Getter for the score of the individual.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
 sub getScore {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
+    my $this = shift;
 
-	return;
-} ## --- end sub getScore
+    # Get the genotype dereferencing the $this hash
+    my %hash  = %$this;
+    my $score = $hash{score};
+    my @genotype = $hash{genotype};
 
+    $log->info("Score returned for individual (@genotype): $score");
+
+    return $score;
+}    ## --- end sub getScore
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Individual
-#       METHOD: setScore 
-#   PARAMETERS: newScore -> the score to be set. 
-#      RETURNS: Nothing. 
+#       METHOD: setScore
+#   PARAMETERS: newScore -> the score to be set.
+#      RETURNS: Nothing.
 #  DESCRIPTION: Setter for the score of the individual.
 #       THROWS: no exceptions
-#     COMMENTS: none
+#     COMMENTS: NEGATIVE SCORES ARE NOT ACCEPTED
 #     SEE ALSO: n/a
 #===============================================================================
 sub setScore {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS 
+    my $this = shift;
 
-	return;
-} ## --- end sub setScore
+    # Take the score passed as a parameter
+    my $score = shift;
+
+    $log->confess("Cannot set a negative score on an individual")
+    if ($score < 0);
+
+    my %hash  = %$this;
+    my @genotype = $hash{genotype};
+
+    $log->info("Score set ($score) on individual with genotype (@genotype)");
+
+    # Set the score
+    $this->{score} = $score;
+
+    return 1;
+}    ## --- end sub setScore
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Individual
 #       METHOD: scoreSet
-#   PARAMETERS: None. 
-#      RETURNS: 1 if the score has been set, 0 otherwise. 
+#   PARAMETERS: None.
+#      RETURNS: 1 if the score has been set, 0 otherwise.
 #  DESCRIPTION: Checks if the score has been calculated.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
 sub scoreSet {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
+    my $this = shift;
 
-	return;
-} ## --- end sub scoreSet 
+    # Get the genotype dereferencing the $this hash
+    my %hash     = %$this;
+    my $scoreSet = $hash{scoreSet};
+
+    $log->info("Checked if the score was set for an individual 
+        . Result: $scoreSet");
+
+    return $scoreSet;
+
+}    ## --- end sub scoreSet
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Individual
-#       METHOD: getGenotype 
-#   PARAMETERS: None. 
-#      RETURNS: REFERENCE the genotype of the individual. 
+#       METHOD: getGenotype
+#   PARAMETERS: None.
+#      RETURNS: REFERENCE the genotype of the individual.
 #  DESCRIPTION: Getter for the genotype.
 #       THROWS: no exceptions
-#     COMMENTS: none
+#     COMMENTS: WARNING: THE ACTUAL GENOTYPE IS RETURNED. BE CAREFUL!!
 #     SEE ALSO: n/a
 #===============================================================================
-sub getGenotype{
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
+sub getGenotype {
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
+    my $this = shift;
 
-	return;
-} ## --- end sub getGenotype
+    # Get the genotype dereferencing the $this hash
+    my %hash     = %$this;
+    my @genotype = $hash{genotype};
 
+    $log->info("Returned a REFERENCE to the genotype of the individual with
+        genotype (@genotype) ");
+\
+    return $this->{genotype};
+
+}    ## --- end sub getGenotype
 
 #=== CLASS METHOD  =============================================================
 #        CLASS: Individual
-#       METHOD: setGenotype 
-#   PARAMETERS: REFERENCE the genotype of the individual. 
-#      RETURNS: Nothing. 
+#       METHOD: setGenotype
+#   PARAMETERS: REFERENCE the genotype of the individual.
+#      RETURNS: Nothing.
 #  DESCRIPTION: Setter for the genotype.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub setGenotype{
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
+sub setGenotype {
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS 
+    my $this = shift;
 
-	return;
-} ## --- end sub setGenotype 
+    # Get the argument
+    my $genotype = shift;
 
+    $log->confess("Cannot set an undefined genotype") if (!(defined $genotype));
+
+    $this->{genotype} = $genotype;
+
+    return 1;
+}    ## --- end sub setGenotype
 
 1;
