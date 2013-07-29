@@ -4,7 +4,7 @@
 #         FILE: GABitVector.pm
 #
 #  DESCRIPTION: Represents a GeneticAlgorithm implementation that works with
-#  				genotypes of the class BitVector, implementing the methods 
+#  				genotypes of the class BitVector, implementing the methods
 #  				that are custom for such data type.
 #
 #        FILES: ---
@@ -17,24 +17,23 @@
 #     REVISION: ---
 #===============================================================================
 
+package GABitVector;
+
 use strict;
 use warnings;
 use Individual;
 use Genotype::BitVector;
 use Log::Log4perl qw(get_logger);
-	
+
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
 
-package GABitVector;
-
-# GABitVector inherits from Algorithm::GeneticAlgorithm 
+# GABitVector inherits from Algorithm::GeneticAlgorithm
 use Algorithm::GeneticAlgorithm;
-our @ISA = qw(GeneticAlgorithm);
+use base qw(GeneticAlgorithm);
 
 # Get a logger from the singleton
 our $log = Log::Log4perl::get_logger("GABitVector");
-
 
 #===  FUNCTION  ================================================================
 #         NAME: new
@@ -42,33 +41,34 @@ our $log = Log::Log4perl::get_logger("GABitVector");
 #
 #   PARAMETERS: popSize 	-> size of the population (fixed)
 #
-#   			
+#
 #      RETURNS: A reference to the instance just created.
 #       THROWS: no exceptions
 #===============================================================================
 sub new {
-	$log->info("Creation of new GABitVector started.");
-	
-	my $class = shift; # Every method of a class passes first argument as class name
+    $log->info("Creation of new GABitVector started.");
 
-	my %args = @_; # After the class name is removed, take the hash of arguments
+    my $class =
+      shift;    # Every method of a class passes first argument as class name
 
-	# Reference to anonymous hash to store instance variables (AKA FIELDS)
-	my $this = {
-		popSize		=> $args{popSize},
-		crossover	=> $args{crossover},
-		mutation	=> $args{mutation},
-		fitness		=> $args{fitness},
-		terminate	=> $args{terminate}, # no function defined: terminate: undef
-	};
+    my %args = @_; # After the class name is removed, take the hash of arguments
 
-	# Connect a class name with a hash is known as blessing an object
-	bless $this , $class;
+    # Reference to anonymous hash to store instance variables (AKA FIELDS)
+    my $this = {
+        popSize   => $args{popSize},
+        crossover => $args{crossover},
+        mutation  => $args{mutation},
+        fitness   => $args{fitness},
+        terminate => $args{terminate},   # no function defined: terminate: undef
+    };
 
-	$log->info("Creation of a new GABitVector ended.");
+    # Connect a class name with a hash is known as blessing an object
+    bless $this, $class;
 
-	return $this;
-} ## --- end sub new
+    $log->info("Creation of a new GABitVector ended.");
+
+    return $this;
+}    ## --- end sub new
 
 # ===  CLASS METHOD  ===========================================================
 #        CLASS: GABitVector
@@ -76,7 +76,7 @@ sub new {
 #
 #   PARAMETERS: genotypeLength -> length of the genotype to be generated
 #
-#      RETURNS: 1 if the initialization was performed correctly. 0 
+#      RETURNS: 1 if the initialization was performed correctly. 0
 #				otherwise.
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
 #				randomly generated.
@@ -84,31 +84,45 @@ sub new {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub initialize{
-	
-	# Retrieve fields as reference to a hash and the parameter
-	my ($this, $genotypeLength) = @_;
+sub initialize {
 
-	# Dereference hash leaving it ready to be used
-	my %fields = %$this;
+    # Retrieve fields as reference to a hash and the parameter
+    my ( $this, $genotypeLength ) = @_;
 
-	# Declare counter and population to be filled
-	my $i;
-	my $pop;
+    # Dereference hash leaving it ready to be used
+    my %fields = %$this;
 
-	# And fill the population with individuals of type BitVector
-	# randomly generated (such action takes part in the new() method)
-	for ( $i=0; $i < $fields{popSize}; $i++ ){
-		my $individualTemp = Individual->new();	
-		#	$individualTemp->setGenotype( BitVector->new($genotypeLength) );
-		#   $individualTemp->setScore( $fields{fitnessFunc}($individualTemp) );
-	}
-	
+    $log->info(
+        "Initializing population of $fields{popSize} individuals of
+        type BitVector with length $genotypeLength"
+    );
 
+    # Declare counter and population to be filled
+    my $i;
+    my @pop;
 
-	return ;
-} ## --- end sub initialize
-#=== CLASS METHOD  ============================================================= #        CLASS: GABitVector
+    # And fill the population with individuals of type BitVector
+    # randomly generated (such action takes part in the new() method)
+    for ( $i = 0 ; $i < $fields{popSize} ; $i++ ) {
+        my $individualTemp = Individual->new();
+        $individualTemp->setGenotype( BitVector->new($genotypeLength) );
+        $individualTemp->setScore( $fields{fitnessFunc}($individualTemp) );
+        push @pop, $individualTemp;
+    }
+
+    # Set the population just created inside the hash of fields
+    $this->{population} = @pop;
+
+    $log->info(
+        "Population of $fields{popSize} individuals of type BitVector
+        with length $genotypeLength initialized"
+    );
+
+    return 1;
+}    ## --- end sub initialize
+
+#=== CLASS METHOD  =============================================================
+#        CLASS: GABitVector
 #       METHOD: insertIndividual
 #
 #   PARAMETERS: individual -> the individual to be inserted.
@@ -123,14 +137,30 @@ sub initialize{
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub insertIndividual{
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+sub insertIndividual {
 
-	# DO STUFF
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
+    my $this = shift;
 
-	return ;
-} ## --- end sub insertIndividual
+    # Get the arguments
+    my ( $individual, $index ) = @_;
+
+    # Couple of cases in which the program dies horribly
+    $log->confess("Index bigger than population size ($index)")
+      if ( $index > $this->{popSize} );
+
+    $log->confess("Index smaller than zero ($index)") if ( $index < 0 );
+
+    # Put the individual on the position specified, destroying what was there
+    $this->{population}[$index] = $individual;
+
+    $log->info(
+        "Individual with genotype ($individual->getGenotype()) inserted
+        on position $index"
+    );
+
+    return 1;
+}    ## --- end sub insertIndividual
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: GABitVector
@@ -147,13 +177,30 @@ sub insertIndividual{
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub deleteIndividual{
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+sub deleteIndividual {
 
-	# DO STUFF
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
+    my $this = shift;
 
-	return ;
-} ## --- end sub deleteIndividual
+    # Get the argument
+    my ($index) = @_;
+
+    # Couple of cases in which the program dies horribly
+    $log->confess("Index bigger than population size ($index)")
+      if ( $index > $this->{popSize} );
+
+    $log->confess("Index smaller than zero ($index)") if ( $index < 0 );
+
+    my $genotypeTemp   = BitVector->new( $this->{lengthGenotype} );
+    my $individualTemp = Individual->new($genotypeTemp);
+
+    # $individualTemp->setScore($this->{fitness}($individualTemp));
+    $this->{population}[$index] = $individualTemp;
+
+    #TODO: IMPLEMENT THE CURRENT CLASS FATHER
+
+    return 1;
+
+}    ## --- end sub deleteIndividual
 
 1;

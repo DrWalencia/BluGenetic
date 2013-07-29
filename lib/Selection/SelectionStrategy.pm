@@ -16,12 +16,12 @@
 #     REVISION: ---
 #===============================================================================
 
-use strict;
-use warnings;
- 
 package SelectionStrategy;
 
-
+use strict;
+use warnings;
+use Carp;
+ 
 #===  FUNCTION  ================================================================
 #         NAME: performSelection
 #      PURPOSE: Runs the selection algorithm over the population passed as a 
@@ -35,8 +35,7 @@ package SelectionStrategy;
 #     SEE ALSO: n/a
 #===============================================================================
 sub performSelection {
-	die "The function performSelection() must be implemented in a subclass.\n";
-	return ;
+	croak "The function performSelection() must be implemented in a subclass.\n";
 } ## --- end sub performSelection
 
 1;

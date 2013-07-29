@@ -17,10 +17,12 @@
 #      CREATED: 07/12/2013 08:32:05 PM
 #===============================================================================
 
+package CrossoverStrategy;
+
 use strict;
 use warnings;
+use Carp;
 
-package CrossoverStrategy;
 
 #===  FUNCTION  ================================================================
 #         NAME: crossIndividuals
@@ -34,7 +36,7 @@ package CrossoverStrategy;
 #     SEE ALSO: n/a
 #===============================================================================
 sub crossIndividuals {
-	die 'The function crossIndividuals() must be defined in a subclass.\n';
+	croak 'The function crossIndividuals() must be defined in a subclass.\n';
 } ## --- end sub crossIndividuals
 
 1; # Required for all packages in Perl

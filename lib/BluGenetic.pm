@@ -17,6 +17,8 @@
 #     REVISION: ---
 #===============================================================================
 
+package BluGenetic;
+
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
@@ -25,11 +27,8 @@ use Algorithm::GABitVector;
 use Algorithm::GAListVector;
 use Algorithm::GARangeVector;
 
-package BluGenetic;
-
 # Maximum number of arguments to be taken by the Factory
 use constant LIMITARGS => 6;
-
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: BluGenetic
@@ -90,11 +89,11 @@ sub new {
 	# Now according to what's inside type, the factory decides...
 	if ( $args{type} eq 'bitvector' ) {
 		delete $args{type};
-		$algorithm = GABitVector->new(%args);	
+		$algorithm = GABitVector->new(%args);
 		$log->info("Algorithm of type 'bitvector' generated");
 	}elsif ( $args{type} eq 'rangevector') {
 		delete $args{type};
-		$algorithm = GARangeVector->new(%args);	
+		$algorithm = GARangeVector->new(%args);
 		$log->info("Algorithm of type 'rangevector' generated");
 	}elsif ( $args{type} eq 'listvector'){
 		delete $args{type};

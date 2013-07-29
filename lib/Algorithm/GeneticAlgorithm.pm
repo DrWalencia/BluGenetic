@@ -18,23 +18,24 @@
 #     REVISION: ---
 #===============================================================================
 
+package GeneticAlgorithm;
+
 use strict;
 use warnings;
-
-package GeneticAlgorithm;
+use Carp;
  
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields	'population', # LIST of individuals comprising the population.
-			'lengthGenotype', # INT the length of the Genotype.
-			'selectionStr', # REFERENCE to the selection strategy to be used.
-			'crossStr', # REFERENCE to the crossover strategy to be used.
-			'mutation', # FLOAT chance of mutation 0..1
-			'crossover', # FLOAT chance of crossover 0..1
-			'popSize', # INT size of the population
-			'currentGeneration', # INT indicates the current generation
-			'fitness', # REFERENCE to the fitness function passed as a parameter
-			'terminate'; # REFERENCE to the terminate function passed as a parameter
+use fields  'population', # LIST of individuals comprising the population.
+            'lengthGenotype', # INT the length of the Genotype.
+            'selectionStr', # REFERENCE to the selection strategy to be used.
+            'crossStr', # REFERENCE to the crossover strategy to be used.
+            'mutation', # FLOAT chance of mutation 0..1
+            'crossover', # FLOAT chance of crossover 0..1
+            'popSize', # INT size of the population
+            'currentGeneration', # INT indicates the current generation
+            'fitness', # REFERENCE to the fitness function passed as a parameter
+            'terminate'; # REFERENCE to the terminate function passed as a parameter
 
 
 
@@ -102,7 +103,7 @@ sub _place {
 #===============================================================================
 sub evolve {
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+	my $this = shift;
 
 	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
 
@@ -126,7 +127,7 @@ sub evolve {
 #===============================================================================
 sub getFittest {
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+	my $this = shift;
 
 	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
 
@@ -145,7 +146,7 @@ sub getFittest {
 #===============================================================================
 sub getPopulation{
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+	my $this = shift;
 
 	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
 
@@ -165,7 +166,7 @@ sub getPopulation{
 #===============================================================================
 sub getPopSize{
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+	my $this = shift;
 
 	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
 
@@ -184,7 +185,7 @@ sub getPopSize{
 #===============================================================================
 sub getCrossProb{
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+	my $this = shift;
 
 	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
 
@@ -203,7 +204,7 @@ sub getCrossProb{
 #===============================================================================
 sub getMutProb{
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+	my $this = shift;
 
 	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
 
@@ -222,7 +223,7 @@ sub getMutProb{
 #===============================================================================
 sub getCurrentGeneration{
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+	my $this = shift;
 
 	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
 
@@ -243,7 +244,7 @@ sub getCurrentGeneration{
 #===============================================================================
 sub sortIndividuals{
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
+	my $this = shift;
 
 	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
 
@@ -263,7 +264,7 @@ sub sortIndividuals{
 #     SEE ALSO: n/a
 #===============================================================================
 sub initialize{
-	die 'The function initialize() must be defined in a subclass.\n';
+    croak 'The function initialize() must be defined in a subclass.\n';
 } ## --- end sub initialize
 
 
@@ -284,7 +285,7 @@ sub initialize{
 #     SEE ALSO: n/a
 #===============================================================================
 sub insertIndividual{
-	die 'The function insertIndividual() must be defined in a subclass.\n';
+    croak 'The function insertIndividual() must be defined in a subclass.\n';
 } ## --- end sub insertIndividual
 
 #=== CLASS METHOD  ============================================================
@@ -303,7 +304,7 @@ sub insertIndividual{
 #     SEE ALSO: n/a
 #===============================================================================
 sub deleteIndividual{
-	die 'The function deleteIndividual() must be defined in a subclass.\n';
+    croak 'The function deleteIndividual() must be defined in a subclass.\n';
 } ## --- end sub deleteIndividual
 
 
@@ -324,7 +325,7 @@ sub deleteIndividual{
 #     SEE ALSO: n/a
 #===============================================================================
 sub fitnessFunc {
-	die 'The function fitnessFunc() must be passed as a parameter.\n';
+    croak 'The function fitnessFunc() must be passed as a parameter.\n';
 } ## --- end sub fitnessFunc
 
 

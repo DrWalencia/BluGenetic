@@ -22,6 +22,7 @@ package Genotype;
 
 use strict;
 use warnings;
+use Carp;
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Genotype 
@@ -39,7 +40,7 @@ use warnings;
 #     COMMENTS: locus -> value
 #===============================================================================
 sub setGen {
-	die "The function setGen must be implemented in a subclass.\n";
+	croak "The function setGen must be implemented in a subclass.\n";
 } ## --- end sub setGen
 
 
@@ -58,7 +59,7 @@ sub setGen {
 #     COMMENTS: none
 #===============================================================================
 sub getGen {
-	die "The function getGen must be implemented in a subclass.\n";
+	croak "The function getGen must be implemented in a subclass.\n";
 } ## --- end sub getGen
 
 
@@ -72,7 +73,7 @@ sub getGen {
 #     COMMENTS: none
 #===============================================================================
 sub getLength {
-	die "The function getLength must be implemented in a subclass.\n";
+	croak "The function getLength must be implemented in a subclass.\n";
 } ## --- end sub getLength
 
 
@@ -88,7 +89,7 @@ sub getLength {
 #     SEE ALSO: n/a
 #===============================================================================
 sub changeGen {
-	die "The function changeGen must be implemented in a sublcass.\n";
+	croak "The function changeGen must be implemented in a sublcass.\n";
 } ## --- end sub changeGen
 
 #===  CLASS METHOD  ============================================================
@@ -101,7 +102,7 @@ sub changeGen {
 #     COMMENTS: none
 #===============================================================================
 sub getRanges {
-	die "The function getRanges must be implemented in a subclass.\n";
+	croak "The function getRanges must be implemented in a subclass.\n";
 } ## --- end sub getRanges
 
 1;
