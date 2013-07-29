@@ -29,10 +29,12 @@ use fields	'population', # LIST of individuals comprising the population.
 			'lengthGenotype', # INT the length of the Genotype.
 			'selectionStr', # REFERENCE to the selection strategy to be used.
 			'crossStr', # REFERENCE to the crossover strategy to be used.
-			'pMutation', # FLOAT chance of mutation 0..1
-			'pCross', # FLOAT chance of crossover 0..1
+			'mutation', # FLOAT chance of mutation 0..1
+			'crossover', # FLOAT chance of crossover 0..1
 			'popSize', # INT size of the population
-			'currentGeneration'; # INT indicates the current generation
+			'currentGeneration', # INT indicates the current generation
+			'fitness', # REFERENCE to the fitness function passed as a parameter
+			'terminate'; # REFERENCE to the terminate function passed as a parameter
 
 
 
@@ -93,7 +95,7 @@ sub _place {
 #
 #      RETURNS: NOTHING
 #  DESCRIPTION: Makes the population evolve until the terminate() function 
-# 				returns TRUE or the limit of generations is reached.
+# 				returns 1 or the limit of generations is reached.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -252,7 +254,7 @@ sub sortIndividuals{
 #        CLASS: GeneticAlgorithm
 #       METHOD: initialize
 #   PARAMETERS: None.
-#      RETURNS: TRUE if the initialization was performed correctly. FALSE 
+#      RETURNS: 1 if the initialization was performed correctly. 0 
 #				otherwise.
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
 #				randomly generated.
@@ -261,12 +263,7 @@ sub sortIndividuals{
 #     SEE ALSO: n/a
 #===============================================================================
 sub initialize{
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
-
-	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
-
-	return ;
+	die 'The function initialize() must be defined in a subclass.\n';
 } ## --- end sub initialize
 
 
@@ -277,8 +274,7 @@ sub initialize{
 #   PARAMETERS: individual -> the individual to be inserted.
 #				index 		-> the position where the individual will be placed.
 
-#      RETURNS: TRUE if the insertion was performed correctly. FALSE 
-#				otherwise.
+#      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
 
 #  DESCRIPTION: Inserts an individual in the population on the position given
 #				by index.
@@ -288,12 +284,7 @@ sub initialize{
 #     SEE ALSO: n/a
 #===============================================================================
 sub insertIndividual{
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
-
-	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
-
-	return ;
+	die 'The function insertIndividual() must be defined in a subclass.\n';
 } ## --- end sub insertIndividual
 
 #=== CLASS METHOD  ============================================================
@@ -302,8 +293,7 @@ sub insertIndividual{
 #
 #   PARAMETERS: index -> the position of the individual to be deleted.
 #
-#      RETURNS: TRUE if the deletion was performed correctly. FALSE 
-#				otherwise.
+#      RETURNS: 1 if the deletion was performed correctly. 0 otherwise.
 #
 #  DESCRIPTION: Deletes the individual given by index and inserts another
 #				individual randomly generated in the same position.
@@ -313,17 +303,45 @@ sub insertIndividual{
 #     SEE ALSO: n/a
 #===============================================================================
 sub deleteIndividual{
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;	
-
-	# TO BE IMPLEMENTED IN THE ABSTRACT CLASS
-
-	return ;
-} ## --- end sub deleteIndividuas
-
-//TODO ¿DEFAULT IMPLEMENTATION FOR FITNESSFUNC?
-//TODO DEFAULT IMPLEMENTATION FOR TERMINATEFUNC
+	die 'The function deleteIndividual() must be defined in a subclass.\n';
+} ## --- end sub deleteIndividual
 
 
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: GeneticAlgorithm
+#       METHOD: fitnessFunc
+#
+#   PARAMETERS: individual -> the individual whose fitness score is wanted
+#   			to be calculated.
+#
+#      RETURNS: FLOAT the fitness value of the individual.
+#  DESCRIPTION: Calculates the fitness value associated with the individual
+#  				passed as a parameter.
+#       THROWS: no exceptions
+#     COMMENTS: PROVIDE A DEFAULT IMPLEMENTATION FOR FITNESS FUNCTION IN
+#     			CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
+#     SEE ALSO: n/a
+#===============================================================================
+sub fitnessFunc {
+	die 'The function fitnessFunc() must be passed as a parameter.\n';
+} ## --- end sub fitnessFunc
+
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: GeneticAlgorithm
+#       METHOD: terminateFunc
+#   PARAMETERS: None.
+#      RETURNS: 1 if the custom condition defined here is satisfied, 0 
+#      			otherwise.
+#  DESCRIPTION: Allows for a custom termination routine to be defined. 
+#       THROWS: no exceptions
+#     COMMENTS:	DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
+#     			TILL THE MAXIMUM NUMBER OF GENERATIONS.
+#     SEE ALSO: n/a
+#===============================================================================
+sub terminateFunc {
+	return 0;
+} ## --- end sub terminateFunc
 
 1;

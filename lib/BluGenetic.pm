@@ -1,8 +1,115 @@
-package BluGenetic;
+#
+#===============================================================================
+#
+#         FILE: BluGenetic.pm
+#
+#  DESCRIPTION:	STATIC class that works as a Factory, returning one of the
+#  				types of genetic algorithms according to the arguments passed
+#  				as parameters to its only method.
+#
+#        FILES: ---
+#         BUGS: ---
+#        NOTES: ---
+#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+# ORGANIZATION: Universidad de León
+#      VERSION: 1.0
+#      CREATED: 07/22/2013 09:25:14 PM
+#     REVISION: ---
+#===============================================================================
 
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
+use Log::Log4perl qw(get_logger);
+use Algorithm::GABitVector;
+use Algorithm::GAListVector;
+use Algorithm::GARangeVector;
+
+package BluGenetic;
+
+# Maximum number of arguments to be taken by the Factory
+use constant LIMITARGS => 6;
+
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: BluGenetic
+#       METHOD: new
+#
+#   PARAMETERS: popSize 	-> INTEGER size of the population
+#   			crossover	-> FLOAT chance of crossover (default 0.95)
+#   			mutation 	-> FLOAT chance of mutation (default 0.05)
+#   			type		-> STRING type of data e.g: 'bitvector'
+#   			fitness		-> FUNCTION POINTER custom fitness function (MUST)
+#   			terminate	-> FUNCTION POINTER custom terminate function
+#   						   (OPTIONAL)
+#
+#      RETURNS: A reference to the proper GA.
+#  DESCRIPTION:	Returns one of the three types of Genetic Algorithm according
+#  				to the arguments passed.
+#       THROWS: no exceptions
+#     COMMENTS: THIS METHOD IS NOT A CONSTRUCTOR EVEN THOUGH ITS NAME IS NEW
+#     SEE ALSO: n/a
+#===============================================================================
+sub new {
+
+	my $conf = q(
+
+	############################################################
+	# A simple root logger with a Log::Log4perl::Appender::File 
+	# file appender in Perl.
+	############################################################
+	log4perl.rootLogger=DEBUG, LOGFILE
+
+	log4perl.appender.LOGFILE=Log::Log4perl::Appender::File
+	log4perl.appender.LOGFILE.filename=./BluGenetic.log
+	log4perl.appender.LOGFILE.mode=write
+
+	log4perl.appender.LOGFILE.layout=PatternLayout
+	log4perl.appender.LOGFILE.layout.ConversionPattern=[%r] %F %L %c - %m%n
+
+	);
+
+	# Initialize logging behavior
+	Log::Log4perl->init( \$conf );
+
+	# Get a logger from the singleton
+	my $log = Log::Log4perl::get_logger("BluGenetic");
+
+	$log->info("Factory job to create a Genetic Algorithm started.");
+	
+	# Take the class name and the arguments passed as a hash
+ 	my($class, %args) = @_;
+
+	# Check if we get LIMITARGS -1 arguments (default terminate function) or LIMITARGS, otherwise die
+	$log->logconfess("Too few arguments for method new()") if scalar keys %args < BluGenetic::LIMITARGS-1;
+	$log->logconfess("Too many arguments for method new()") if scalar keys %args > BluGenetic::LIMITARGS;
+
+	# The algorithm that the factory is going to return
+	my $algorithm;
+
+	# Now according to what's inside type, the factory decides...
+	if ( $args{type} eq 'bitvector' ) {
+		delete $args{type};
+		$algorithm = GABitVector->new(%args);	
+		$log->info("Algorithm of type 'bitvector' generated");
+	}elsif ( $args{type} eq 'rangevector') {
+		delete $args{type};
+		$algorithm = GARangeVector->new(%args);	
+		$log->info("Algorithm of type 'rangevector' generated");
+	}elsif ( $args{type} eq 'listvector'){
+		delete $args{type};
+		$algorithm = GAListVector->new(%args);
+		$log->info("Algorithm of type 'listvector' generated");
+	}else{
+		$log->logconfess("Unknown data type: $args{type}. Arguments case should all be in lowercase.");
+	}
+
+	$log->info("Factory job to create a Genetic Algoritm finished.");
+		
+	return $algorithm; 
+
+} ## --- end sub new
+
 
 =head1 NAME
 

@@ -4,7 +4,7 @@
 #         FILE: BitVector.pm
 #
 #  DESCRIPTION: Concrete implementation of the Genotype::Genotype interface
-#  				that represents a genotype that only contents binary data, 
+#  				that represents a genotype that only contents binary data,
 #  				this is, a list of zeros and ones.
 #
 #        FILES: ---
@@ -17,22 +17,26 @@
 #     REVISION: ---
 #===============================================================================
 
+package BitVector;
+
 use strict;
 use warnings;
+use Log::Log4perl qw(get_logger);
 
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
-
-package BitVector;
 
 # BitVector inherits from Genotype::Genotype
 use Genotype::Genotype;
 our @ISA = qw(Genotype);
 
+# Get a logger from the singleton
+our $log = Log::Log4perl::get_logger("BitVector");
+
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields 'genotype'; # list of genes belonging to an individual, e.g: [0,1,0,0]
-
+use fields
+  'genotype';    # list of genes belonging to an individual, e.g: [0,1,0,0]
 
 #===  FUNCTION  ================================================================
 #         NAME: new
@@ -42,48 +46,97 @@ use fields 'genotype'; # list of genes belonging to an individual, e.g: [0,1,0,0
 #       THROWS: no exceptions
 #===============================================================================
 sub new {
-	my $class = shift; # Every method of a class passes first argument as class name
 
-	# Anonymous hash to store instance variables (AKA FIELDS)
-	my $this = {};
+    $log->info("Creation of a new BitVector genotype started.");
 
-	# Connect a class name with a hash is known as blessing an object
-	bless $this , $class;
+    # Every method of a class passes first argument as class name
+    my $class = shift;
 
-	return $this;
-} ## --- end sub new
+    # Take the first and only argument
+    my $lengthGen = shift;
+
+    $log->confess("Invalid number of genes for the genotype: $lengthGen")
+      if $lengthGen < 1;
+
+    # Genotype to be inserted as a field in the object being created
+    my @genotype;
+    my $i;
+
+    for ( $i = 0 ; $i < $lengthGen ; $i++ ) {
+
+        # Void rand returns something between 0..1
+        push( @genotype, int( rand(2) ) );
+    }
+
+    $log->info("Genes randomly generated: @genotype");
+
+    # Anonymous hash to store instance variables (AKA FIELDS)
+    my $this = { genotype => \@genotype, };
+
+    # Connect a class name with a hash is known as blessing an object
+    bless $this, $class;
+
+    $log->info("Creation of a new BitVector genotype finished.");
+
+    return $this;
+}    ## --- end sub new
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: BitVector 
+#        CLASS: BitVector
 #       METHOD: setGen
-#       
-#   PARAMETERS: position -> the position where the gen value is to be modified.  
-#   			value -> the value to be inserted in the gen.
-#   			
-#      RETURNS: TRUE if the insertion was performed correctly. FALSE otherwise.
 #
-#  DESCRIPTION: Puts the value passed as a parameter in the gen specified 
+#   PARAMETERS: position -> the position where the gen value is to be modified.
+#   			value -> the value to be inserted in the gen.
+#
+#      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
+#
+#	  DESCRIPTION: Puts the value passed as a parameter in the gen specified
 #  				by the position parameter.
 #
 #       THROWS: no exceptions
 #     COMMENTS: locus -> value
 #===============================================================================
 sub setGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
+    my $this = shift;
 
-	return;
-} ## --- end sub setGen
+    # Take the arguments and put them in proper variables
+    my ( $position, $value ) = @_;
 
+    # If the value is something different from 0 or 1, die horribly
+    $log->confess(
+        "The value passed as a parameter can only be 0 or 1 ($value inserted)")
+      if ( ( $value > 1 ) or ( $value < 0 ) );
 
+    # Get the genotype dereferencing the $this hash
+    my %hash        = %$this;
+    my $genotypeRef = $hash{genotype};
+    my @genotype    = @$genotypeRef;
+
+    my $genotypeMaxPos = scalar(@genotype) - 1;
+
+# If the position is something lower than 0 or bigger than the genotype size, die horribly
+    $log->confess(
+"The position passed as a parameter can only be between 0 and $genotypeMaxPos ($position inserted)"
+    ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
+
+    $genotype[$position] = $value;
+
+	$this->{genotype} = \@genotype;
+
+    $log->info(
+        "Setting gen in position $position from genotype (@genotype) to $value"
+    );
+
+    return 1;
+}    ## --- end sub setGen
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: BitVector
 #       METHOD: getGen
 #
-#   PARAMETERS: position -> the position of the gen value wanted to be 
+#   PARAMETERS: position -> the position of the gen value wanted to be
 #   			retrieved.
 #
 #      RETURNS: The value stored in the gen.
@@ -93,17 +146,32 @@ sub setGen {
 #     COMMENTS: none
 #===============================================================================
 sub getGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
+    my $this = shift;
 
-	return;
-} ## --- end sub getGen
+    # Take the arguments and put them in proper variables
+    my ($position) = @_;
 
+    # Get the genotype dereferencing the $this hash
+    my %hash        = %$this;
+    my $genotypeRef = $hash{genotype};
+    my @genotype    = @$genotypeRef;
+
+    my $genotypeMaxPos = scalar(@genotype) - 1;
+
+# If the position is something lower than 0 or bigger than the genotype size, die horribly
+    $log->confess(
+"The position passed as a parameter can only be between 0 and $genotypeMaxPos ($position inserted)"
+    ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
+
+    my $gen = $genotype[$position];
+
+    return $gen;
+}    ## --- end sub getGen
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: BitVector 
+#        CLASS: BitVector
 #       METHOD: getLength
 #   PARAMETERS: None
 #      RETURNS: The length of the genotype.
@@ -112,20 +180,26 @@ sub getGen {
 #     COMMENTS: none
 #===============================================================================
 sub getLength {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
+    my $this = shift;
 
-	return;
-} ## --- end sub getLength
+    # Take the arguments and put them in proper variables
+    my ($position) = @_;
+
+    # Get the genotype dereferencing the $this hash
+    my %hash        = %$this;
+    my $genotypeRef = $hash{genotype};
+    my @genotype    = @$genotypeRef;
+
+    return scalar(@genotype); 
+}    ## --- end sub getLength
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: BitVector
 #       METHOD: changeGen
 #   PARAMETERS: position -> indicates the position of the gen that will change.
-#      RETURNS: TRUE if the operation was performed successfully. FALSE 
-#      			otherwise.
+#      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
 #  				mutation purposes only.
 #       THROWS: no exceptions
@@ -133,19 +207,33 @@ sub getLength {
 #     SEE ALSO: n/a
 #===============================================================================
 sub changeGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
+    my $this = shift;
 
-	return;
-} ## --- end sub changeGen
+    # Take the arguments and put them in proper variables
+    my ($position) = @_;
 
+    # Get the genotype dereferencing the $this hash
+    my %hash        = %$this;
+    my $genotypeRef = $hash{genotype};
+    my @genotype    = @$genotypeRef;
 
+	print "Pre-change: $genotype[$position] \n";
 
+	if ($genotype[$position] == 1){
+		$genotype[$position] = 0;
+	}else{
+		$genotype[$position] = 1;	
+	}	
+
+	print "Post-change: $genotype[$position] \n";
+
+    return 1;
+}    ## --- end sub changeGen
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: BitVector 
+#        CLASS: BitVector
 #       METHOD: getRanges
 #   PARAMETERS: ????
 #      RETURNS: A list containing the possible values for a gen.
@@ -154,14 +242,13 @@ sub changeGen {
 #     COMMENTS: none
 #===============================================================================
 sub getRanges {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
 
-	# DO STUFF... 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
+    my $this = shift;
 
-	return;
-} ## --- end sub getRanges
+    # DO STUFF...
 
-
+    return;
+}    ## --- end sub getRanges
 
 1;
