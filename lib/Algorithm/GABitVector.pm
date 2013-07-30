@@ -47,9 +47,9 @@ our $log = Log::Log4perl::get_logger("GABitVector");
 #===============================================================================
 sub new {
     $log->info("Creation of new GABitVector started.");
-
-    my $class =
-      shift;    # Every method of a class passes first argument as class name
+   
+    # Every method of a class passes first argument as class name
+    my $class = shift; 
 
     my %args = @_; # After the class name is removed, take the hash of arguments
 

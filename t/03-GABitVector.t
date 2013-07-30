@@ -1,7 +1,7 @@
 #
 #===============================================================================
 #
-#         FILE: GeneticAlgorithm.t
+#         FILE: GABitVector.t
 #
 #  DESCRIPTION: Basic set of tests that attempt to prove that the basic
 #               functionality regarding the representation of a Genetic
@@ -44,4 +44,41 @@ log4perl.appender.LOGFILE.layout.ConversionPattern=[%r] %F %L %c - %m%n
 
 ## Initialize logging behavior
 Log::Log4perl->init( \$conf );
+
+# TODO MAKE A RECOPILATION OF TEST CASES
+
+# Constructor: check that popsize is a positive number bigger than 0. Die
+# otherwise.
+
+# Constructor: check that crossover is a float number between 0 and 1. Die
+# otherwise.
+
+# Constructor: check that mutation is a float number between 0 and 1. Die
+# otherwise.
+
+# Constructor: check that fitness and terminate are function pointers. Die
+# otherwise.
+
+# Initialize: check that genotypeLength is a positive number bigger than 0.
+# Die otherwise.
+
+# insertIndividual: check that the individual to be inserted is not undef.
+# Die otherwise.
+
+# insertIndividual: check that index is between zero and genotypeLength -1
+# Die otherwise
+
+# insertIndividual: insert an individual and check that it has actually 
+# been inserted.
+
+# deleteIndividual: check that the index is between zero and genotypeLength-1
+# Die otherwise
+
+# deleteIndividual: delete a given individual and check that it has
+# actually been substituted by a randomly generated one.
+
+
+
+ 
+
 
