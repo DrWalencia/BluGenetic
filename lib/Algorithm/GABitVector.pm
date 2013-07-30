@@ -194,10 +194,8 @@ sub deleteIndividual {
     my $genotypeTemp   = BitVector->new( $this->{lengthGenotype} );
     my $individualTemp = Individual->new($genotypeTemp);
 
-    # $individualTemp->setScore($this->{fitness}($individualTemp));
+    $individualTemp->setScore($this->{fitness}($individualTemp));
     $this->{population}[$index] = $individualTemp;
-
-    #TODO: IMPLEMENT THE CURRENT CLASS FATHER
 
     return 1;
 

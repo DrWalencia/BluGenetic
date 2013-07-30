@@ -117,9 +117,12 @@ sub getScore {
     # Get the genotype dereferencing the $this hash
     my %hash  = %$this;
     my $score = $hash{score};
-    my @genotype = $hash{genotype};
+    # Careful! the genotype is an object too, so its info must be dereferenced
+    # too.
+    my $genotype = $hash{genotype};
+    my $genotypeListRef = $genotype->{genotype};
 
-    $log->info("Score returned for individual (@genotype): $score");
+    $log->info("Score returned for individual (@$genotypeListRef): $score");
 
     return $score;
 }    ## --- end sub getScore
@@ -146,9 +149,12 @@ sub setScore {
     if ($score < 0);
 
     my %hash  = %$this;
-    my @genotype = $hash{genotype};
+    # Careful! the genotype is an object too, so its info must be dereferenced
+    # too.
+    my $genotype = $hash{genotype};
+    my $genotypeListRef = $genotype->{genotype};
 
-    $log->info("Score set ($score) on individual with genotype (@genotype)");
+    $log->info("Score set ($score) on individual with genotype (@$genotypeListRef)");
 
     # Set the score
     $this->{score} = $score;
@@ -199,10 +205,13 @@ sub getGenotype {
 
     # Get the genotype dereferencing the $this hash
     my %hash     = %$this;
-    my @genotype = $hash{genotype};
+    # Careful! the genotype is an object too, so its info must be dereferenced
+    # too.
+    my $genotype = $hash{genotype};
+    my $genotypeListRef = $genotype->{genotype};
 
     $log->info("Returned a REFERENCE to the genotype of the individual with
-        genotype (@genotype) ");
+        genotype (@$genotypeListRef) ");
 \
     return $this->{genotype};
 

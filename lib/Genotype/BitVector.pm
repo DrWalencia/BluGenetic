@@ -68,7 +68,7 @@ sub new {
         push( @genotype, int( rand(2) ) );
     }
 
-    $log->info("Genes randomly generated: @genotype");
+    $log->info("Genes randomly generated: (@genotype)");
 
     # Anonymous hash to store instance variables (AKA FIELDS)
     my $this = { genotype => \@genotype, };
