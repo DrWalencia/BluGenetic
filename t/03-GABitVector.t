@@ -77,8 +77,21 @@ Log::Log4perl->init( \$conf );
 # deleteIndividual: delete a given individual and check that it has
 # actually been substituted by a randomly generated one.
 
-
-
+# getFittest: No parameter, pass zero as a parameter, pass more than the
+# total population.
  
+# getPopulation: generate population of one individual, substitute it for
+# a given one and retrieve the population and check if it's there.
+
+# getPopSize: generate population, get genotype, retrieve its size and check
+# if it's the same as what's stored in popSize
+
+# getCrossChance: generate AG, and check if crossChance is the same as the 
+# one passed as a parameter.
+
+# getMutChance: generate AG, and check if mutChance is the same as the 
+# one passed as a parameter.
+
+
 
 
