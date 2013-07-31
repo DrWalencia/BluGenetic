@@ -92,6 +92,15 @@ Log::Log4perl->init( \$conf );
 # getMutChance: generate AG, and check if mutChance is the same as the 
 # one passed as a parameter.
 
+# getCurrentGeneration: without hitting evolve, currentGeneration must be
+# undef. After hitting evolve() and not putting any terminate function,
+# currentGeneration must be equal to the value passed to evolve()
+
+# sortPopulation: generate population and sort it. Check results.
+
+#
+
+
 
 
 

@@ -210,12 +210,12 @@ sub evolve {
 
                 # Calculate the score for the NEW child one
                 my $individualTemp1 = $crossoverOffspring[0];
-                $score = $this->{fitness}($individualTemp1);
+                $score = _fitnessFunc($individualTemp1);
                 $individualTemp1->setScore($score);
 
                 # Calculate the score for the NEW child two
                 my $individualTemp2 = $crossoverOffspring[1];
-                $score = $this->{fitness}($individualTemp2);
+                $score = _fitnessFunc($individualTemp2);
                 $individualTemp1->setScore($score);
 
                 # And put them in the no recombination set
@@ -241,7 +241,7 @@ sub evolve {
                 my $genotypeTemp = $noRecombinationSet[$j]->getGenotype();
                 $genotypeTemp->changeGen($position);
                 $noRecombinationSet[$j]->setGenotype($genotypeTemp);
-                $score = $this->{fitness}( $noRecombinationSet[$j] );
+                $score = _fitnessFunc( $noRecombinationSet[$j] );
                 $noRecombinationSet[$j]->setScore($score);
             }
         }
@@ -251,7 +251,7 @@ sub evolve {
         $this->{population} = @noRecombinationSet;
 
         # If the terminate criterion is met, iteration finishes.
-        if ( $this->{terminate}() ) {
+        if ( _terminateFunc() ) {
             return;
         }
     }
@@ -501,7 +501,7 @@ sub deleteIndividual {
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: fitnessFunc
+#       METHOD: _fitnessFunc
 #
 #   PARAMETERS: individual -> the individual whose fitness score is wanted
 #   			to be calculated.
@@ -511,10 +511,11 @@ sub deleteIndividual {
 #  				passed as a parameter.
 #       THROWS: no exceptions
 #     COMMENTS: PROVIDE A DEFAULT IMPLEMENTATION FOR FITNESS FUNCTION IN
-#     			CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
+#     			CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER. THIS IS 
+#				A PRIVATE METHOD.
 #     SEE ALSO: n/a
 #===============================================================================
-sub fitnessFunc {
+sub _fitnessFunc {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my ( $this, $individual ) = @_;
@@ -536,17 +537,18 @@ sub fitnessFunc {
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: terminateFunc
+#       METHOD: _terminateFunc
 #   PARAMETERS: None.
 #      RETURNS: 1 if the custom condition defined here is satisfied, 0
 #      			otherwise.
 #  DESCRIPTION: Allows for a custom termination routine to be defined.
 #       THROWS: no exceptions
 #     COMMENTS:	DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
-#     			TILL THE MAXIMUM NUMBER OF GENERATIONS.
+#     			TILL THE MAXIMUM NUMBER OF GENERATIONS. THIS IS A PRIVATE
+#				METHOD.
 #     SEE ALSO: n/a
 #===============================================================================
-sub terminateFunc {
+sub _terminateFunc {
 
     $log->info("Terminate function called.");
 
