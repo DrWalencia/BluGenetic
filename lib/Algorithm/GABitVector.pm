@@ -52,6 +52,19 @@ sub new {
     my $class = shift; 
 
     my %args = @_; # After the class name is removed, take the hash of arguments
+    
+    $log->logconfess("popSize must be a positive number bigger than 0")
+    	if ($args{popSize} <= 0);
+    	
+    $log->logconfess("crossover must be a positive number between 0 and 1")
+    	if (($args{crossover} < 0) or ($args{crossover} > 1));
+    
+    $log->logconfess("mutation must be a positive number between 0 and 1")
+    	if (($args{mutation} < 0) or ($args{mutation} > 1));
+    	
+    $log->logconfess("fitness argument cannot be left empty")
+    	if (!(defined $args{fitness}));
+    
 
     # Reference to anonymous hash to store instance variables (AKA FIELDS)
     my $this = {
@@ -91,11 +104,20 @@ sub initialize {
 
     # Dereference hash leaving it ready to be used
     my %fields = %$this;
+    
+    $log->logconfess("Argument genotypeLength missing") 
+    if ( !(defined $genotypeLength) );
+    
+    $log->logconfess("Wrong genotypeLength value: $genotypeLength")
+    if ( $genotypeLength <= 0);
 
     $log->info(
         "Initializing population of $fields{popSize} individuals of
         type BitVector with length $genotypeLength"
     );
+    
+    # Initialize the current generation
+    $this->{currentGeneration} = 0;
 
     # Declare counter and population to be filled
     my $i;
@@ -106,12 +128,17 @@ sub initialize {
     for ( $i = 0 ; $i < $fields{popSize} ; $i++ ) {
         my $individualTemp = Individual->new();
         $individualTemp->setGenotype( BitVector->new($genotypeLength) );
-        $individualTemp->setScore( $fields{fitnessFunc}($individualTemp) );
+        $individualTemp->setScore( $this->SUPER::fitnessFunc($individualTemp) );
         push @pop, $individualTemp;
     }
 
     # Set the population just created inside the hash of fields
-    $this->{population} = @pop;
+    # REFERENCE TO THE ARRAY, IF JUST PASS @POP THEN POPULATION WILL HAVE THE
+    # AMOUNT OF ELEMENTS IN THE POPULATION.
+    $this->{population} = \@pop;
+    
+    # And set the genotype length inside the hash of fields
+    $this->{genotypeLength}= $genotypeLength;
 
     $log->info(
         "Population of $fields{popSize} individuals of type BitVector
@@ -144,15 +171,33 @@ sub insertIndividual {
 
     # Get the arguments
     my ( $individual, $index ) = @_;
+    
+    # Check if the individual is defined
+    $log->logconfess("Undefined individual") if (!(defined $individual));
+    $log->logconfess("Undefined index") if (!(defined $index));
+    
+    my $genotypeLength = $individual->getGenotype()->getLength();
+    my $aGenotypeLength = $this->{genotypeLength};
+    
+    # Check if the length of the individual is compatible with lengthGenotype
+    $log->logconfess("Incompatible genotype lengths: ind: $genotypeLength, AG: $aGenotypeLength ")
+    if ($genotypeLength != $aGenotypeLength);
 
     # Couple of cases in which the program dies horribly
-    $log->confess("Index bigger than population size ($index)")
+    $log->logconfess("Index bigger than population size ($index)")
       if ( $index > $this->{popSize} );
 
-    $log->confess("Index smaller than zero ($index)") if ( $index < 0 );
+    $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
+    
+    # Make a copy of the Algorithm's population
+    # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
+    my $pop = $this->{population};
+    my @population = @$pop;
 
     # Put the individual on the position specified, destroying what was there
-    $this->{population}[$index] = $individual;
+    $population[$index] = $individual;
+    
+    $this->{population} = \@population;
 
     $log->info(
         "Individual with genotype ($individual->getGenotype()) inserted
@@ -186,16 +231,24 @@ sub deleteIndividual {
     my ($index) = @_;
 
     # Couple of cases in which the program dies horribly
-    $log->confess("Index bigger than population size ($index)")
+    $log->logconfess("Index bigger than population size ($index)")
       if ( $index > $this->{popSize} );
 
-    $log->confess("Index smaller than zero ($index)") if ( $index < 0 );
+    $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
 
     my $genotypeTemp   = BitVector->new( $this->{lengthGenotype} );
     my $individualTemp = Individual->new($genotypeTemp);
 
     $individualTemp->setScore($this->{fitness}($individualTemp));
-    $this->{population}[$index] = $individualTemp;
+    
+    # Make a copy of the Algorithm's population
+    # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
+    my $pop = $this->{population};
+    my @population = @$pop;
+    
+    $population[$index] = $individualTemp;
+    
+    $this->{population} = \@population;
 
     return 1;
 

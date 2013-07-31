@@ -27,8 +27,8 @@ our $log = Log::Log4perl::get_logger("GeneticAlgorithm");
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields 'population',    # LIST of individuals comprising the population.
-  'lengthGenotype',         # INT the length of the Genotype.
+use fields 'population',    # ARRAY of individuals comprising the population.
+  'genotypeLength',         # INT the length of the Genotype.
   'mutation',               # FLOAT chance of mutation 0..1
   'crossover',              # FLOAT chance of crossover 0..1
   'popSize',                # INT size of the population
@@ -128,9 +128,9 @@ sub evolve {
     my ( $this, $selectionStr, $crossoverStr, $numGenerations ) = @_;
 
     # Die painfully if any of the strategies are undef
-    $log->confess("Selection strategy undefined.")
+    $log->logconfess("Selection strategy undefined.")
       if ( !( defined $selectionStr ) );
-    $log->confess("Crossover strategy undefined.")
+    $log->logconfess("Crossover strategy undefined.")
       if ( !( defined $selectionStr ) );
 
     # If $numGenerations is undef, default it to 1
@@ -203,19 +203,19 @@ sub evolve {
                     $recombinationSet[$position2]
                 );
                 my $nIndCrossover = ( scalar @crossoverOffspring );
-                $log->confess(
+                $log->logconfess(
                     "Wrong number of individuals as a product of a
 				crossover operation: $nIndCrossover"
                 );
 
                 # Calculate the score for the NEW child one
                 my $individualTemp1 = $crossoverOffspring[0];
-                $score = _fitnessFunc($individualTemp1);
+                $score = fitnessFunc($individualTemp1);
                 $individualTemp1->setScore($score);
 
                 # Calculate the score for the NEW child two
                 my $individualTemp2 = $crossoverOffspring[1];
-                $score = _fitnessFunc($individualTemp2);
+                $score = fitnessFunc($individualTemp2);
                 $individualTemp1->setScore($score);
 
                 # And put them in the no recombination set
@@ -241,7 +241,7 @@ sub evolve {
                 my $genotypeTemp = $noRecombinationSet[$j]->getGenotype();
                 $genotypeTemp->changeGen($position);
                 $noRecombinationSet[$j]->setGenotype($genotypeTemp);
-                $score = _fitnessFunc( $noRecombinationSet[$j] );
+                $score = fitnessFunc( $noRecombinationSet[$j] );
                 $noRecombinationSet[$j]->setScore($score);
             }
         }
@@ -289,10 +289,10 @@ sub getFittest {
     }
     else {
         # A couple of situations in which the program dies painfully
-        $log->confess(
+        $log->logconfess(
             "Incorrect number of individuals to be retrieved: $nIndWanted")
           if $nIndWanted <= 0;
-        $log->confess(
+        $log->logconfess(
             "Too many fittest individuals (more than the total 
 		  population)($nIndWanted,$this->{popSize}"
         ) if $nIndWanted > $this->{popSize};
@@ -385,6 +385,26 @@ sub getMutChance{
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
+#       METHOD: getGenotypeLength 
+#   PARAMETERS: None.
+#      RETURNS: FLOAT the length of the genotype of the individuals in the pop
+#  DESCRIPTION: getter for the genotypeLength
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub getGenotypeLength{
+
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
+    my $this      = shift;
+    my $genotypeLength = $this->{genotypeLength};
+    $log->info("Genotype length returned: $genotypeLength");
+    return $genotypeLength;
+}    ## --- end sub getGenotypeLength 
+
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: GeneticAlgorithm
 #       METHOD: getCurrentGeneration
 #   PARAMETERS: None.
 #      RETURNS: The current generation
@@ -455,7 +475,7 @@ sub sortPopulation {
 #     SEE ALSO: n/a
 #===============================================================================
 sub initialize {
-    $log->confess('The function initialize() must be defined in a subclass.\n');
+    $log->logconfess('The function initialize() must be defined in a subclass.\n');
     return;
 }    ## --- end sub initialize
 
@@ -473,7 +493,7 @@ sub initialize {
 #     SEE ALSO: n/a
 #===============================================================================
 sub insertIndividual {
-    $log->confess(
+    $log->logconfess(
         'The function insertIndividual() must be defined in a subclass.\n');
     return;
 }    ## --- end sub insertIndividual
@@ -494,14 +514,14 @@ sub insertIndividual {
 #     SEE ALSO: n/a
 #===============================================================================
 sub deleteIndividual {
-    $log->confess(
+    $log->logconfess(
         'The function deleteIndividual() must be defined in a subclass.\n');
     return;
 }    ## --- end sub deleteIndividual
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: _fitnessFunc
+#       METHOD: fitnessFunc
 #
 #   PARAMETERS: individual -> the individual whose fitness score is wanted
 #   			to be calculated.
@@ -511,11 +531,10 @@ sub deleteIndividual {
 #  				passed as a parameter.
 #       THROWS: no exceptions
 #     COMMENTS: PROVIDE A DEFAULT IMPLEMENTATION FOR FITNESS FUNCTION IN
-#     			CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER. THIS IS 
-#				A PRIVATE METHOD.
+#     			CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
 #     SEE ALSO: n/a
 #===============================================================================
-sub _fitnessFunc {
+sub fitnessFunc {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my ( $this, $individual ) = @_;
@@ -526,7 +545,7 @@ sub _fitnessFunc {
         $score = $this->{fitness}($individual);
     }
     else {
-        $log->confess(
+        $log->logconfess(
             'The function fitnessFunc() must be passed as a parameter.\n');
     }
 

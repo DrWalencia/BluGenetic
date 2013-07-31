@@ -55,7 +55,7 @@ sub new {
     # Take the first and only argument
     my $lengthGen = shift;
 
-    $log->confess("Invalid number of genes for the genotype: $lengthGen")
+    $log->logconfess("Invalid number of genes for the genotype: $lengthGen")
       if $lengthGen < 1;
 
     # Genotype to be inserted as a field in the object being created
@@ -105,7 +105,7 @@ sub setGen {
     my ( $position, $value ) = @_;
 
     # If the value is something different from 0 or 1, die horribly
-    $log->confess(
+    $log->logconfess(
         "The value passed as a parameter can only be 0 or 1 ($value inserted)")
       if ( ( $value > 1 ) or ( $value < 0 ) );
 
@@ -118,7 +118,7 @@ sub setGen {
 
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
-    $log->confess(
+    $log->logconfess(
     "The position passed as a parameter can only be between 
 		0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
@@ -165,7 +165,7 @@ sub getGen {
 
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
-    $log->confess(
+    $log->logconfess(
     "The position passed as a parameter can only be between 
 		0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
@@ -230,7 +230,7 @@ sub changeGen {
 
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
-    $log->confess(
+    $log->logconfess(
     "The position passed as a parameter can only be between 
 		0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );

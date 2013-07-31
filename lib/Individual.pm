@@ -59,7 +59,7 @@ sub new {
 
     # Three cases of new are valid, according to the method signature.
     if ( $numberOfKeys == 2 ) {
-        $log->confess("Cannot create an individual with undefined genotype")
+        $log->logconfess("Cannot create an individual with undefined genotype")
           if ( !( defined $args{genotype} ) );
 
         $log->info("Creation of a new individual with two arguments started.");
@@ -72,10 +72,10 @@ sub new {
     }
     elsif ( $numberOfKeys == 1 ) {
 
-        $log->confess("Cannot create an individual with undefined genotype")
+        $log->logconfess("Cannot create an individual with undefined genotype")
           if ( !( defined $args{genotype} ) );
 
-        $log->confess("Cannot create an individual just with the score")
+        $log->logconfess("Cannot create an individual just with the score")
           if ( !( exists $args{genotype} ) );
 
         $log->info("Creation of a new individual with one argument started.");
@@ -145,7 +145,7 @@ sub setScore {
     # Take the score passed as a parameter
     my $score = shift;
 
-    $log->confess("Cannot set a negative score on an individual")
+    $log->logconfess("Cannot set a negative score on an individual")
     if ($score < 0);
 
     my %hash  = %$this;
@@ -235,7 +235,7 @@ sub setGenotype {
     # Get the argument
     my $genotype = shift;
 
-    $log->confess("Cannot set an undefined genotype") if (!(defined $genotype));
+    $log->logconfess("Cannot set an undefined genotype") if (!(defined $genotype));
 
     $this->{genotype} = $genotype;
 
