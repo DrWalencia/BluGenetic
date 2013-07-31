@@ -128,7 +128,7 @@ sub initialize {
     for ( $i = 0 ; $i < $fields{popSize} ; $i++ ) {
         my $individualTemp = Individual->new();
         $individualTemp->setGenotype( BitVector->new($genotypeLength) );
-        $individualTemp->setScore( $this->SUPER::fitnessFunc($individualTemp) );
+        $individualTemp->setScore( $this->fitnessFunc($individualTemp) );
         push @pop, $individualTemp;
     }
 
@@ -158,7 +158,7 @@ sub initialize {
 #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
 
 #  DESCRIPTION: Inserts an individual in the population on the position given
-#				by index.
+#				by index. Calculates its fitness value previously.
 
 #       THROWS: no exceptions
 #     COMMENTS: none
@@ -193,6 +193,9 @@ sub insertIndividual {
     # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
     my $pop = $this->{population};
     my @population = @$pop;
+    
+    # Calculate the individual's score before inserting it
+    $individual->setScore( $this->fitnessFunc($individual) );
 
     # Put the individual on the position specified, destroying what was there
     $population[$index] = $individual;
@@ -232,12 +235,13 @@ sub deleteIndividual {
 
     # Couple of cases in which the program dies horribly
     $log->logconfess("Index bigger than population size ($index)")
-      if ( $index > $this->{popSize} );
+      if ( $index > $this->{popSize}-1);
 
     $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
 
-    my $genotypeTemp   = BitVector->new( $this->{lengthGenotype} );
-    my $individualTemp = Individual->new($genotypeTemp);
+    my $genotypeTemp   = BitVector->new( $this->{genotypeLength} );
+    my $individualTemp = Individual->new(
+    							genotype => $genotypeTemp);
 
     $individualTemp->setScore($this->{fitness}($individualTemp));
     

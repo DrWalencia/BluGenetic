@@ -42,7 +42,8 @@ use fields 'population',    # ARRAY of individuals comprising the population.
 #        CLASS: GeneticAlgorithm
 #       METHOD: _quickSort
 #
-#   PARAMETERS: i -> index of the last element of the population to be sorted
+#   PARAMETERS: j -> index of the first element of the population to be sorted
+#				i -> index of the last element of the population to be sorted
 #   			by fitness function value. Usually population_size() - 1
 #
 #   			JULIAN PASSED ALWAYS ZERO AS THE FIRST PARAMETER (OMG!!)
@@ -58,13 +59,14 @@ use fields 'population',    # ARRAY of individuals comprising the population.
 sub _quickSort {
 
     # Retrieve fields as reference to a hash and the parameters
-    my ( $this, $i ) = @_;
+    my ( $j, $i, $this ) = @_;
+    
     my $pivot;
     if ( 0 < $i ) {
-        $pivot = _place($i);
-        _quickSort( 0,          $pivot - 1 );
-        _quickSort( $pivot + 1, $i );
-    }
+        $pivot = _place($j, $i, $this);
+        _quickSort( $j,          $pivot - 1);
+        _quickSort( $pivot + 1, $i);
+    }	
     return;
 }    ## --- end sub _quickSort
 
@@ -72,7 +74,8 @@ sub _quickSort {
 #        CLASS: GeneticAlgorithm
 #       METHOD: _place
 #
-#   PARAMETERS: j -> index of the last element of the population to be sorted
+#   PARAMETERS: k -> index of the first element of the population to be sorted
+#				j -> index of the last element of the population to be sorted
 #   			by fitness function value. Usually the i from _quickSort()
 #
 #      RETURNS: The pivot
@@ -84,25 +87,35 @@ sub _quickSort {
 sub _place {
 
     # Retrieve fields as reference to a hash and the parameters
-    my ( $this, $j ) = @_;
+    my ( $k, $j, $this ) = @_;
+    
+    # Make a copy of the Algorithm's population
+    # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
+    my $pop = $this->{population};
+    my @population = @$pop;
+    print @population;
+    
     my $i;
     my $pivot;
     my $pivot_value;
     my $individualTemp;
-    $pivot       = 0;
-    $pivot_value = $this->{population}->getScore();
-    for ( $i = 0 ; $i <= $j ; $i++ ) {
+    $pivot       = $k;
+    $pivot_value = $population[$pivot]->getScore();
+    for ( $i = $k ; $i <= $j ; $i++ ) {
 
-        if ( $this->{population}->getScore() < $pivot_value ) {
+        if ( $population[$i]->getScore() < $pivot_value ) {
             $pivot++;
-            $individualTemp             = $this->{population}[$i];
-            $this->{population}[$i]     = $this->{population}[$pivot];
-            $this->{population}[$pivot] = $individualTemp;
+            $individualTemp             = $population[$i];
+            $population[$i]     = $population[$pivot];
+            $population[$pivot] = $individualTemp;
         }
     }
-    $individualTemp             = $this->{population}[0];
-    $this->{population}[0]      = $this->{population}[$pivot];
-    $this->{population}[$pivot] = $individualTemp;
+    $individualTemp             = $population[$k];
+    $population[$k]      = $population[$pivot];
+    $population[$pivot] = $individualTemp;
+    
+    $this->{population} = @population;
+    
     return $pivot;
 }    ## --- end sub _place
 
@@ -436,8 +449,11 @@ sub sortPopulation {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this = shift;
-
-    my @population = $this->{population};
+    
+    # Make a copy of the Algorithm's population
+    # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
+    my $pop = $this->{population};
+    my @population = @$pop;
 
     $log->info(
         "Population is going to be sorted. Current situation displayed
@@ -450,7 +466,7 @@ sub sortPopulation {
     }
 
     # Indexes go from zero till popSize - 1
-    _quickSort( $this->{popSize} - 1 );
+    _quickSort(0, $this->{popSize} - 1, $this);
 
     $log->info("Population sorted. Situation after sorting: ");
     foreach my $individual (@population) {
@@ -458,6 +474,8 @@ sub sortPopulation {
         my @genotype = $individual->getGenotype();
         $log->info( "(@genotype)", "Score: $score" );
     }
+    
+    $this->{population} = @population;
 
     return;
 }    ## --- end sub sortPopulation
