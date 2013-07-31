@@ -20,6 +20,7 @@ use Test::More tests => 19;    # last test to print
 use Log::Log4perl qw(get_logger);
 use Individual;
 use Algorithm::GABitVector;
+use diagnostics;
 
 # Tests for checking if a certain section of code dies
 use Test::Exception;
@@ -333,16 +334,43 @@ my $algorithm8 = GABitVector->new(
 $algorithm8->initialize(30);
 $algorithm8->sortPopulation();
 
+my $population3 = $algorithm8->getPopulation();
+
+my $i;
+
+for ( $i = 0; $i < $algorithm8->{popSize} - 1; $i++ ){
+    my $lowFit = @$population3[$i];
+    my $hiFit = @$population3[$i+1];
+    ok ($lowFit->getScore() <= $hiFit->getScore());
+}
+
 
 # getFittest: No parameter, pass zero as a parameter, pass more than the
 # total population.
 
+my @fittest =  $algorithm8->getFittest();
+
+# TODO EXAMPLE OF WHAT SHOULD BE DONE EVERY TIME POPULATION IS GOT
+my $refPopulation = $algorithm8->getPopulation();
+my @population = @$refPopulation;
+my $byHandFittest = $population[$algorithm8->{popSize} -1];
+ok ( $byHandFittest->getScore() == $fittest[0]->getScore() );
+
+# getFittest: Pass a parameter between limits. Very basic, just checking
+# cardinality.
+my @fittest2 = $algorithm8->getFittest(4);
+ok ( @fittest2 == 4);
+
+# getFittest: Pass zero as a parameter. It dies painfully
+dies_ok{ my $fittest3 = $algorithm8->getFittest(0)};
+
+# getFittest: pass more than the total population. It dies painfully
+dies_ok{ my $fittest3 = $algorithm8->getFittest(13)};
 
 
+# evolve tests.... NO TESTS UNTIL STRATEGIES IMPLEMENTED & TESTED
 
-# evolve tests....
-# getCurrentGeneration: without hitting evolve, currentGeneration must be
-# undef. After hitting evolve() and not putting any terminate function,
-# currentGeneration must be equal to the value passed to evolve()
+
+# _terminateFunc: implicit check of currentGeneration
 # _terminateFunc: Check default behavior.
 # _terminateFunc: define custom behavior and check if it works as expected.

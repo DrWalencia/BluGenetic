@@ -61,13 +61,15 @@ sub _quickSort {
     # Retrieve fields as reference to a hash and the parameters
     my ( $j, $i, $this ) = @_;
     
-    my $pivot;
-    if ( 0 < $i ) {
-        $pivot = _place($j, $i, $this);
-        _quickSort( $j,          $pivot - 1);
-        _quickSort( $pivot + 1, $i);
+    if ( $j < $i ) {
+        my ($pivot, $this) = _place($j, $i, $this);
+        $this = _quickSort( $j,          $pivot - 1, $this);
+        $this = _quickSort( $pivot + 1, $i, $this);
     }	
-    return;
+
+    my $temp = $this->{population};
+
+    return $this;
 }    ## --- end sub _quickSort
 
 #===  CLASS METHOD  ============================================================
@@ -93,7 +95,6 @@ sub _place {
     # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
     my $pop = $this->{population};
     my @population = @$pop;
-    print @population;
     
     my $i;
     my $pivot;
@@ -101,7 +102,7 @@ sub _place {
     my $individualTemp;
     $pivot       = $k;
     $pivot_value = $population[$pivot]->getScore();
-    for ( $i = $k ; $i <= $j ; $i++ ) {
+    for ( $i = $k+1 ; $i <= $j ; $i++ ) {
 
         if ( $population[$i]->getScore() < $pivot_value ) {
             $pivot++;
@@ -113,10 +114,10 @@ sub _place {
     $individualTemp             = $population[$k];
     $population[$k]      = $population[$pivot];
     $population[$pivot] = $individualTemp;
+
+    $this->{population} = \@population;
     
-    $this->{population} = @population;
-    
-    return $pivot;
+    return ($pivot, $this);
 }    ## --- end sub _place
 
 #===  CLASS METHOD  ============================================================
@@ -297,8 +298,9 @@ sub getFittest {
 
     # If no parameters are found, just push the fittest
     # Otherwise, select as many elements as needed and push them
+    # CAREFUL!! THE POPULATION WILL BE SORTED BY ASCENDING FITNESS VALUE
     if ( !( defined $nIndWanted ) ) {
-        push @fittest, $this->{population}[0];
+        push @fittest, $this->{population}[$this->{popSize}-1];
     }
     else {
         # A couple of situations in which the program dies painfully
@@ -313,11 +315,12 @@ sub getFittest {
 
         # Take as many fittest individuals as needed
         for ( $i = 0 ; $i < $nIndWanted ; $i++ ) {
-            push @fittest, $this->{population}[$i];
+            push @fittest, $this->{population}[$this->{popSize} - $i -1];
         }
     }
     my $individualsReturned = scalar @fittest;
     $log->info("Returned the $individualsReturned best individuals.");
+
     return @fittest;
 }    ## --- end sub getFittest
 
@@ -442,7 +445,7 @@ sub getCurrentGeneration {
 #      RETURNS: Nothing.
 #  DESCRIPTION: Sorts the population of the current Genetic Algorithm
 #       THROWS: no exceptions
-#     COMMENTS: none
+#     COMMENTS: It sorts the population in ascending value of fitness
 #     SEE ALSO: n/a
 #===============================================================================
 sub sortPopulation {
@@ -450,32 +453,8 @@ sub sortPopulation {
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this = shift;
     
-    # Make a copy of the Algorithm's population
-    # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
-    my $pop = $this->{population};
-    my @population = @$pop;
-
-    $log->info(
-        "Population is going to be sorted. Current situation displayed
-	below: "
-    );
-    foreach my $individual (@population) {
-        my $score    = $individual->getScore();
-        my @genotype = $individual->getGenotype();
-        $log->info( "(@genotype)", "Score: $score" );
-    }
-
-    # Indexes go from zero till popSize - 1
-    _quickSort(0, $this->{popSize} - 1, $this);
-
-    $log->info("Population sorted. Situation after sorting: ");
-    foreach my $individual (@population) {
-        my $score    = $individual->getScore();
-        my @genotype = $individual->getGenotype();
-        $log->info( "(@genotype)", "Score: $score" );
-    }
-    
-    $this->{population} = @population;
+    # Redefine this with the AG coming from the _quickSort method 
+    $this =  _quickSort(0, $this->{popSize} - 1, $this );
 
     return;
 }    ## --- end sub sortPopulation
