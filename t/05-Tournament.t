@@ -16,16 +16,15 @@
 #      CREATED: 07/29/2013 07:57:29 PM
 #     REVISION: ---
 #===============================================================================
-
 use Test::More tests => 19;    # last test to print
 use Log::Log4perl qw(get_logger);
 use Individual;
 use diagnostics;
+use Selection::Tournament;
 use Genotype::BitVector;
 
 # Tests for checking if a certain section of code dies
 use Test::Exception;
-
 my $conf = q(
 
 ############################################################
@@ -42,7 +41,89 @@ log4perl.appender.LOGFILE.layout=PatternLayout
 log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %p - %m%n
 
 );
-
 ## Initialize logging behavior
 Log::Log4perl->init( \$conf );
+
+# Constructor: missing argument. Dies painfully
+
+	dies_ok { my $selection = Tournament->new() };
+
+# Constructor: number of individuals zero. Dies painfully
+
+	dies_ok { my $selection = Tournament->new(0) };
+
+# Constructor: number of individuals negative. Dies painfully
+
+	dies_ok { my $selection = Tournament->new(-7) };
+
+# Population with two elements: one with score 1 and the other with score 0
+# The returned population must be filled only with copies of the first element
+	
+	# Create population and roulette
+	my @pop;
+	my $selection = Tournament->new(2);
+	
+	
+	# Fill the population with two elements
+	my $indOne = Individual->new(
+		score =>	1.0,
+		genotype => BitVector->new(6)
+	);
+	
+	$indOne->getGenotype()->setGen(0,1);
+	$indOne->getGenotype()->setGen(1,1);
+	$indOne->getGenotype()->setGen(2,1);
+	$indOne->getGenotype()->setGen(3,1);
+	$indOne->getGenotype()->setGen(4,1);
+	$indOne->getGenotype()->setGen(5,1);
+	
+	
+	
+	my $indTwo = Individual->new(
+		score => 0,
+		genotype => BitVector->new(6)
+	);
+	
+	$indOne->getGenotype()->setGen(0,0);
+	$indOne->getGenotype()->setGen(1,0);
+	$indOne->getGenotype()->setGen(2,0);
+	$indOne->getGenotype()->setGen(3,0);
+	$indOne->getGenotype()->setGen(4,0);
+	$indOne->getGenotype()->setGen(5,0);
+	
+	push @pop, $indOne;
+	push @pop, $indTwo;
+
+	# If an element have 100% chance of being selected then the result of 
+	# the selection will be a list of Individuals with the same score and 
+	# genotype.
+	
+	# TEST COMMENTED OBVIOUSLY BECAUSE THE RANDOM NATURE OF ITS RESULTS.
+	# JUST USED FOR DEBUGGING PURPOSES.
+	
+#	my @selectedPop = $selection->performSelection(@pop);
+#
+#	# To prove it we check every single gen and score of every single 
+#	# individual with the individual with position 0 in pop
+#	for ( my $i = 0; $i < @selectedPop; $i++ ){
+#
+#		my $ind1 = $selectedPop[$i];
+#		my $ind2 = $pop[0];
+#		
+#		ok ( $ind1->getScore() == $ind2->getScore() );
+#		
+#		my $genotype1 = $ind1->getGenotype();
+#		my $genotype2 = $ind2->getGenotype();
+#		
+#		for ( my $j = 0; $j < $genotype1->getLength(); $j++ ){
+#			ok ( $genotype1->getGen($j) == $genotype2->getGen($j) );
+#		}
+#	}
+
+
+
+
+
+
+
 

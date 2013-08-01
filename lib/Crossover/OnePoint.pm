@@ -20,17 +20,22 @@
 #     REVISION: ---
 #===============================================================================
 
+package OnePoint;
+
 use strict;
 use warnings;
+use diagnostics;
+use Log::Log4perl qw(get_logger);
+
+# Get a logger from the singleton
+our $log = Log::Log4perl::get_logger("OnePoint");
 
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
 
-package OnePoint;
-
 # OnePoint inherits from Crossover::CrossoverStrategy
 use Crossover::CrossoverStrategy;
-our @ISA = qw(CrossoverStrategy);
+use base qw(CrossoverStrategy);
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.

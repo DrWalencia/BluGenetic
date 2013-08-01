@@ -21,7 +21,11 @@ package CrossoverStrategy;
 
 use strict;
 use warnings;
-use Carp;
+use diagnostics;
+use Log::Log4perl qw(get_logger);
+
+# Get a logger from the singleton
+our $log = Log::Log4perl::get_logger("CrossoverStrategy");
 
 
 #===  FUNCTION  ================================================================
@@ -36,7 +40,7 @@ use Carp;
 #     SEE ALSO: n/a
 #===============================================================================
 sub crossIndividuals {
-	croak 'The function crossIndividuals() must be defined in a subclass.\n';
+	$log->logconfess("The function crossIndividuals() must be defined in a subclass.\n");
 } ## --- end sub crossIndividuals
 
 1; # Required for all packages in Perl

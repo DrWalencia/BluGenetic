@@ -20,7 +20,11 @@ package SelectionStrategy;
 
 use strict;
 use warnings;
-use Carp;
+use diagnostics;
+use Log::Log4perl qw(get_logger);
+
+# Get a logger from the singleton
+our $log = Log::Log4perl::get_logger("SelectionStrategy");
  
 #===  FUNCTION  ================================================================
 #         NAME: performSelection
@@ -35,7 +39,7 @@ use Carp;
 #     SEE ALSO: n/a
 #===============================================================================
 sub performSelection {
-	croak "The function performSelection() must be implemented in a subclass.\n";
+	$log->logconfess("The function performSelection() must be implemented in a subclass.\n");
 } ## --- end sub performSelection
 
 1;

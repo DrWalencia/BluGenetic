@@ -175,6 +175,7 @@ sub evolve {
         $this->{currentGeneration}++;
 
         # Apply SELECTION STRATEGY...
+        
         # TODO WHAT DOES SELECTIONSTR RETURN?? IT MUST BE A REFERENCE...
         #$this->{population} =$selectionStr->performSelection( $this->{population} );
 

@@ -23,7 +23,10 @@ package Genotype;
 use strict;
 use warnings;
 use diagnostics;
-use Carp;
+use Log::Log4perl qw(get_logger);
+
+# Get a logger from the singleton
+our $log = Log::Log4perl::get_logger("Genotype");
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Genotype 
@@ -41,7 +44,7 @@ use Carp;
 #     COMMENTS: locus -> value
 #===============================================================================
 sub setGen {
-	croak "The function setGen must be implemented in a subclass.\n";
+	$log->logconfess("The function setGen must be implemented in a subclass.\n");
 } ## --- end sub setGen
 
 
@@ -60,7 +63,7 @@ sub setGen {
 #     COMMENTS: none
 #===============================================================================
 sub getGen {
-	croak "The function getGen must be implemented in a subclass.\n";
+	$log->logconfess("The function getGen must be implemented in a subclass.\n");
 } ## --- end sub getGen
 
 
@@ -74,7 +77,7 @@ sub getGen {
 #     COMMENTS: none
 #===============================================================================
 sub getLength {
-	croak "The function getLength must be implemented in a subclass.\n";
+	$log->logconfess("The function getLength must be implemented in a subclass.\n");
 } ## --- end sub getLength
 
 
@@ -90,7 +93,7 @@ sub getLength {
 #     SEE ALSO: n/a
 #===============================================================================
 sub changeGen {
-	croak "The function changeGen must be implemented in a sublcass.\n";
+	$log->logconfess("The function changeGen must be implemented in a subclass.\n");
 } ## --- end sub changeGen
 
 #===  CLASS METHOD  ============================================================
@@ -103,7 +106,7 @@ sub changeGen {
 #     COMMENTS: none
 #===============================================================================
 sub getRanges {
-	croak "The function getRanges must be implemented in a subclass.\n";
+	$log->logconfess("The function getRanges must be implemented in a subclass.\n");
 } ## --- end sub getRanges
 
 1;

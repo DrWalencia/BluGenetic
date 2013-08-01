@@ -160,6 +160,25 @@ dies_ok { $algorithm->initialize(0) };
 
 $algorithm->initialize(20);
 
+# initialize: check that evolve dies if algorithm not initialized.
+my $algorithmFail = GABitVector->new(
+								  popSize   => 4,
+								  crossover => 0.3,
+								  mutation  => 0.4,
+								  fitness   => \&fitness,
+);
+
+dies_ok{$algorithmFail->evolve()};
+
+# initialize: check that getFittest dies if algorithm not initialized.
+dies_ok{$algorithmFail->getFittest()};
+# initialize: check that getPopulation dies if algorithm not initialized.
+dies_ok{$algorithmFail->getPopulation()};
+# initialize: check that insertIndividual dies if algorithm not initialized.
+dies_ok{$algorithmFail->insertIndividual(undef, 2)};
+# initialize: check that deleteIndividual dies if algorithm not initialized.
+dies_ok{$algorithmFail->deleteIndividual(2)};
+
 # Population inside the algorithm is just a reference, so to play with it
 # it must be dereferenced first.
 my $populationRef11         = $algorithm->getPopulation();
