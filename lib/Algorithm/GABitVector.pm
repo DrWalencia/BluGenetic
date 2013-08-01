@@ -21,6 +21,7 @@ package GABitVector;
 
 use strict;
 use warnings;
+use diagnostics;
 use Individual;
 use Genotype::BitVector;
 use Log::Log4perl qw(get_logger);
@@ -73,6 +74,7 @@ sub new {
         mutation  => $args{mutation},
         fitness   => $args{fitness},
         terminate => $args{terminate},   # no function defined: terminate: undef
+        initialized => 0,
     };
 
     # Connect a class name with a hash is known as blessing an object
@@ -144,6 +146,9 @@ sub initialize {
         "Population of $fields{popSize} individuals of type BitVector
         with length $genotypeLength initialized"
     );
+    
+    # Mark the GA as initialized, so that many other methods can be used
+    $this->{initialized} = 1;
 
     return 1;
 }    ## --- end sub initialize
@@ -171,6 +176,10 @@ sub insertIndividual {
 
     # Get the arguments
     my ( $individual, $index ) = @_;
+    
+    # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
+    $log->logconfess("The algorithm has not been initialized") 
+    if ($this->{initialized} == 0);
     
     # Check if the individual is defined
     $log->logconfess("Undefined individual") if (!(defined $individual));
@@ -232,6 +241,10 @@ sub deleteIndividual {
 
     # Get the argument
     my ($index) = @_;
+    
+    # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
+    $log->logconfess("The algorithm has not been initialized") 
+    if ($this->{initialized} == 0);
 
     # Couple of cases in which the program dies horribly
     $log->logconfess("Index bigger than population size ($index)")

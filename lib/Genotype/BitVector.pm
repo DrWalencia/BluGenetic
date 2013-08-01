@@ -21,6 +21,7 @@ package BitVector;
 
 use strict;
 use warnings;
+use diagnostics;
 use Log::Log4perl qw(get_logger);
 
 # Avoid warnings regarding class method overriding

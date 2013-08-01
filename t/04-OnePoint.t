@@ -20,6 +20,7 @@
 use Test::More tests => 19;    # last test to print
 use Log::Log4perl qw(get_logger);
 use Individual;
+use diagnostics;
 use Genotype::BitVector;
 
 # Tests for checking if a certain section of code dies
@@ -38,7 +39,7 @@ log4perl.appender.LOGFILE.filename=./BluGenetic.log
 log4perl.appender.LOGFILE.mode=write
 
 log4perl.appender.LOGFILE.layout=PatternLayout
-log4perl.appender.LOGFILE.layout.ConversionPattern=[%r] %F %L %c - %m%n
+log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %p - %m%n
 
 );
 

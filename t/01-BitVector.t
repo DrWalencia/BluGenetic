@@ -18,6 +18,7 @@
 use Test::More tests => 19;    # last test to print
 use Log::Log4perl qw(get_logger);
 use Genotype::BitVector;
+use diagnostics;
 
 # Tests for checking if a certain section of code dies
 use Test::Exception;
@@ -27,9 +28,9 @@ use constant DUMMYVECTORSIZE => 6;
 my $conf = q(
 
 ############################################################
-# A simple root logger with a Log::Log4perl::Appender::File 
-# file appender in Perl.
-############################################################
+## A simple root logger with a Log::Log4perl::Appender::File 
+## file appender in Perl.
+#############################################################
 log4perl.rootLogger=DEBUG, LOGFILE
 
 log4perl.appender.LOGFILE=Log::Log4perl::Appender::File
@@ -37,7 +38,7 @@ log4perl.appender.LOGFILE.filename=./BluGenetic.log
 log4perl.appender.LOGFILE.mode=write
 
 log4perl.appender.LOGFILE.layout=PatternLayout
-log4perl.appender.LOGFILE.layout.ConversionPattern=[%r] %F %L %c - %m%n
+log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %p - %m%n
 
 );
 

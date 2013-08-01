@@ -22,6 +22,7 @@ package BluGenetic;
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
+use diagnostics;
 use Log::Log4perl qw(get_logger);
 use Algorithm::GABitVector;
 use Algorithm::GAListVector;
@@ -54,17 +55,17 @@ sub new {
 	my $conf = q(
 
 	############################################################
-	# A simple root logger with a Log::Log4perl::Appender::File 
-	# file appender in Perl.
-	############################################################
+	## A simple root logger with a Log::Log4perl::Appender::File 
+	## file appender in Perl.
+	#############################################################
 	log4perl.rootLogger=DEBUG, LOGFILE
-
+	
 	log4perl.appender.LOGFILE=Log::Log4perl::Appender::File
 	log4perl.appender.LOGFILE.filename=./BluGenetic.log
 	log4perl.appender.LOGFILE.mode=write
-
+	
 	log4perl.appender.LOGFILE.layout=PatternLayout
-	log4perl.appender.LOGFILE.layout.ConversionPattern=[%r] %F %L %c - %m%n
+	log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %p - %m%n
 
 	);
 

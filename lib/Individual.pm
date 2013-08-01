@@ -21,6 +21,7 @@ package Individual;
 use strict;
 use warnings;
 use Log::Log4perl qw(get_logger);
+use diagnostics;
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.

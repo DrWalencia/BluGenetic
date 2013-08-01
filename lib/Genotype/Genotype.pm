@@ -22,6 +22,7 @@ package Genotype;
 
 use strict;
 use warnings;
+use diagnostics;
 use Carp;
 
 #===  CLASS METHOD  ============================================================

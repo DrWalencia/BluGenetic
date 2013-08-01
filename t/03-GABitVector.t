@@ -21,6 +21,8 @@ use Log::Log4perl qw(get_logger);
 use Individual;
 use Algorithm::GABitVector;
 use diagnostics;
+use strict;
+use warnings;
 
 # Tests for checking if a certain section of code dies
 use Test::Exception;
@@ -68,7 +70,6 @@ lives_ok {
 									  crossover => 0.3,
 									  mutation  => 0.4,
 									  fitness   => \&fitness,
-									  terminate => \&terminate,
 	);
 };
 dies_ok {
@@ -77,7 +78,6 @@ dies_ok {
 									   crossover => 0.3,
 									   mutation  => 0.4,
 									   fitness   => \&fitness,
-									   terminate => \&terminate,
 	);
 };
 dies_ok {
@@ -86,7 +86,6 @@ dies_ok {
 									   crossover => 0.3,
 									   mutation  => 0.4,
 									   fitness   => \&fitness,
-									   terminate => \&terminate,
 	);
 };
 
@@ -98,7 +97,6 @@ dies_ok {
 									   crossover => -0.1,
 									   mutation  => 0.4,
 									   fitness   => \&fitness,
-									   terminate => \&terminate,
 	);
 };
 dies_ok {
@@ -107,7 +105,6 @@ dies_ok {
 									   crossover => 1.1,
 									   mutation  => 0.4,
 									   fitness   => \&fitness,
-									   terminate => \&terminate,
 	);
 };
 
@@ -119,7 +116,6 @@ dies_ok {
 									   crossover => 0.3,
 									   mutation  => -0.4,
 									   fitness   => \&fitness,
-									   terminate => \&terminate,
 	);
 };
 dies_ok {
@@ -128,7 +124,6 @@ dies_ok {
 									   crossover => 0.5,
 									   mutation  => 1.4,
 									   fitness   => \&fitness,
-									   terminate => \&terminate,
 	);
 };
 
@@ -140,7 +135,6 @@ dies_ok {
 									   crossover => 0.5,
 									   mutation  => 0.3,
 									   fitness   => undef,
-									   terminate => \&terminate,
 	);
 };
 lives_ok {
@@ -149,7 +143,6 @@ lives_ok {
 									   crossover => 0.5,
 									   mutation  => 1,
 									   fitness   => \&fitness,
-									   terminate => undef,
 	);
 };
 
@@ -160,12 +153,22 @@ my $algorithm = GABitVector->new(
 								  crossover => 0.3,
 								  mutation  => 0.4,
 								  fitness   => \&fitness,
-								  terminate => \&terminate,
 );
+
 dies_ok { $algorithm->initialize() };
 dies_ok { $algorithm->initialize(0) };
+
 $algorithm->initialize(20);
-ok( $algorithm->getGenotypeLength() == 20 );
+
+# Population inside the algorithm is just a reference, so to play with it
+# it must be dereferenced first.
+my $populationRef11         = $algorithm->getPopulation();
+my @population11 = @$populationRef11;
+my $individual11 = $population11[0];
+
+my $genotype1 = $individual11->getGenotype();
+
+ok( $genotype1->getLength() == 20 );
 
 # insertIndividual: check that the individual to be inserted is not undef.
 # Die otherwise.
@@ -176,7 +179,8 @@ dies_ok { $algorithm->insertIndividual( undef, 4 ) };
 # WARNING: INDIVIDUAL RECEIVES ARGUMENTS INSIDE OF A HASH
 my $ind =
   Individual->new(
-				genotype => BitVector->new( $algorithm->getGenotypeLength() ) );
+				genotype => BitVector->new( $genotype1->getLength()) );
+				
 dies_ok { $algorithm->insertIndividual( $ind, -1 ) };
 dies_ok { $algorithm->insertIndividual( $ind, 20 ) };
 
@@ -192,14 +196,17 @@ my $algorithm2 = GABitVector->new(
 								   crossover => 0.3,
 								   mutation  => 0.4,
 								   fitness   => \&fitness,
-								   terminate => \&terminate,
 );
 
 $algorithm2->initialize(3);
 $algorithm2->insertIndividual( $ind2, 0 );
 
-my $population         = $algorithm2->getPopulation();
-my $individual         = @$population[0];
+# Population inside the algorithm is just a reference, so to play with it
+# it must be dereferenced first.
+my $populationRef         = $algorithm2->getPopulation();
+my @population = @$populationRef;
+
+my $individual         = $population[0];
 my $genotypeIndividual = $individual->getGenotype();
 
 my $gen0               = $genotypeIndividual->getGen(0);
@@ -218,7 +225,6 @@ my $algorithm3 = GABitVector->new(
 								   crossover => 0.3,
 								   mutation  => 0.4,
 								   fitness   => \&fitness,
-								   terminate => \&terminate,
 );
 $algorithm->initialize(5);
 dies_ok { $algorithm->insertIndividual( $ind3, 0 ) };
@@ -235,8 +241,12 @@ dies_ok { $algorithm2->deleteIndividual(7) };
 # OF BINARY RANDOM VALUES.
 #$algorithm2->deleteIndividual(0);
 #
-#my $population1 = $algorithm2->getPopulation();
-#my $individual1 = @$population1[0];
+## Population inside the algorithm is just a reference, so to play with it
+## it must be dereferenced first.
+#my $populationRef1 = $algorithm2->getPopulation();
+#my @population1 = @$populationRef1;
+#
+#my $individual1 = $population1[0];
 #
 #my $genotypeIndividual1 = $individual1->getGenotype();
 #my $gen01 = $genotypeIndividual1->getGen(0);
@@ -255,7 +265,6 @@ my $algorithm4 = GABitVector->new(
 								   crossover => 0.3,
 								   mutation  => 0.4,
 								   fitness   => \&fitness,
-								   terminate => \&terminate,
 );
 ok( $algorithm4->getPopSize() == 54 );
 
@@ -266,7 +275,6 @@ my $algorithm5 = GABitVector->new(
 								   crossover => 0.3,
 								   mutation  => 0.4,
 								   fitness   => \&fitness,
-								   terminate => \&terminate,
 );
 ok( $algorithm5->getCrossChance() == 0.3 );
 
@@ -277,7 +285,6 @@ my $algorithm6 = GABitVector->new(
 								   crossover => 0.3,
 								   mutation  => 0.4,
 								   fitness   => \&fitness,
-								   terminate => \&terminate,
 );
 ok( $algorithm6->getMutChance() == 0.4 );
 
@@ -299,14 +306,17 @@ my $algorithm7 = GABitVector->new(
 								   crossover => 0.3,
 								   mutation  => 0.4,
 								   fitness   => \&fitness,
-								   terminate => \&terminate,
 );
 
 $algorithm7->initialize(3);
 $algorithm7->insertIndividual($ind5,0);
 
-my $population2         = $algorithm7->getPopulation();
-my $individual2         = @$population2[0];
+# Population inside the algorithm is just a reference, so to play with it
+# it must be dereferenced first.
+my $populationRef2        = $algorithm7->getPopulation();
+my @population2 = @$populationRef2;
+
+my $individual2         = $population2[0];
 
 ok ( $individual2->getScore() == 2 );
 
@@ -318,7 +328,6 @@ dies_ok{my $algorithm7 = GABitVector->new(
 								   popSize   => 12,
 								   crossover => 0.3,
 								   mutation  => 0.4,
-								   terminate => \&terminate,
 )};
 
 # sortPopulation: generate population and sort it. Check results.
@@ -328,7 +337,6 @@ my $algorithm8 = GABitVector->new(
 								   crossover => 0.3,
 								   mutation  => 0.4,
 								   fitness   => \&fitness,
-								   terminate => \&terminate,
 );
 
 $algorithm8->initialize(30);
@@ -350,10 +358,12 @@ for ( $i = 0; $i < $algorithm8->{popSize} - 1; $i++ ){
 
 my @fittest =  $algorithm8->getFittest();
 
-# TODO EXAMPLE OF WHAT SHOULD BE DONE EVERY TIME POPULATION IS GOT
-my $refPopulation = $algorithm8->getPopulation();
-my @population = @$refPopulation;
-my $byHandFittest = $population[$algorithm8->{popSize} -1];
+# Population inside the algorithm is just a reference, so to play with it
+# it must be dereferenced first.
+my $refPopulation3 = $algorithm8->getPopulation();
+my @population4 = @$refPopulation3;
+
+my $byHandFittest = $population4[$algorithm8->{popSize} -1];
 ok ( $byHandFittest->getScore() == $fittest[0]->getScore() );
 
 # getFittest: Pass a parameter between limits. Very basic, just checking

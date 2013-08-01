@@ -20,6 +20,7 @@
 package GeneticAlgorithm;
 use strict;
 use warnings;
+use diagnostics;
 use Log::Log4perl qw(get_logger);
 
 # Get a logger from the singleton
@@ -31,6 +32,7 @@ use fields 'population',    # ARRAY of individuals comprising the population.
   'genotypeLength',         # INT the length of the Genotype.
   'mutation',               # FLOAT chance of mutation 0..1
   'crossover',              # FLOAT chance of crossover 0..1
+  'initialized',			# INT 1 if initialized, 0 otherwise
   'popSize',                # INT size of the population
   'currentGeneration',      # INT indicates the current generation
   'fitness',                # REFERENCE to the fitness function passed as
@@ -53,7 +55,7 @@ use fields 'population',    # ARRAY of individuals comprising the population.
 #  DESCRIPTION: The first function to sort the population by the score. Side by
 #  				side with _place() implement the quicksort algorithm.
 #       THROWS: no exceptions
-#     COMMENTS: PRIVATE METHOD
+#     COMMENTS: PRIVATE METHOD: NO $THIS CONTAINING FIELDS AS A PARAMETER
 #     SEE ALSO: n/a
 #===============================================================================
 sub _quickSort {
@@ -66,8 +68,6 @@ sub _quickSort {
         $this = _quickSort( $j,          $pivot - 1, $this);
         $this = _quickSort( $pivot + 1, $i, $this);
     }	
-
-    my $temp = $this->{population};
 
     return $this;
 }    ## --- end sub _quickSort
@@ -83,7 +83,7 @@ sub _quickSort {
 #      RETURNS: The pivot
 #  DESCRIPTION: The second part of the quicksort algorithm.
 #       THROWS: no exceptions
-#     COMMENTS: PRIVATE METHOD
+#     COMMENTS: PRIVATE METHOD. NO $THIS CONTAINING FIELDS AS A PARAMETER
 #     SEE ALSO: n/a
 #===============================================================================
 sub _place {
@@ -93,13 +93,14 @@ sub _place {
     
     # Make a copy of the Algorithm's population
     # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
-    my $pop = $this->{population};
-    my @population = @$pop;
+    my $populationRef = $this->{population};
+    my @population = @$populationRef;
     
     my $i;
     my $pivot;
     my $pivot_value;
     my $individualTemp;
+    
     $pivot       = $k;
     $pivot_value = $population[$pivot]->getScore();
     for ( $i = $k+1 ; $i <= $j ; $i++ ) {
@@ -115,6 +116,7 @@ sub _place {
     $population[$k]      = $population[$pivot];
     $population[$pivot] = $individualTemp;
 
+	# Assign to the field population a REFERENCE to the pop just modified
     $this->{population} = \@population;
     
     return ($pivot, $this);
@@ -140,6 +142,10 @@ sub evolve {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my ( $this, $selectionStr, $crossoverStr, $numGenerations ) = @_;
+    
+    # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
+    $log->logconfess("The algorithm has not been initialized") 
+    if ($this->{initialized} == 0);
 
     # Die painfully if any of the strategies are undef
     $log->logconfess("Selection strategy undefined.")
@@ -169,8 +175,8 @@ sub evolve {
         $this->{currentGeneration}++;
 
         # Apply SELECTION STRATEGY...
-        $this->{population} =
-          $selectionStr->performSelection( $this->{population} );
+        # TODO WHAT DOES SELECTIONSTR RETURN?? IT MUST BE A REFERENCE...
+        #$this->{population} =$selectionStr->performSelection( $this->{population} );
 
         # Fill the recombination and no recombination sets
         # It's VITAL to empty them on each iteration
@@ -262,7 +268,9 @@ sub evolve {
 
         # Erase population and assign the result of the evolutive process
         undef $this->{population};
-        $this->{population} = @noRecombinationSet;
+        
+        # Always insert in the population a REFERENCE
+        $this->{population} = \@noRecombinationSet;
 
         # If the terminate criterion is met, iteration finishes.
         if ( _terminateFunc() ) {
@@ -289,6 +297,10 @@ sub getFittest {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my ( $this, $nIndWanted ) = @_;
+    
+    # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
+    $log->logconfess("The algorithm has not been initialized") 
+    if ($this->{initialized} == 0);
 
     # Before taking any decisions, sort the population
     $this->sortPopulation();
@@ -338,6 +350,11 @@ sub getPopulation {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this = shift;
+    
+    # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
+    $log->logconfess("The algorithm has not been initialized") 
+    if ($this->{initialized} == 0);
+    
     $log->info("Population REFERENCE returned.");
     return $this->{population};
 }    ## --- end sub getPopulation
@@ -398,25 +415,6 @@ sub getMutChance{
     $log->info("Mutation chance returned: $mutChance");
     return $mutChance;
 }    ## --- end sub getMutChance 
-
-#===  CLASS METHOD  ============================================================
-#        CLASS: GeneticAlgorithm
-#       METHOD: getGenotypeLength 
-#   PARAMETERS: None.
-#      RETURNS: FLOAT the length of the genotype of the individuals in the pop
-#  DESCRIPTION: getter for the genotypeLength
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
-#===============================================================================
-sub getGenotypeLength{
-
-    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
-    my $this      = shift;
-    my $genotypeLength = $this->{genotypeLength};
-    $log->info("Genotype length returned: $genotypeLength");
-    return $genotypeLength;
-}    ## --- end sub getGenotypeLength 
 
 
 #===  CLASS METHOD  ============================================================
