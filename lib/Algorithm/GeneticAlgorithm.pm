@@ -22,6 +22,12 @@ use strict;
 use warnings;
 use diagnostics;
 use Log::Log4perl qw(get_logger);
+use Selection::Random;
+use Selection::Roulette;
+use Selection::Tournament;
+use Crossover::OnePoint;
+use Crossover::TwoPoint;
+use Crossover::Uniform;
 
 # Get a logger from the singleton
 our $log = Log::Log4perl::get_logger("GeneticAlgorithm");
@@ -122,164 +128,7 @@ sub _place {
     return ($pivot, $this);
 }    ## --- end sub _place
 
-#===  CLASS METHOD  ============================================================
-#        CLASS: GeneticAlgorithm
-#       METHOD: evolve
-#
-#   PARAMETERS: selectionStr	-> Selection strategy to apply to the pop.
-#				crossoverStr	-> Crossover strategy to apply to the pop.
-#				numGenerations -> maximum number of generations.
-#           	DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
-#
-#      RETURNS: NOTHING
-#  DESCRIPTION: Makes the population evolve until the terminate() function
-# 				returns 1 or the limit of generations is reached.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
-#===============================================================================
-sub evolve {
 
-    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
-    my ( $this, $selectionStr, $crossoverStr, $numGenerations ) = @_;
-    
-    # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
-    $log->logconfess("The algorithm has not been initialized") 
-    if ($this->{initialized} == 0);
-
-    # Die painfully if any of the strategies are undef
-    $log->logconfess("Selection strategy undefined.")
-      if ( !( defined $selectionStr ) );
-    $log->logconfess("Crossover strategy undefined.")
-      if ( !( defined $selectionStr ) );
-
-    # If $numGenerations is undef, default it to 1
-    if ( !( defined $numGenerations ) ) {
-        $numGenerations = 1;
-    }
-
-    # Initialize the current generation
-    $this->{currentGeneration} = 0;
-    my @recombinationSet;
-    my @noRecombinationSet;
-    my @crossoverOffspring;
-    my $position1;
-    my $position2;
-    my $score;
-    my $i;
-
-    # Unless interrupted by terminateFunc, run $numGenerations times
-    for ( $i = 0 ; $i < $numGenerations ; $i++ ) {
-
-        # Generation i complete...
-        $this->{currentGeneration}++;
-
-        # Apply SELECTION STRATEGY...
-        
-        # TODO WHAT DOES SELECTIONSTR RETURN?? IT MUST BE A REFERENCE...
-        #$this->{population} =$selectionStr->performSelection( $this->{population} );
-
-        # Fill the recombination and no recombination sets
-        # It's VITAL to empty them on each iteration
-        undef @recombinationSet;
-        undef @noRecombinationSet;
-        my $j;
-
-        # If a random number below crossover*100 is produced, then
-        # the individual given by j goes to the recombination set.
-        # Otherwise, it goes to the no recombination set.
-        for ( $j = 0 ; $j < $this->{popSize} ; $j++ ) {
-            if ( int( rand(101) ) <= ( $this->{crossover} * 100 ) ) {
-                push @recombinationSet, $this->{population}[$j];
-            }
-            else {
-                push @noRecombinationSet, $this->{population}[$j];
-            }
-        }
-
-        # If the recombination set has an odd number of individuals
-        # take one from the no recombination set randomly and insert
-        # it in the recombination set.
-        # But before, make sure that there's something to do...
-        if ( ( scalar @recombinationSet ) != 0 ) {
-
-            # Solve the "cardinality issue"
-            if ( ( ( scalar @recombinationSet ) % 2 ) != 0 ) {
-                my $randomPos = int( rand( scalar @noRecombinationSet ) );
-                push @recombinationSet, $noRecombinationSet[$randomPos];
-                unshift @noRecombinationSet, $noRecombinationSet[$randomPos];
-            }
-
-            # And let the individuals mate...
-            do {
-                # Get a couple of random elements from the recombination set
-                do {
-                    $position1 = int( rand( scalar @recombinationSet ) );
-                    $position2 = int( rand( scalar @recombinationSet ) );
-                } while ( $position1 == $position2 );
-
-                # Mate them and make sure TWO elements are returned
-                @crossoverOffspring = $crossoverStr->crossIndividuals(
-                    $recombinationSet[$position1],
-                    $recombinationSet[$position2]
-                );
-                my $nIndCrossover = ( scalar @crossoverOffspring );
-                $log->logconfess(
-                    "Wrong number of individuals as a product of a
-				crossover operation: $nIndCrossover"
-                );
-
-                # Calculate the score for the NEW child one
-                my $individualTemp1 = $crossoverOffspring[0];
-                $score = fitnessFunc($individualTemp1);
-                $individualTemp1->setScore($score);
-
-                # Calculate the score for the NEW child two
-                my $individualTemp2 = $crossoverOffspring[1];
-                $score = fitnessFunc($individualTemp2);
-                $individualTemp1->setScore($score);
-
-                # And put them in the no recombination set
-                push @noRecombinationSet, $individualTemp1;
-                push @noRecombinationSet, $individualTemp2;
-
-                # Erase the elements who just mated from the recombination set
-                unshift @recombinationSet, $recombinationSet[$position1];
-                unshift @recombinationSet, $recombinationSet[$position2];
-            } while ( ( scalar @recombinationSet ) != 0 );
-        }
-
-        # MUTATION stage
-        for ( $j = 0 ; $j < ( scalar @noRecombinationSet ) ; $j++ ) {
-
-            # If a random number below mutation*100 is produced
-            # then perform a mutation on the individual whose
-            # index corresponds to j, otherwise do nothing.
-            if ( int( rand(101) ) <= ( $this->{mutation} * 100 ) ) {
-
-                # Apply mutation on the individual and calculate new score
-                my $position     = int( rand( $this->{lengthGenotype} ) );
-                my $genotypeTemp = $noRecombinationSet[$j]->getGenotype();
-                $genotypeTemp->changeGen($position);
-                $noRecombinationSet[$j]->setGenotype($genotypeTemp);
-                $score = fitnessFunc( $noRecombinationSet[$j] );
-                $noRecombinationSet[$j]->setScore($score);
-            }
-        }
-
-        # Erase population and assign the result of the evolutive process
-        undef $this->{population};
-        
-        # Always insert in the population a REFERENCE
-        $this->{population} = \@noRecombinationSet;
-
-        # If the terminate criterion is met, iteration finishes.
-        if ( _terminateFunc() ) {
-            return;
-        }
-    }
-    return;
-}    ## --- end sub evolve
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
@@ -308,12 +157,16 @@ sub getFittest {
 
     # Individual(s) to be returned at the end
     my @fittest;
+    
+    # Dereference population to play with its elements
+    my $popRef = $this->{population};
+    my @population = @$popRef;
 
     # If no parameters are found, just push the fittest
     # Otherwise, select as many elements as needed and push them
     # CAREFUL!! THE POPULATION WILL BE SORTED BY ASCENDING FITNESS VALUE
     if ( !( defined $nIndWanted ) ) {
-        push @fittest, $this->{population}[$this->{popSize}-1];
+        push @fittest, $population[$this->{popSize}-1];
     }
     else {
         # A couple of situations in which the program dies painfully
@@ -328,7 +181,7 @@ sub getFittest {
 
         # Take as many fittest individuals as needed
         for ( $i = 0 ; $i < $nIndWanted ; $i++ ) {
-            push @fittest, $this->{population}[$this->{popSize} - $i -1];
+            push @fittest, $population[$this->{popSize} - $i -1];
         }
     }
     my $individualsReturned = scalar @fittest;

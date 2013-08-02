@@ -17,7 +17,7 @@
 #     REVISION: ---
 #===============================================================================
 
-use Test::More tests => 19;    # last test to print
+use Test::More tests => 40;    # last test to print
 use Log::Log4perl qw(get_logger);
 use Individual;
 use diagnostics;

@@ -16,7 +16,7 @@
 #      CREATED: 07/29/2013 07:57:29 PM
 #     REVISION: ---
 #===============================================================================
-use Test::More tests => 19;    # last test to print
+use Test::More tests => 3;    # last test to print
 use Log::Log4perl qw(get_logger);
 use Individual;
 use diagnostics;
@@ -44,24 +44,26 @@ log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %p - %m%n
 ## Initialize logging behavior
 Log::Log4perl->init( \$conf );
 
-# Constructor: missing argument. Dies painfully
+my $selection2 = Tournament->new();
 
-	dies_ok { my $selection = Tournament->new() };
+# battlefieldSize: missing argument. Dies painfully
 
-# Constructor: number of individuals zero. Dies painfully
+	dies_ok { $selection2->battlefieldSize() };
 
-	dies_ok { my $selection = Tournament->new(0) };
+# battlefieldSize: number of individuals zero. Dies painfully
 
-# Constructor: number of individuals negative. Dies painfully
+	dies_ok { $selection2->battlefieldSize(0) };
 
-	dies_ok { my $selection = Tournament->new(-7) };
+# battlefieldSize: number of individuals negative. Dies painfully
+
+	dies_ok { $selection2->battlefieldSize(-4) };
 
 # Population with two elements: one with score 1 and the other with score 0
 # The returned population must be filled only with copies of the first element
 	
 	# Create population and roulette
 	my @pop;
-	my $selection = Tournament->new(2);
+	my $selection = Tournament->new();
 	
 	
 	# Fill the population with two elements
@@ -104,10 +106,10 @@ Log::Log4perl->init( \$conf );
 	# TEST COMMENTED OBVIOUSLY BECAUSE THE RANDOM NATURE OF ITS RESULTS.
 	# JUST USED FOR DEBUGGING PURPOSES.
 	
-#	my @selectedPop = $selection->performSelection(@pop);
-#
-#	# To prove it we check every single gen and score of every single 
-#	# individual with the individual with position 0 in pop
+	my @selectedPop = $selection->performSelection(@pop);
+
+	# To prove it we check every single gen and score of every single 
+	# individual with the individual with position 0 in pop
 #	for ( my $i = 0; $i < @selectedPop; $i++ ){
 #
 #		my $ind1 = $selectedPop[$i];

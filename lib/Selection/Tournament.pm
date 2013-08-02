@@ -33,8 +33,6 @@ our $log = Log::Log4perl::get_logger("Tournament");
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
 
-
-
 # Tournament inherits from Selection::SelectionStrategy
 use Selection::SelectionStrategy;
 use base qw(SelectionStrategy);
@@ -43,6 +41,35 @@ use base qw(SelectionStrategy);
 # the program will horribly crash.
 use fields 'numberOfIndividuals'; # Number of individuals that are going to fight
 								  # till death.
+								  
+#===  CLASS METHOD  ============================================================
+#        CLASS: Tournament
+#       METHOD: battlefieldSize
+#   PARAMETERS: numOfInd -> the amount of individuals that will fight
+#   			till death.
+#      RETURNS: A reference to the instance just created. 
+#  DESCRIPTION:	Creates a newly allocated Tournament selection strategy.
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub battlefieldSize {
+	
+	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH 
+	my ($this, $numOfInd) = @_;
+	
+	# If numOfInd is undefined, die painfully
+	$log->logconfess("Undefined amount of individuals")
+	if (!(defined $numOfInd));
+
+	# If the number of individuals is 0 or negative, die painfully.
+	$log->logconfess("Incorrect number of individuals for Tournament: $numOfInd")
+	if ($numOfInd <= 0);
+	
+	$this->{numberOfIndividuals} = $numOfInd;
+	
+	return;
+}
 
 
 #===  CLASS METHOD  ============================================================
@@ -65,17 +92,11 @@ sub new {
 	
 	# Take the argument (number of individuals on each round)
 	my $numOfInd = shift;
-	
-	# If numOfInd is undefined, die painfully
-	$log->logconfess("Undefined amount of individuals")
-	if (!(defined $numOfInd));
-	
-	# If the number of individuals is 0 or negative, die painfully.
-	$log->logconfess("Incorrect number of individuals for Tournament: $numOfInd")
-	if ($numOfInd <= 0);
 
 	# Anonymous hash to store instance variables (AKA FIELDS)
-	my $this = { numberOfIndividuals => $numOfInd };
+	# Set default value for numberOfIndividuals. If wanted to be
+	# changed, use the battlefieldSize method.
+	my $this = { numberOfIndividuals => 2};
 
 	# Connect class name with hash is known as blessing an object
 	bless $this, $class;

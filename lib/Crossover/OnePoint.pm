@@ -55,6 +55,8 @@ sub new {
 
 	# Anonymous hash to store instance variables (AKA FIELDS)
 	my $this = {};
+	
+	$this->{cutPointSet} = 0;
 
 	# Connect a class name with a hash is known as blessing an object
 	bless $this, $class;
