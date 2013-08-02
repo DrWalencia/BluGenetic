@@ -96,7 +96,10 @@ Log::Log4perl->init( \$conf );
 
 	# If an element have 100% chance of being selected then the result of 
 	# the selection will be a list of Individuals with the same score and 
-	# genotype.
+	# genotype. THIS IS NOT TRUE, SINCE THE SELECTION HERE IS PERFORMED
+	# WITH REPLACEMENT, NOTHING FORBIDS TO CHOOSE AN INDIVIDUAL WITH A
+	# GIVEN SCORE, AND THEN CHOOSE IT AGAIN IMMEDIATELY (obviously this is
+	# going to be very unlikely, especially in big populations)
 	
 	# TEST COMMENTED OBVIOUSLY BECAUSE THE RANDOM NATURE OF ITS RESULTS.
 	# JUST USED FOR DEBUGGING PURPOSES.
