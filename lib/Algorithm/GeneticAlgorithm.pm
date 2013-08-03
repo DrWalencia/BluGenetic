@@ -403,36 +403,4 @@ sub fitnessFunc {
     return $score;
 }    ## --- end sub fitnessFunc
 
-#===  CLASS METHOD  ============================================================
-#        CLASS: GeneticAlgorithm
-#       METHOD: _terminateFunc
-#   PARAMETERS: None.
-#      RETURNS: 1 if the custom condition defined here is satisfied, 0
-#      			otherwise.
-#  DESCRIPTION: Allows for a custom termination routine to be defined.
-#       THROWS: no exceptions
-#     COMMENTS:	DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
-#     			TILL THE MAXIMUM NUMBER OF GENERATIONS. THIS IS A PRIVATE
-#				METHOD.
-#     SEE ALSO: n/a
-#===============================================================================
-sub _terminateFunc {
-
-    $log->info("Terminate function called.");
-
-    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
-    my $this = shift;
-    my $result;
-
-    # If there's a terminate function, use it and get its result
-    if ( defined $this->{terminate} ) {
-        $result = $this->{terminate}();
-        $log->info("Terminate function defined. Result: $result");
-    }
-    else {
-        $result = 0;
-        $log->info("Terminate function undefined. Result: $result");
-    }
-    return $result;
-}    ## --- end sub terminateFunc
 1;

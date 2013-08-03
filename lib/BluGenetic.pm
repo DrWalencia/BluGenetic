@@ -4,8 +4,8 @@
 #         FILE: BluGenetic.pm
 #
 #  DESCRIPTION:	STATIC class that works as a Factory, returning one of the
-#  				types of genetic algorithms according to the arguments passed
-#  				as parameters to its only method.
+#  		types of genetic algorithms according to the arguments passed
+#  		as parameters to its only method.
 #
 #        FILES: ---
 #         BUGS: ---
@@ -35,13 +35,15 @@ use constant LIMITARGS => 6;
 #        CLASS: BluGenetic
 #       METHOD: new
 #
-#   PARAMETERS: popSize 	-> INTEGER size of the population
-#   			crossover	-> FLOAT chance of crossover (default 0.95)
-#   			mutation 	-> FLOAT chance of mutation (default 0.05)
-#   			type		-> STRING type of data e.g: 'bitvector'
-#   			fitness		-> FUNCTION POINTER custom fitness function (MUST)
-#   			terminate	-> FUNCTION POINTER custom terminate function
-#   						   (OPTIONAL)
+#   PARAMETERS: popSize	-> INTEGER size of the population
+#   		crossover-> FLOAT chance of crossover (default 0.95)
+#   		mutation -> FLOAT chance of mutation (default 0.05)
+#		TODO IF CROSSOVER AND MUTATION HAVE DEFAULT VALUES, THEN THEY
+#		ARE OPTIONAL. MUST CHANGE THE NEW() METHOD ACCORDINGLY.
+#   		type	-> STRING type of data e.g: 'bitvector'
+#   		fitness	-> FUNCTION POINTER custom fitness function (MUST)
+#   		terminate-> FUNCTION POINTER custom terminate function
+#   			 (OPTIONAL)
 #
 #      RETURNS: A reference to the proper GA.
 #  DESCRIPTION:	Returns one of the three types of Genetic Algorithm according

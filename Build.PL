@@ -16,6 +16,8 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
     },
     requires => {
+    	'Log::Log4perl'	    => 1.42,
+    	'Test::Exception'   => 0.32,
         #'ABC'              => 1.6,
         #'Foo::Bar::Module' => 5.0401,
     },

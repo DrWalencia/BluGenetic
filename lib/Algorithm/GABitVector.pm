@@ -254,7 +254,6 @@ sub evolve {
         my $popRef = $this->{population};
         my @population = @$popRef;
         
-        
         @population = $selectionStr->performSelection(@population);
 
         # Fill the recombination and no recombination sets
@@ -286,7 +285,6 @@ sub evolve {
                 my $randomPos = int( rand( scalar @noRecombinationSet ) );
                 push @recombinationSet, $noRecombinationSet[$randomPos];
                 splice (@noRecombinationSet, $randomPos, 1);
-                #delete $noRecombinationSet[$randomPos];
             }
 
             # And let the individuals mate...
@@ -324,7 +322,7 @@ sub evolve {
                 # Calculate the score for the NEW child two
                 my $individualTemp2 = $crossoverOffspring[1];
                 $score = $this->fitnessFunc($individualTemp2);
-                $individualTemp1->setScore($score);
+                $individualTemp2->setScore($score);
 
                 # And put them in the no recombination set
                 push @noRecombinationSet, $individualTemp1;
@@ -357,34 +355,48 @@ sub evolve {
         # THERE'S SOMETHING WEIRD WITH THE SCORE CALCULATION. CHECK LOGS
      
 
-#        # MUTATION stage
-#        for ( $j = 0 ; $j < ( @noRecombinationSet ) ; $j++ ) {
-#
-#            # If a random number below mutation*100 is produced
-#            # then perform a mutation on the individual whose
-#            # index corresponds to j, otherwise do nothing.
-#            
-#            my $a = int ( rand (101));
-#            print "$a\n";
-#            
-#            if ( $a  < ( $this->{mutation} * 100 ) ) {
-#				print "ENTRÉ";
-#                # Apply mutation on the individual and calculate new score
-#                my $position     = int( rand( $population[0]->getGenotype()->getLength() ) );
-#                my $genotypeTemp = $noRecombinationSet[$j]->getGenotype();
-#                $genotypeTemp->changeGen($position);
-#                $noRecombinationSet[$j]->setGenotype($genotypeTemp);
-#                $score = $this->fitnessFunc( $noRecombinationSet[$j] );
-#                $noRecombinationSet[$j]->setScore($score);
-#            }
-#        }
+        # MUTATION stage
+
+        $log->info("MUTATION STAGE STARTED");
+        
+        for ( $j = 0 ; $j < ( @noRecombinationSet ) ; $j++ ) {
+
+            # If a random number below mutation*100 is produced
+            # then perform a mutation on the individual whose
+            # index corresponds to j, otherwise do nothing.
+            
+            if ( int( rand(101) ) < ( $this->{mutation} * 100 ) ) {
+
+                # Apply mutation on the individual and calculate new score
+                my $position     = int( rand( $population[0]->getGenotype()->getLength() ) );
+
+                $log->info("Position to mute: $position \n");
+
+                my $genotypeTemp = $noRecombinationSet[$j]->getGenotype();
+
+                my $c = $genotypeTemp->{genotype};
+                $log->info("Genotype before change: (",@$c,") Score: ", $noRecombinationSet[$j]->getScore(), "\n");
+
+                $genotypeTemp->changeGen($position);
+                $noRecombinationSet[$j]->setGenotype($genotypeTemp);
+                $score = $this->fitnessFunc( $noRecombinationSet[$j] );
+                $noRecombinationSet[$j]->setScore($score);
+
+                my $genotypeTemp2 = $noRecombinationSet[$j]->getGenotype();
+                my $e = $genotypeTemp2->{genotype};
+                $log->info("Genotype after change: (", @$e, ") Score: ", $noRecombinationSet[$j]->getScore(),"\n"); 
+
+            }
+        }
+
+        $log->info("MUTATION STAGE FINISHED");
 
         
         # Always insert in the population a REFERENCE
         $this->{population} = \@noRecombinationSet;
 
         # If the terminate criterion is met, iteration finishes.
-        if ( $this->_terminateFunc() ) {
+        if ( _terminateFunc($this) ) {
             return;
         }
     }
@@ -513,5 +525,38 @@ sub deleteIndividual {
     return 1;
 
 }    ## --- end sub deleteIndividual
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: GABitVector 
+#       METHOD: _terminateFunc
+#   PARAMETERS: None.
+#      RETURNS: 1 if the custom condition defined here is satisfied, 0
+#               otherwise.
+#  DESCRIPTION: Allows for a custom termination routine to be defined.
+#       THROWS: no exceptions
+#     COMMENTS: DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
+#               TILL THE MAXIMUM NUMBER OF GENERATIONS. THIS IS A PRIVATE
+#               METHOD.
+#     SEE ALSO: n/a
+#===============================================================================
+sub _terminateFunc {
+
+    $log->info("Terminate function called.");
+
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
+    my $this = shift;
+    my $result;
+
+    # If there's a terminate function, use it and get its result
+    if ( defined $this->{terminate} ) {
+        $result = $this->{terminate}($this);
+        $log->info("Terminate function defined. Result: $result");
+    }
+    else {
+        $result = 0;
+        $log->info("Terminate function undefined. Result: $result");
+    }
+    return $result;
+}    ## --- end sub terminateFunc
 
 1;
