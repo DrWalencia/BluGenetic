@@ -27,6 +27,8 @@ use Log::Log4perl qw(get_logger);
 # Get a logger from the singleton
 our $log = Log::Log4perl::get_logger("CrossoverStrategy");
 
+# Avoid warnings regarding class method overriding
+no warnings 'redefine';
 
 #===  FUNCTION  ================================================================
 #         NAME: crossIndividuals

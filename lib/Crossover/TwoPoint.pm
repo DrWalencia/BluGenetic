@@ -60,6 +60,9 @@ sub new {
 
 	# Connect a class name with a hash is known as blessing an object
 	bless $this, $class;
+    
+    $log->info("Newly allocated TwoPoint crossover strategy created");
+
 	return $this;
 }    ## --- end sub new
 
@@ -87,7 +90,105 @@ sub setCutPoints {
 	$this->{manualCutPoint1} = $point1;
 	$this->{manualCutPoint2} = $point2;
 	$this->{cutPointSet}     = 1;
+
+    $log->info("Cut points for crossover defined: ", $point1,", ", $point2);
+
+    return;
 }
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: TwoPoint 
+#       METHOD: _getProperGenotype 
+#   PARAMETERS: this -> The crossover strategy in which the decision of 
+#               instantiate one type of genotype or another is based on.
+#      RETURNS: An instance of the proper Genotype type (BitVector, ListVector
+#               or RangeVector)
+#  DESCRIPTION: Factory method to instantiate the proper Genotype type based
+#               on the type of genotype of the individuals passed to the 
+#               crossover strategy.
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub _getProperGenotype{
+
+    # Get the parameter (THIS IS A PRIVATE METHOD)
+    my $this = shift;
+
+    my $genotype;
+    
+    if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
+        $genotype = BitVector->new( 
+            $this->{indOne}->getGenotype()->getLength() 
+        );
+        $log->info("Factory method to get proper genotype called (BitVector)");
+    }elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
+        $genotype = RangeVector->new( 
+            $this->{indOne}->getGenotype()->getLength() 
+        );
+        $log->info("Factory method to get proper genotype called (RangeVector)");
+    }elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
+        $genotype = ListVector->new( 
+            $this->{indOne}->getGenotype()->getLength() 
+        );
+        $log->info("Factory method to get proper genotype called (ListVector)");
+    }else {
+        $log->logconfess(
+                "Trying to perform crossover on an unrecognized genotype type");
+    }
+
+    return $genotype;
+}
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: TwoPoint 
+#       METHOD: _getProperIndividual
+#   PARAMETERS: this -> The crossover strategy in which the decision of 
+#               instantiate one type of genotype or another is based on.
+#      RETURNS: An instance of the an individual with the proper genotype 
+#               type (BitVector, ListVector or RangeVector)
+#  DESCRIPTION: Factory method to instantiate the proper Genotype type based
+#               on the type of genotype of the individuals passed to the 
+#               crossover strategy.
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub _getProperIndividual{
+
+    # Get the parameter (THIS IS A PRIVATE METHOD)
+    my $this = shift;
+
+    my $individual;
+    
+    if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
+        $individual = Individual->new(
+            genotype => BitVector->new(
+                $this->{indOne}->getGenotype()->getLength() )
+        );
+        $log->info("Factory method to get proper individual called (BitVector)");
+    }elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
+        $individual = Individual->new(
+            genotype => RangeVector->new(
+                $this->{indOne}->getGenotype()->getLength() )
+        );
+        $log->info("Factory method to get proper individual called (RangeVector)");
+    }elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
+        $individual = Individual->new(
+            genotype => ListVector->new(
+                $this->{indOne}->getGenotype()->getLength() )
+        );
+        $log->info("Factory method to get proper individual called (ListVector)");
+    }else {
+        $log->logconfess(
+                "Trying to perform crossover on an unrecognized genotype type");
+    }
+
+    return $individual;
+}
+
+
+
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: TwoPoint
@@ -144,7 +245,6 @@ sub crossIndividuals {
 		# points and the indexes go from 0 to length()-1
 		$this->{cutPoint1} =
 		  int( rand( $this->{indOne}->getGenotype()->getLength() - 2 ) );
-		$this->{cutPoint2};
 
 		# In the very unlikely case that rand() generates the same
 		# index for cutPoint2...
@@ -165,32 +265,14 @@ sub crossIndividuals {
 		$this->{cutPoint1} = $this->{manualCutPoint1};
 		$this->{cutPoint2} = $this->{manualCutPoint2};
 	}
-	my $genotypeChild1;
-	my $genotypeChild2;
-	my $child1;
-	my $child2;
-	if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
 
-		# Create temporal genotypes for children...
-		$genotypeChild1 =
-		  BitVector->new( $this->{indOne}->getGenotype()->getLength() );
-		$genotypeChild2 =
-		  BitVector->new( $this->{indOne}->getGenotype()->getLength() );
-		$child1 = Individual->new( genotype =>
-				new BitVector( $this->{indOne}->getGenotype()->getLength() ), );
-		$child2 = Individual->new( genotype =>
-				new BitVector( $this->{indOne}->getGenotype()->getLength() ), );
-	}
-	elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
-		$log->logconfess("Unimplemented");
-	}
-	elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
-		$log->logconfess("Unimplemented");
-	}
-	else {
-		$log->logconfess(
-				"Trying to perform crossover on an unrecognized genotype type");
-	}
+    # Instantiate the needed genotypes...
+	my $genotypeChild1 = _getProperGenotype($this);
+	my $genotypeChild2 = _getProperGenotype($this);
+
+    # Instantiate the needed individuals...
+	my $child1 = _getProperIndividual($this);
+	my $child2 = _getProperIndividual($this);
 
 	# Child one: from 0 to cutPoint1 individual One, from cutPoint1+1
 	# to cutPoint2 individual Two and from cutPoint2+1 individual One

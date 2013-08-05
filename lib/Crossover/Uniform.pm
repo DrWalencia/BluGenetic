@@ -44,14 +44,18 @@ use fields 'indOne', 'indTwo';    # The two individuals to be mated.
 #       THROWS: no exceptions
 #===============================================================================
 sub new {
-	my $class =
-	  shift;    # Every method of a class passes first argument as class name
+
+    # Every method of a class passes first argument as class name
+	my $class = shift;
 
 	# Anonymous hash to store instance variables (AKA FIELDS)
 	my $this = {};
 
 	# Connect a class name with a hash is known as blessing an object
 	bless $this, $class;
+
+    $log->info("Newly created Uniform crossover strategy created");
+
 	return $this;
 }    ## --- end sub new
 
@@ -73,16 +77,114 @@ sub randomSel {
 
 	# Get the argument...
 	my ($position) = @_;
+
 	my $seed = int( rand(2) );
+
 	my $returnValue;
+
 	if ( $seed == 0 ) {
 		$returnValue = $this->{indOne}->getGenotype()->getGen($position);
+        $log->info("Selected bit ", $position, " from individual One");
 	}
 	else {
 		$returnValue = $this->{indTwo}->getGenotype()->getGen($position);
+        $log->info("Selected bit ", $position, " from individual Two");
 	}
 	return $returnValue;
 }
+
+
+#=== CLASS METHOD  ============================================================
+#        CLASS: Uniform
+#       METHOD: _getProperGenotype 
+#   PARAMETERS: this -> The crossover strategy in which the decision of 
+#               instantiate one type of genotype or another is based on.
+#      RETURNS: An instance of the proper Genotype type (BitVector, ListVector
+#               or RangeVector)
+#  DESCRIPTION: Factory method to instantiate the proper Genotype type based
+#               on the type of genotype of the individuals passed to the 
+#               crossover strategy.
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub _getProperGenotype{
+
+    # Get the parameter (THIS IS A PRIVATE METHOD)
+    my $this = shift;
+
+    my $genotype;
+    
+    if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
+        $genotype = BitVector->new( 
+            $this->{indOne}->getGenotype()->getLength() 
+        );
+        $log->info("Factory method to get proper genotype called (BitVector)");
+    }elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
+        $genotype = RangeVector->new( 
+            $this->{indOne}->getGenotype()->getLength() 
+        );
+        $log->info("Factory method to get proper genotype called (RangeVector)");
+    }elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
+        $genotype = ListVector->new( 
+            $this->{indOne}->getGenotype()->getLength() 
+        );
+        $log->info("Factory method to get proper genotype called (ListVector)");
+    }else {
+        $log->logconfess(
+                "Trying to perform crossover on an unrecognized genotype type");
+    }
+
+    return $genotype;
+}
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: Uniform 
+#       METHOD: _getProperIndividual
+#   PARAMETERS: this -> The crossover strategy in which the decision of 
+#               instantiate one type of genotype or another is based on.
+#      RETURNS: An instance of the an individual with the proper genotype 
+#               type (BitVector, ListVector or RangeVector)
+#  DESCRIPTION: Factory method to instantiate the proper Genotype type based
+#               on the type of genotype of the individuals passed to the 
+#               crossover strategy.
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub _getProperIndividual{
+
+    # Get the parameter (THIS IS A PRIVATE METHOD)
+    my $this = shift;
+
+    my $individual;
+    
+    if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
+        $individual = Individual->new(
+            genotype => BitVector->new(
+                $this->{indOne}->getGenotype()->getLength() )
+        );
+        $log->info("Factory method to get proper individual called (BitVector)");
+    }elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
+        $individual = Individual->new(
+            genotype => RangeVector->new(
+                $this->{indOne}->getGenotype()->getLength() )
+        );
+        $log->info("Factory method to get proper individual called (RangeVector)");
+    }elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
+        $individual = Individual->new(
+            genotype => ListVector->new(
+                $this->{indOne}->getGenotype()->getLength() )
+        );
+        $log->info("Factory method to get proper individual called (ListVector)");
+    }else {
+        $log->logconfess(
+                "Trying to perform crossover on an unrecognized genotype type");
+    }
+
+    return $individual;
+}
+
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: Uniform
@@ -129,50 +231,14 @@ sub crossIndividuals {
 		push @v, $this->{indTwo};
 		return @v;
 	}
-	my $genotypeChild1;
-	my $genotypeChild2;
-	my $child1;
-	my $child2;
-	if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
 
-		# Create temporal genotypes for children...
-		$genotypeChild1 =
-		  BitVector->new( $this->{indOne}->getGenotype()->getLength() );
-		$genotypeChild2 =
-		  BitVector->new( $this->{indOne}->getGenotype()->getLength() );
-		$child1 = Individual->new( genotype =>
-				new BitVector( $this->{indOne}->getGenotype()->getLength() ), );
-		$child2 = Individual->new( genotype =>
-				new BitVector( $this->{indOne}->getGenotype()->getLength() ), );
-	}
-	elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
+    # Instantiate the needed genotypes...
+	my $genotypeChild1 = _getProperGenotype($this);
+	my $genotypeChild2 = _getProperGenotype($this);
 
-		# Create temporal genotypes for children...
-		$genotypeChild1 =
-		  RangeVector->new( $this->{indOne}->getGenotype()->getLength() );
-		$genotypeChild2 =
-		  RangeVector->new( $this->{indOne}->getGenotype()->getLength() );
-		$child1 = Individual->new( genotype =>
-			  new RangeVector( $this->{indOne}->getGenotype()->getLength() ), );
-		$child2 = Individual->new( genotype =>
-			  new RangeVector( $this->{indOne}->getGenotype()->getLength() ), );
-	}
-	elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
-
-		# Create temporal genotypes for children...
-		$genotypeChild1 =
-		  ListVector->new( $this->{indOne}->getGenotype()->getLength() );
-		$genotypeChild2 =
-		  ListVector->new( $this->{indOne}->getGenotype()->getLength() );
-		$child1 = Individual->new( genotype =>
-			   new ListVector( $this->{indOne}->getGenotype()->getLength() ), );
-		$child2 = Individual->new( genotype =>
-			   new ListVector( $this->{indOne}->getGenotype()->getLength() ), );
-	}
-	else {
-		$log->logconfess(
-				"Trying to perform crossover on an unrecognized genotype type");
-	}
+    # Instantiate the needed individuals...
+	my $child1 = _getProperIndividual($this);
+	my $child2 = _getProperIndividual($this);
 
 	# Child one: for each gen from i=0 to Length() select randomly if
 	# we choose the locus from indOne or indTwo
