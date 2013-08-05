@@ -3,7 +3,7 @@
 #
 #         FILE: OnePoint.t
 #
-#  DESCRIPTION: Basic set of tests that attempt to prove that the basic
+#  DESCRIPTION: Basic set of tests that attempt to prove the basic
 #               functionality regarding the representation of a One Point
 #				crossover strategy.
 #

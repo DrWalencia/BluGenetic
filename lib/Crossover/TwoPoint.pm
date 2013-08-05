@@ -300,9 +300,9 @@ sub crossIndividuals {
 		  $k++ )
 	{
 		$genotypeChild1->setGen( $k,
-								 $this->{indOne}->getGenotype()->getGent($k) );
+								 $this->{indOne}->getGenotype()->getGen($k) );
 		$genotypeChild2->setGen( $k,
-								 $this->{indTwo}->getGenotype()->getGent($k) );
+								 $this->{indTwo}->getGenotype()->getGen($k) );
 	}
 
 	# Populate new Individuals to put the calculated genotypes..

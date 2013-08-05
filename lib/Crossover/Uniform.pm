@@ -61,7 +61,7 @@ sub new {
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: Uniform
-#       METHOD: randomSel
+#       METHOD: _randomSel
 #   PARAMETERS: position -> the position of the gen.
 #      RETURNS: the value of the selected gen.
 #  DESCRIPTION: For a given position select randomly which parent a given gen
@@ -70,13 +70,13 @@ sub new {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub randomSel {
+sub _randomSel {
 
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
 	my $this = shift;
 
 	# Get the argument...
-	my ($position) = @_;
+	my $position = shift;
 
 	my $seed = int( rand(2) );
 
@@ -246,8 +246,8 @@ sub crossIndividuals {
 	# we choose the locus from indOne or indTwo
 	for ( my $i = 0 ; $i < $this->{indOne}->getGenotype()->getLength() ; $i++ )
 	{
-		$genotypeChild1->setGen( $i, randomSel($i) );
-		$genotypeChild2->setGen( $i, randomSel($i) );
+		$genotypeChild1->setGen( $i, _randomSel($this,$i) );
+		$genotypeChild2->setGen( $i, _randomSel($this,$i) );
 	}
 
 	# Populate new Individuals to put the calculated genotypes..
