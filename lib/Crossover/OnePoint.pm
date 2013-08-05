@@ -50,12 +50,14 @@ use fields 'indOne', 'indTwo',    # The two individuals to be mated.
 #       THROWS: no exceptions
 #===============================================================================
 sub new {
-	my $class =
-	  shift;    # Every method of a class passes first argument as class name
+
+	# Every method of a class passes first argument as class name
+	my $class = shift;
 
 	# Anonymous hash to store instance variables (AKA FIELDS)
 	my $this = {};
-	
+
+	# When a OnePoint strategy is created, its cut point is unset
 	$this->{cutPointSet} = 0;
 
 	# Connect a class name with a hash is known as blessing an object
@@ -75,16 +77,14 @@ sub new {
 #     SEE ALSO: n/a
 #===============================================================================
 sub setCutPoint {
-	
+
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
 	my $this = shift;
-	
+
 	# Retrieve parameters...
-	my ( $point ) = @_;
-	
+	my ($point) = @_;
 	$this->{manualCutPoint} = $point;
-	$this->{cutPointSet} = 1;
-	
+	$this->{cutPointSet}    = 1;
 	return;
 }
 
@@ -135,82 +135,106 @@ sub crossIndividuals {
 	}
 	if ( $this->{cutPointSet} == 0 ) {
 
-		# Select  cutPoint=random number between 0 and k-1 being 
-		# k=length of individual. 2 must be subtracted from the 
+		# Select  cutPoint=random number between 0 and k-1 being
+		# k=length of individual. 2 must be subtracted from the
 		# genotype length because there are length()-1 cut points
 		# and the indexes go from 0 to length()-1
 		$this->{cutPoint} =
 		  int( rand( $this->{indOne}->getGenotype()->getLength() - 2 ) );
-	}
-	else {
+	}else {
 		# Manual cut point set up for testing purposes
 		$this->{cutPoint} = $this->{manualCutPoint};
 	}
 	
-	if ( $this->{indOne}->getGenotype()->isa("BitVector") ){
-		
+	my $genotypeChild1;
+	my $genotypeChild2;
+	
+	my $child1;
+	my $child2;
+	
+	if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
+
 		# Create temporal genotypes for children...
-		my $genotypeChild1 = BitVector->new( $this->{indOne}->getGenotype()->getLength() );
-		my $genotypeChild2 = BitVector->new( $this->{indOne}->getGenotype()->getLength() );
-		
-		# Child one: from 0 to cutPoint individual one, from cutPoint+1 to k individual two
-		# Child two: from 0 to cutPoint individual two, from cutPoint+1 to k individual one		
-		
-		# First part of the children...
-		for ( my $i = 0; $i <= $this->{cutPoint}; $i++ ){
-			$genotypeChild1->setGen($i, $this->{indOne}->getGenotype()->getGen($i));
-			$genotypeChild2->setGen($i, $this->{indTwo}->getGenotype()->getGen($i));
-		}
-		
-		# And second...
-		for ( my $j = $this->{cutPoint} + 1; $j < $this->{indOne}->getGenotype()->getLength(); $j++){
-			$genotypeChild1->setGen($j, $this->{indTwo}->getGenotype()->getGen($j));
-			$genotypeChild2->setGen($j, $this->{indOne}->getGenotype()->getGen($j));
-		}
-		
-#		my $a = $genotypeChild1->{genotype};
-#		my $b = $genotypeChild2->{genotype};
-#		
-#		print @$a;
-#		print "\n";
-#		
-#		print @$b;
-#		print "\n";
-		
-		my $child1 = Individual->new(
-			genotype=> new BitVector($this->{indOne}->getGenotype()->getLength()),
-		);
-		my $child2 = Individual->new(
-			genotype=> new BitVector($this->{indOne}->getGenotype()->getLength()),
-		);
-		
-		# And create new Individuals to put the calculated genotypes..
-		for ( my $k = 0; $k < $this->{indOne}->getGenotype()->getLength(); $k++ ){
-			$child1->getGenotype()->setGen($k, $genotypeChild1->getGen($k));
-			$child2->getGenotype()->setGen($k, $genotypeChild2->getGen($k));
-		}
-		
-		# Put their respective scores to zero. SCORE FOR THIS TWO MUST 
-		# BE RECALCULATED AGAIN
-		$child1->setScore(0);
-		$child2->setScore(0);
-		
-		# Create a vector of individuals and return the children
-		# using it
-		my @v;
-		push @v, $child1;
-		push @v, $child2;
-		
-		return @v;
-		
-	}elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ){
-		$log->logconfess("Unimplemented");
-	}elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ){
-		$log->logconfess("Unimplemented");
-	}else{
-		$log->logconfess("Trying to perform crossover on an unrecognized genotype type");
+		$genotypeChild1 =
+		  BitVector->new( $this->{indOne}->getGenotype()->getLength() );
+		$genotypeChild2 =
+		  BitVector->new( $this->{indOne}->getGenotype()->getLength() );
+		$child1 = Individual->new( genotype =>
+				new BitVector( $this->{indOne}->getGenotype()->getLength() ), );
+		$child2 = Individual->new( genotype =>
+				new BitVector( $this->{indOne}->getGenotype()->getLength() ), );
+				
+	}elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
+
+		# Create temporal genotypes for children...
+		$genotypeChild1 =
+		  RangeVector->new( $this->{indOne}->getGenotype()->getLength() );
+		$genotypeChild2 =
+		  RangeVector->new( $this->{indOne}->getGenotype()->getLength() );
+		$child1 = Individual->new( genotype =>
+			  new RangeVector( $this->{indOne}->getGenotype()->getLength() ), );
+		$child2 = Individual->new( genotype =>
+			  new RangeVector( $this->{indOne}->getGenotype()->getLength() ), );
+			  
+	}elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
+
+		# Create temporal genotypes for children...
+		$genotypeChild1 =
+		  ListVector->new( $this->{indOne}->getGenotype()->getLength() );
+		$genotypeChild2 =
+		  ListVector->new( $this->{indOne}->getGenotype()->getLength() );
+		$child1 = Individual->new( genotype =>
+			   new ListVector( $this->{indOne}->getGenotype()->getLength() ), );
+		$child2 = Individual->new( genotype =>
+			   new ListVector( $this->{indOne}->getGenotype()->getLength() ), );
+			   
+	}else {
+		$log->logconfess(
+				"Trying to perform crossover on an unrecognized genotype type");
+	}
+	
+	# Child one: from 0 to cutPoint individual one, from cutPoint+1 to 
+	# k individual two
+	# Child two: from 0 to cutPoint individual two, from cutPoint+1 to 
+	# k individual one
+	# First part of the children...
+	
+	for ( my $i = 0 ; $i <= $this->{cutPoint} ; $i++ ) {
+		$genotypeChild1->setGen(
+			 $i, $this->{indOne}->getGenotype()->getGen($i) );
+		$genotypeChild2->setGen( 
+			 $i, $this->{indTwo}->getGenotype()->getGen($i) );
 	}
 
-}    ## --- end sub crossIndividuals
+	# And second...
+	for ( my $j = $this->{cutPoint} + 1 ;
+		  $j < $this->{indOne}->getGenotype()->getLength() ;
+		  $j++ ){
+		$genotypeChild1->setGen( 
+			$j, $this->{indTwo}->getGenotype()->getGen($j) );
+		$genotypeChild2->setGen(
+			$j, $this->{indOne}->getGenotype()->getGen($j) );
+	}
+
+	# Populate new Individuals to put the calculated genotypes..
+	for ( my $k = 0 ; $k < $this->{indOne}->getGenotype()->getLength() ; $k++ )
+	{
+		$child1->getGenotype()->setGen( $k, $genotypeChild1->getGen($k) );
+		$child2->getGenotype()->setGen( $k, $genotypeChild2->getGen($k) );
+	}
+
+	# Put their respective scores to zero. SCORE FOR THIS TWO MUST
+	# BE RECALCULATED AGAIN
+	$child1->setScore(0);
+	$child2->setScore(0);
+
+	# Create a vector of individuals and return the children
+	# using it
+	my @v;
+	push @v, $child1;
+	push @v, $child2;
+	return @v;
+	
+}     ## --- end sub crossIndividuals
 
 1;    # Required for all packages in Perl
