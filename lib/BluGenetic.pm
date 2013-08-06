@@ -28,8 +28,11 @@ use Algorithm::GABitVector;
 use Algorithm::GAListVector;
 use Algorithm::GARangeVector;
 
-# Maximum number of arguments to be taken by the Factory
-use constant LIMITARGS => 6;
+# Get a logger from the singleton
+my $log = Log::Log4perl::get_logger("BluGenetic");
+
+use constant DEF_CROSS_CHANCE => 0.95;
+use constant DEF_MUT_CHANCE => 0.05;
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: BluGenetic
@@ -74,43 +77,86 @@ sub new {
 	# Initialize logging behavior
 	Log::Log4perl->init( \$conf );
 
-	# Get a logger from the singleton
-	my $log = Log::Log4perl::get_logger("BluGenetic");
-
 	$log->info("Factory job to create a Genetic Algorithm started.");
 	
 	# Take the class name and the arguments passed as a hash
  	my($class, %args) = @_;
-
-	# Check if we get LIMITARGS -1 arguments (default terminate function) or LIMITARGS, otherwise die
-	$log->logconfess("Too few arguments for method new()") if scalar keys %args < BluGenetic::LIMITARGS-1;
-	$log->logconfess("Too many arguments for method new()") if scalar keys %args > BluGenetic::LIMITARGS;
+ 	
+ 	# If any of the three mandatory arguments is missing, die painfully
+ 	if (!(defined $args{popSize})){
+ 		$log->logconfess("popSize argument undefined.");
+ 	}
+ 	
+ 	if (!(defined $args{type})){
+ 		$log->logconfess("type argument undefined.");
+ 	}
+ 	
+ 	if (!(defined $args{fitness})){
+ 		$log->logconfess("fitness function undefined.");
+ 	}
+ 	
+ 	# For optional values, check if they're defined 
+ 	# If not, check their ranges
+ 	if (!(defined $args{crossover})){
+ 		$args{crossover} = DEF_CROSS_CHANCE;
+ 	}elsif (($args{crossover} < 0) or ($args{crossover} > 1)){
+ 		$log->confess("Wrong value for crossover: ", $args{crossover});
+ 	}
+ 	
+ 	if (!(defined $args{mutation})){
+ 		$args{mutation} = DEF_MUT_CHANCE;
+ 	}elsif (($args{mutation} < 0) or ($args{mutation} > 1)){
+ 		$log->confess("Wrong value for mutation: ", $args{mutation});
+ 	}
+ 	
+ 	# Terminate is managed by GeneticAlgorithm
 
 	# The algorithm that the factory is going to return
-	my $algorithm;
-
-	# Now according to what's inside type, the factory decides...
-	if ( $args{type} eq 'bitvector' ) {
-		delete $args{type};
-		$algorithm = GABitVector->new(%args);
-		$log->info("Algorithm of type 'bitvector' generated");
-	}elsif ( $args{type} eq 'rangevector') {
-		delete $args{type};
-		$algorithm = GARangeVector->new(%args);
-		$log->info("Algorithm of type 'rangevector' generated");
-	}elsif ( $args{type} eq 'listvector'){
-		delete $args{type};
-		$algorithm = GAListVector->new(%args);
-		$log->info("Algorithm of type 'listvector' generated");
-	}else{
-		$log->logconfess("Unknown data type: $args{type}. Arguments case should all be in lowercase.");
-	}
+	my $algorithm = _getProperAlgorithm(%args);
 
 	$log->info("Factory job to create a Genetic Algoritm finished.");
 		
 	return $algorithm; 
 
 } ## --- end sub new
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: BluGenetic
+#       METHOD: _getProperAlgorithm
+#   PARAMETERS: args -> a hash containing the needed arguments.
+#      RETURNS: The needed instance of Genetic Algorithm.
+#  DESCRIPTION:	Factory method that instantiates the proper GA and returns it.
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub _getProperAlgorithm{
+	
+	# Retrieve the arguments...
+	my %args = @_;
+	
+	my $algorithm;
+	
+	my $type = lc($args{type});
+	delete $args{type};
+	
+	# Now according to what's inside type, the factory decides...
+	if ( $type eq 'bitvector' ) {
+		$algorithm = GABitVector->new(%args);
+		$log->info("Algorithm of type 'bitvector' generated");
+	}elsif ( $type eq 'rangevector'){ 
+		$algorithm = GARangeVector->new(%args);
+		$log->info("Algorithm of type 'rangevector' generated");
+	}elsif ( $type eq 'listvector'){
+		$algorithm = GAListVector->new(%args);
+		$log->info("Algorithm of type 'listvector' generated");
+	}else{
+		$log->logconfess("Unknown data type: $args{type}. Arguments case should all be in lowercase.");
+	}
+	
+	return $algorithm;
+}
+
 
 
 =head1 NAME

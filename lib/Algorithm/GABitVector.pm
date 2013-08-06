@@ -53,19 +53,6 @@ sub new {
     my $class = shift; 
 
     my %args = @_; # After the class name is removed, take the hash of arguments
-    
-    $log->logconfess("popSize must be a positive number bigger than 0")
-    	if ($args{popSize} <= 0);
-    	
-    $log->logconfess("crossover must be a positive number between 0 and 1")
-    	if (($args{crossover} < 0) or ($args{crossover} > 1));
-    
-    $log->logconfess("mutation must be a positive number between 0 and 1")
-    	if (($args{mutation} < 0) or ($args{mutation} > 1));
-    	
-    $log->logconfess("fitness argument cannot be left empty")
-    	if (!(defined $args{fitness}));
-    
 
     # Reference to anonymous hash to store instance variables (AKA FIELDS)
     my $this = {
