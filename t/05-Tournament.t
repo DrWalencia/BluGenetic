@@ -16,7 +16,7 @@
 #      CREATED: 07/29/2013 07:57:29 PM
 #     REVISION: ---
 #===============================================================================
-use Test::More tests => 3;    # last test to print
+use Test::More;
 use Log::Log4perl qw(get_logger);
 use Individual;
 use diagnostics;
@@ -48,20 +48,19 @@ my $selection2 = Tournament->new();
 
 # battlefieldSize: missing argument. Dies painfully
 
-	dies_ok { $selection2->battlefieldSize() };
+	dies_ok { $selection2->battlefieldSize() } "battlefieldSize: missing argument. Dies painfully";
 
 # battlefieldSize: number of individuals zero. Dies painfully
 
-	dies_ok { $selection2->battlefieldSize(0) };
+	dies_ok { $selection2->battlefieldSize(0) } "battlefieldSize: number of individuals zero. Dies painfully";
 
 # battlefieldSize: number of individuals negative. Dies painfully
 
-	dies_ok { $selection2->battlefieldSize(-4) };
+	dies_ok { $selection2->battlefieldSize(-4) } "battlefieldSize: number of individuals negative. Dies painfully";
 
 # Population with two elements: one with score 1 and the other with score 0
-# The returned population must be filled only with copies of the first element
 	
-	# Create population and roulette
+	# Create population and selection strategy
 	my @pop;
 	my $selection = Tournament->new();
 	
@@ -125,7 +124,7 @@ my $selection2 = Tournament->new();
 #		}
 #	}
 
-
+done_testing;
 
 
 

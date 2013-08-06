@@ -17,7 +17,7 @@
 #      CREATED: 07/29/2013 07:57:29 PM
 #     REVISION: ---
 #===============================================================================
-use Test::More tests => 19;    # last test to print
+use Test::More;
 use Log::Log4perl qw(get_logger);
 use BluGenetic;
 use diagnostics;
@@ -75,7 +75,7 @@ dies_ok{
 		type	=>	"BitVector",
 		fitness	=>	\&fitness
 	)
-};
+} "Constructor: popSize undefined, die painfully";
 
 # If type undefined, die painfully
 dies_ok{
@@ -83,15 +83,15 @@ dies_ok{
 		popSize	=>	24,
 		fitness	=>	\&fitness
 	)
-};
+} "Constructor: type undefined, die painfully";
 
-# If fitness undefined die painfully
+# If fitness undefined, die painfully
 dies_ok{
 	my $algorithm = BluGenetic->new(
 		popSize	=> 23,
 		type	=> "BitVector"
 	)
-};
+} "Constructor: fitness undefined, die painfully";
 
 # If mutation defined but wrong, die painfully
 dies_ok{
@@ -101,16 +101,16 @@ dies_ok{
 		type => "BitVector",
 		fitness => \&fitness
 	)	
-};
+} "Constructor: mutation defined but wrong, die painfully (negative)";
 
 dies_ok{
 	my $algorithm = BluGenetic->new(
 		popSize => 24,
-		mutation => -1.1,
+		mutation => 1.1,
 		type => "BitVector",
 		fitness => \&fitness
 	)	
-};
+} "Constructor: mutation defined but wrong, die painfully (more than 1)";
 
 # if crossover defined but wrong, die painfully
 dies_ok{
@@ -120,7 +120,7 @@ dies_ok{
 		type => "BitVector",
 		fitness => \&fitness
 	)	
-};
+} "Constructor: crossover defined but wrong (negative), die painfully";
 
 dies_ok{
 	my $algorithm = BluGenetic->new(
@@ -129,7 +129,7 @@ dies_ok{
 		type => "BitVector",
 		fitness => \&fitness
 	)	
-};
+} "Constructor: crossover defined but wrong (more than 1), die painfully";
 
 # Check that a call to the factory with BitVector in a mix of
 # cases, all upercase and all lowercase do not die and returns
@@ -143,7 +143,7 @@ dies_ok{
 		fitness		=> \&fitness
 	);
 	
-	ok ( $algorithm->isa('GABitVector') );
+	ok ( $algorithm->isa('GABitVector'), "Constructor: type case insensitive: BITVECTOR" );
 }
 
 {
@@ -153,7 +153,7 @@ dies_ok{
 		fitness		=> \&fitness
 	);
 	
-	ok ( $algorithm->isa('GABitVector') );
+	ok ( $algorithm->isa('GABitVector'), "Constructor: type case insensitive: BitVector" );
 }
 
 # Check rangevector: uppercase and lowercase
@@ -164,7 +164,7 @@ dies_ok{
 		fitness		=> \&fitness
 	);
 	
-	ok ( $algorithm->isa('GARangeVector') );
+	ok ( $algorithm->isa('GARangeVector'), "Constructor: type case insensitive: RANGEVECTOR" );
 }
 
 {
@@ -174,7 +174,7 @@ dies_ok{
 		fitness		=> \&fitness
 	);
 	
-	ok ( $algorithm->isa('GARangeVector') );
+	ok ( $algorithm->isa('GARangeVector'), "Constructor: type case insensitive: RangeVector" );
 }
 
 # Check listvector: uppercase and lowercase
@@ -185,7 +185,7 @@ dies_ok{
 		fitness		=> \&fitness
 	);
 	
-	ok ( $algorithm->isa('GAListVector') );
+	ok ( $algorithm->isa('GAListVector'), "Constructor: type case insensitive: LISTVECTOR" );
 }
 
 {
@@ -195,7 +195,7 @@ dies_ok{
 		fitness		=> \&fitness
 	);
 	
-	ok ( $algorithm->isa('GAListVector') );
+	ok ( $algorithm->isa('GAListVector'), "Constructor: type case insensitive: ListVector" );
 }
 
 # Unknown data type (die painfully)
@@ -206,7 +206,7 @@ dies_ok{
 		type		=> 'UNKNOWN',
 		fitness		=> \&fitness
 	)
-};
+} "Constructor: unknown data type. Dies";
 
 # Example that works.
 
@@ -239,5 +239,5 @@ dies_ok{
 #
 #print "Score of fittest: ", $ind[0]->getScore(), "\n";
 
-
+done_testing;
 

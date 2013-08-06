@@ -16,7 +16,7 @@
 #      CREATED: 08/05/2013 11:08:57 PM
 #     REVISION: ---
 #===============================================================================
-use Test::More tests => 3;    # last test to print
+use Test::More;
 use Log::Log4perl qw(get_logger);
 use Individual;
 use diagnostics;
@@ -47,18 +47,20 @@ log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %p - %m%n
 Log::Log4perl->init( \$conf );
 
 # Constructor: individual1 without genotype. Dies painfully
-
+{
     my $ind1 = Individual->new();
     my $ind2 = Individual->new();
     
-    dies_ok{ $crossover->crossIndividuals($ind1, $ind2)};
+    dies_ok{ $crossover->crossIndividuals($ind1, $ind2)} "Constructor: individual1 without genotype. Dies painfully";
+}
 
 # Constructor: individual2 without genotype. Dies painfully
-
-    my $ind11 = Individual->new();
-    my $ind21 = Individual->new();
+{
+    my $ind1 = Individual->new();
+    my $ind2 = Individual->new();
     
-    dies_ok{ $crossover->crossIndividuals($ind11, $ind21)};
+    dies_ok{ $crossover->crossIndividuals($ind1, $ind2)} "Constructor: individual2 without genotype. Dies painfully";
+}
 
 # From now on, every test is going to be carried out using 
 # manual cut points, and individuals with genotype 111111 
@@ -104,4 +106,5 @@ Log::Log4perl->init( \$conf );
 #    print @$genotype2; 
 #    print "\n";
 
-    ok (@offspring);
+    ok (@offspring,"crossIndividuals: offspring array cardinality");
+done_testing;

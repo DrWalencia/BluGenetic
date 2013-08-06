@@ -498,7 +498,7 @@ sub deleteIndividual {
     my $individualTemp = Individual->new(
     							genotype => $genotypeTemp);
 
-    $individualTemp->setScore(fitnessFunc($individualTemp));
+    $individualTemp->setScore($this->fitnessFunc($individualTemp));
     
     # Make a copy of the Algorithm's population
     # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF

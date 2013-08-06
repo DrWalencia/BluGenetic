@@ -16,7 +16,7 @@
 #      CREATED: 07/29/2013 07:57:29 PM
 #     REVISION: ---
 #===============================================================================
-use Test::More tests => 52;    # last test to print
+use Test::More;
 use Log::Log4perl qw(get_logger);
 use Individual;
 use Algorithm::GABitVector;
@@ -48,13 +48,16 @@ Log::Log4perl->init( \$conf );
 # This fitness function just returns the amount of ones in
 # the genotype.
 sub fitness() {
+	
 	my ($individual) = @_;
 	my $genotype = $individual->getGenotype();
 	my $i;
 	my $counter;
+	
 	for ( $i = 0 ; $i < $genotype->getLength() ; $i++ ) {
 		$counter += $genotype->getGen($i);
 	}
+	
 	return $counter;
 }
 
@@ -62,499 +65,542 @@ sub terminate() {
 
     my $GA = shift;
 
-    
 	return 0;
 }
 
-# Constructor: check that popsize is a positive number bigger than 0. Die
-# otherwise.
-
- lives_ok {
- my $algorithm = GABitVector->new(
- popSize => 4,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
- };
- dies_ok {
- my $algorithm2 = GABitVector->new(
- popSize => 0,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
- };
- dies_ok {
- my $algorithm3 = GABitVector->new(
- popSize => -43,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
- };
-
-# Constructor: check that crossover is a float number between 0 and 1. Die
-# otherwise.
-
- dies_ok {
- my $algorithm4 = GABitVector->new(
- popSize => 4,
- crossover => -0.1,
- mutation => 0.4,
- fitness => \&fitness,
- );
- };
- dies_ok {
- my $algorithm5 = GABitVector->new(
- popSize => 4,
- crossover => 1.1,
- mutation => 0.4,
- fitness => \&fitness,
- );
- };
-
-# Constructor: check that mutation is a float number between 0 and 1. Die
-# otherwise.
-
- dies_ok {
- my $algorithm6 = GABitVector->new(
- popSize => 4,
- crossover => 0.3,
- mutation => -0.4,
- fitness => \&fitness,
- );
- };
- dies_ok {
- my $algorithm7 = GABitVector->new(
- popSize => 4,
- crossover => 0.5,
- mutation => 1.4,
- fitness => \&fitness,
- );
- };
-
-# Constructor: check that fitness and terminate are function pointers. Die
-# otherwise.
-
- dies_ok {
- my $algorithm8 = GABitVector->new(
- popSize => 4,
- crossover => 0.5,
- mutation => 0.3,
- fitness => undef,
- );
- };
- lives_ok {
- my $algorithm9 = GABitVector->new(
- popSize => 4,
- crossover => 0.5,
- mutation => 1,
- fitness => \&fitness,
- );
- };
-
 # Initialize: check that genotypeLength is a positive number bigger than 0.
 # Die otherwise.
-
- my $algorithm = GABitVector->new(
- popSize => 4,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- dies_ok { $algorithm->initialize() };
- dies_ok { $algorithm->initialize(0) };
-
- $algorithm->initialize(20);
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	dies_ok { $algorithm->initialize() } "Initialize: check that genotypeLength is a positive number (undefined). Dies";
+	dies_ok { $algorithm->initialize(0) } "Initialize: check that genotypeLength is a positive number (zero). Dies";
+}
 
 # initialize: check that evolve dies if algorithm not initialized.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
 
- my $algorithmFail = GABitVector->new(
- popSize => 4,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- dies_ok{$algorithmFail->evolve()};
+	dies_ok{$algorithm->evolve()} "initialize: check that evolve dies if algorithm not initialized.";
+}
 
 # initialize: check that getFittest dies if algorithm not initialized.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+ 	);
 
- dies_ok{$algorithmFail->getFittest()};
+	dies_ok{$algorithm->getFittest()} "initialize: check that getFittest dies if algorithm not initialized.";
+}
 
 # initialize: check that getPopulation dies if algorithm not initialized.
-
- dies_ok{$algorithmFail->getPopulation()};
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+ 
+	dies_ok{$algorithm->getPopulation()} "initialize: check that getPopulation dies if algorithm not initialized.";
+}
 
 # initialize: check that insertIndividual dies if algorithm not initialized.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
 
- dies_ok{$algorithmFail->insertIndividual(undef, 2)};
+	dies_ok{$algorithm->insertIndividual(undef, 2)} "initialize: check that insertIndividual dies if algorithm not initialized.";
+}
 
 # initialize: check that deleteIndividual dies if algorithm not initialized.
-
- dies_ok{$algorithmFail->deleteIndividual(2)};
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	dies_ok{$algorithm->deleteIndividual(2)} "initialize: check that deleteIndividual dies if algorithm not initialized.";
+}
 
 # Population inside the algorithm is just a reference, so to play with it
 # it must be dereferenced first.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	$algorithm->initialize(20);
 
- my $populationRef11 = $algorithm->getPopulation();
- my @population11 = @$populationRef11;
- my $individual11 = $population11[0];
-
- my $genotype1 = $individual11->getGenotype();
-
- ok( $genotype1->getLength() == 20 );
+	my $populationRef = $algorithm->getPopulation();
+	my @population = @$populationRef;
+	my $individual = $population[0];
+	
+	my $genotype = $individual->getGenotype();
+	
+	ok( $genotype->getLength() == 20, "Check that individuals in the population have the correct length" );
+}
 
 # insertIndividual: check that the individual to be inserted is not undef.
 # Die otherwise.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	$algorithm->initialize(20);
 
- dies_ok { $algorithm->insertIndividual( undef, 4 ) };
+	dies_ok { $algorithm->insertIndividual( undef, 4 ) } "insertIndividual: check that the individual to be inserted is not undef. Dies otherwise";
+}
 
 # insertIndividual: check that index is between zero and genotypeLength -1
 # Die otherwise
 # WARNING: INDIVIDUAL RECEIVES ARGUMENTS INSIDE OF A HASH
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
 
- my $ind =
- Individual->new(
- genotype => BitVector->new( $genotype1->getLength()) );
-
- dies_ok { $algorithm->insertIndividual( $ind, -1 ) };
- dies_ok { $algorithm->insertIndividual( $ind, 20 ) };
+	my $individual = Individual->new( 
+		genotype => BitVector->new(20), 
+	);
+	
+	dies_ok { $algorithm->insertIndividual( $individual, -1 ) } "insertIndividual: check that index is between zero and genotypeLength -1 (-1 inserted). Dies otherwise";
+	dies_ok { $algorithm->insertIndividual( $individual, 20 ) } "insertIndividual: check that index is between zero and genotypeLength -1 (20 inserted). Dies otherwise";
+}
 
 # insertIndividual: insert an individual and check that it has actually
 # been inserted. getPopulation() test implicit here.
+{
+	my $genotype = BitVector->new(3);
+	
+	$genotype->setGen( 0, 0 );
+	$genotype->setGen( 1, 0 );
+	$genotype->setGen( 2, 0 );
+	
+	my $individual = Individual->new( 
+		genotype => $genotype 
+	);
+	
+	my $algorithm = GABitVector->new(
+		popSize => 6,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
 
- my $genotype3 = BitVector->new(3);
- $genotype3->setGen( 0, 0 );
- $genotype3->setGen( 1, 0 );
- $genotype3->setGen( 2, 0 );
- my $ind2 = Individual->new( genotype => $genotype3 );
- my $algorithm2 = GABitVector->new(
- popSize => 6,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
+	$algorithm->initialize(3);
+	$algorithm->insertIndividual( $individual, 0 );
 
- $algorithm2->initialize(3);
- $algorithm2->insertIndividual( $ind2, 0 );
+	# Population inside the algorithm is just a reference, so to play with it
+	# it must be dereferenced first.
 
-# Population inside the algorithm is just a reference, so to play with it
-# it must be dereferenced first.
+	 my $populationRef = $algorithm->getPopulation();
+	 my @population = @$populationRef;
 
- my $populationRef = $algorithm2->getPopulation();
- my @population = @$populationRef;
+	 my $individual2 = $population[0];
+	 my $genotypeIndividual = $individual2->getGenotype();
 
- my $individual = $population[0];
- my $genotypeIndividual = $individual->getGenotype();
+	 my $gen0 = $genotypeIndividual->getGen(0);
+	 my $gen2 = $genotypeIndividual->getGen(1);
+	 my $gen1 = $genotypeIndividual->getGen(2);
 
- my $gen0 = $genotypeIndividual->getGen(0);
- my $gen2 = $genotypeIndividual->getGen(1);
- my $gen1 = $genotypeIndividual->getGen(2);
-
- ok( $gen0 == $ind2->getGenotype()->getGen(0) );
- ok( $gen1 == $ind2->getGenotype()->getGen(1) );
- ok( $gen2 == $ind2->getGenotype()->getGen(2) );
+	 ok( $gen0 == $individual->getGenotype()->getGen(0), "insertIndividual: gen 0 has 0" );
+	 ok( $gen1 == $individual->getGenotype()->getGen(1), "insertIndividual: gen 1 has 0" );
+	 ok( $gen2 == $individual->getGenotype()->getGen(2), "insertIndividual: gen 2 has 0" );
+}
 
 # insertIndividual: check if the length of the individual to be inserted is the
 # same as lengthGenotype of the algorithm. Die otherwise.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+ 
+ 	my $individual = Individual->new( genotype => BitVector->new(4) );
 
- my $ind3 = Individual->new( genotype => BitVector->new(4) );
- my $algorithm3 = GABitVector->new(
- popSize => 54,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
- $algorithm->initialize(5);
- dies_ok { $algorithm->insertIndividual( $ind3, 0 ) };
-
+	 $algorithm->initialize(5);
+	 dies_ok { $algorithm->insertIndividual( $individual, 0 ) } "insertIndividual: check if the length of the individual to be inserted is the same as lengthGenotype of the algorithm. Die otherwise.";
+}
 # deleteIndividual: check that the index is between zero and genotypeLength-1
 # Die otherwise
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	$algorithm->initialize(5);
+	
+	dies_ok { $algorithm->deleteIndividual(-1) } "deleteIndividual: check that the index is between zero and genotypeLength-1. Die otherwise";
+	dies_ok { $algorithm->deleteIndividual(7) } "deleteIndividual: check that the index is between zero and genotypeLength-1. Die otherwise";
 
- dies_ok { $algorithm2->deleteIndividual(-1) };
- dies_ok { $algorithm2->deleteIndividual(7) };
+}
 
 # deleteIndividual: delete a given individual and check that it has
 # actually been substituted by a randomly generated one.
 # TEST DISABLED: IT WILL OBVIOUSLY GIVE FALSE FAILED TESTS
 # FROM TIME TO TIME BECAUSE IT'S CHECKING AGAINST A TROIKA
 # OF BINARY RANDOM VALUES.
-#$algorithm2->deleteIndividual(0);
+#{
+#	my $algorithm = GABitVector->new(
+#		popSize => 4,
+#		crossover => 0.3,
+#		mutation => 0.4,
+#		fitness => \&fitness,
+#	);
+#	
+#	$algorithm->initialize(5);
+#	
+#	$algorithm->deleteIndividual(0);
 #
-## Population inside the algorithm is just a reference, so to play with it
-## it must be dereferenced first.
-#my $populationRef1 = $algorithm2->getPopulation();
-#my @population1 = @$populationRef1;
+#	# Population inside the algorithm is just a reference, so to play with it
+#	# it must be dereferenced first.
+#	my $populationRef = $algorithm->getPopulation();
+#	my @population = @$populationRef;
 #
-#my $individual1 = $population1[0];
+#	my $individual = $population[0];
+#	
+#	my $individual2 = Individual->new( genotype => BitVector->new(4) );
 #
-#my $genotypeIndividual1 = $individual1->getGenotype();
-#my $gen01 = $genotypeIndividual1->getGen(0);
-#my $gen21 = $genotypeIndividual1->getGen(1);
-#my $gen11 = $genotypeIndividual1->getGen(2);
+#	my $genotypeIndividual = $individual->getGenotype();
+#	my $gen0 = $genotypeIndividual->getGen(0);
+#	my $gen1 = $genotypeIndividual->getGen(1);
+#	my $gen2 = $genotypeIndividual->getGen(2);
 #
-#my $result1 = ($gen01 == $ind2->getGenotype()->getGen(0));
-#my $result2 = ($gen21 == $ind2->getGenotype()->getGen(1));
-#my $result3 = ($gen11 == $ind2->getGenotype()->getGen(2));
+#	my $result1 = ($gen0 == $individual2->getGenotype()->getGen(0));
+#	my $result2 = ($gen1 == $individual2->getGenotype()->getGen(1));
+#	my $result3 = ($gen2 == $individual2->getGenotype()->getGen(2));
 #
 #ok ( ($result1 == $result2) == $result3 );
+#
+#}
 
 # getPopSize: generate population, retrieve its size and check
 # if it's the same as what's stored in popSize
-
- my $algorithm4 = GABitVector->new(
- popSize => 54,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
- ok( $algorithm4->getPopSize() == 54 );
+{
+	 my $algorithm = GABitVector->new(
+		 popSize => 54,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	 
+	 ok( $algorithm->getPopSize() == 54, "getPopSize: generate population, retrieve its size and check if it's the same as what's stored in popSize");
+}
 
 # getCrossChance: generate AG, and check if crossChance is the same as the
 # one passed as a parameter.
-
- my $algorithm5 = GABitVector->new(
- popSize => 54,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
- ok( $algorithm5->getCrossChance() == 0.3 );
+{
+	 my $algorithm = GABitVector->new(
+		 popSize => 54,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	 
+	 ok( $algorithm->getCrossChance() == 0.3, "getCrossChance: generate AG, and check if crossChance is the same as the one passed as a parameter." );
+}
 
 # getMutChance: generate AG, and check if mutChance is the same as the
 # one passed as a parameter.
-
- my $algorithm6 = GABitVector->new(
- popSize => 54,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
- ok( $algorithm6->getMutChance() == 0.4 );
-
+{
+	 my $algorithm6 = GABitVector->new(
+		 popSize => 54,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	 
+	 ok( $algorithm6->getMutChance() == 0.4, "getMutChance: generate AG, and check if mutChance is the same as the one passed as a parameter." );
+}
 
 # _fitnessFunc: (BREAKING ENCAPSULATION) Generate population, insert
 # individual in which we already know the fitness value and check if
 # this function returns the expected value.
+{
+	 my $genotype = BitVector->new(3);
+	
+	 $genotype->setGen( 0, 0 );
+	 $genotype->setGen( 1, 1 );
+	 $genotype->setGen( 2, 1 );
+	
+	 my $individual = Individual->new( genotype => $genotype );
+	
+	 my $algorithm = GABitVector->new(
+	 popSize => 12,
+	 crossover => 0.3,
+	 mutation => 0.4,
+	 fitness => \&fitness,
+	 );
+	
+	 $algorithm->initialize(3);
+	 $algorithm->insertIndividual($individual,0);
 
- my $genotype4 = BitVector->new(3);
-
- $genotype4->setGen( 0, 0 );
- $genotype4->setGen( 1, 1 );
- $genotype4->setGen( 2, 1 );
-
- my $ind5 = Individual->new( genotype => $genotype4 );
-
- my $algorithm7 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- $algorithm7->initialize(3);
- $algorithm7->insertIndividual($ind5,0);
-
-# Population inside the algorithm is just a reference, so to play with it
-# it must be dereferenced first.
-
- my $populationRef2 = $algorithm7->getPopulation();
- my @population2 = @$populationRef2;
-
- my $individual2 = $population2[0];
-
- ok ( $individual2->getScore() == 2 );
-
-
-
-# _fitnessFunc: Define algorithm without a fitness func and check if it dies
-
- dies_ok{my $algorithm7 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- )};
-
+	# Population inside the algorithm is just a reference, so to play with it
+	# it must be dereferenced first.
+	
+	my $populationRef = $algorithm->getPopulation();
+	my @population = @$populationRef;
+	
+	my $individual2 = $population[0];
+	
+	ok ( $individual2->getScore() == 2, "_fitnessFunc: Generate population, insert individual in which we already know the fitness value and check if this function returns the expected value." );
+}
 # sortPopulation: generate population and sort it. Check results.
-
- my $algorithm8 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- $algorithm8->initialize(30);
- $algorithm8->sortPopulation();
-
- my $population3 = $algorithm8->getPopulation();
-
- my $i;
-
- for ( $i = 0; $i < $algorithm8->{popSize} - 1; $i++ ){
- my $lowFit = @$population3[$i];
- my $hiFit = @$population3[$i+1];
- ok ($lowFit->getScore() <= $hiFit->getScore());
- }
-
+{
+	 my $algorithm = GABitVector->new(
+	 popSize => 12,
+	 crossover => 0.3,
+	 mutation => 0.4,
+	 fitness => \&fitness,
+	 );
+	
+	 $algorithm->initialize(30);
+	 $algorithm->sortPopulation();
+	
+	 my $population = $algorithm->getPopulation();
+	 my $i;
+	
+	 for ( $i = 0; $i < $algorithm->{popSize} - 1; $i++ ){
+		 my $lowFit = @$population[$i];
+		 my $hiFit = @$population[$i+1];
+		 ok ($lowFit->getScore() <= $hiFit->getScore(), "Element in position $i has lower fitness than the following");
+	 }
+}
 
 # getFittest: No parameter, pass zero as a parameter, pass more than the
 # total population.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 12,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	$algorithm->initialize(30);
+	 
+ 	my @fittest = $algorithm->getFittest();
 
- my @fittest = $algorithm8->getFittest();
+	# Population inside the algorithm is just a reference, so to play with it
+	# it must be dereferenced first.
 
-# Population inside the algorithm is just a reference, so to play with it
-# it must be dereferenced first.
-
- my $refPopulation3 = $algorithm8->getPopulation();
- my @population4 = @$refPopulation3;
-
- my $byHandFittest = $population4[$algorithm8->{popSize} -1];
- ok ( $byHandFittest->getScore() == $fittest[0]->getScore() );
+	my $refPopulation = $algorithm->getPopulation();
+	my @population = @$refPopulation;
+	
+	my $byHandFittest = $population[$algorithm->{popSize} -1];
+	ok ( $byHandFittest->getScore() == $fittest[0]->getScore(), "getFittest: No parameter, pass zero as a parameter, pass more than the total population." );
+}
 
 # getFittest: Pass a parameter between limits. Very basic, just checking
 # cardinality.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 12,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	$algorithm->initialize(30);
 
- my @fittest2 = $algorithm8->getFittest(4);
- ok ( @fittest2 == 4);
+	my @fittest = $algorithm->getFittest(4);
+	ok ( @fittest == 4, "getFittest: Pass a parameter between limits. Very basic, just checking cardinality.");
+}
 
 # getFittest: Pass zero as a parameter. It dies painfully
-
- dies_ok{ my $fittest3 = $algorithm8->getFittest(0)};
+{
+	my $algorithm = GABitVector->new(
+		popSize => 12,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	$algorithm->initialize(30);
+	
+ 	dies_ok{ my $fittest = $algorithm->getFittest(0)} "getFittest: Pass zero as a parameter. It dies painfully";
+}
 
 # getFittest: pass more than the total population. It dies painfully
-
- dies_ok{ my $fittest3 = $algorithm8->getFittest(13)};
+{
+	my $algorithm = GABitVector->new(
+		popSize => 12,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	$algorithm->initialize(30);
+	
+	dies_ok{ my $fittest = $algorithm->getFittest(13)} "getFittest: pass more than the total population. It dies painfully";
+}
 
 # evolve: die painfully if no selection strategy
+{
+	 my $algorithm = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
 
- my $algorithm9 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
+	 $algorithm->initialize(4);
 
- $algorithm9->initialize(4);
-
- dies_ok{ $algorithm9->evolve(
- crossover => "onepoint",
- )};
-
+	 dies_ok{ $algorithm->evolve(
+	 	crossover => "onepoint",
+	 )} "evolve: die painfully if no selection strategy";
+}
 
 
 # evolve: die painfully if no crossover strategy
-
- my $algorithm10 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- $algorithm10->initialize(4);
-
- dies_ok{ $algorithm10->evolve(
- selection => "tournament",
- generations => 34,
- )};
-
+{
+	 my $algorithm = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	
+	 $algorithm->initialize(4);
+	
+	 dies_ok{ $algorithm->evolve(
+		 selection => "tournament",
+		 generations => 34,
+	 )} "evolve: die painfully if no crossover strategy";
+}
 
 # evolve: die painfully if undefined selection strategy
-
- my $algorithm11 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- $algorithm11->initialize(4);
-
- dies_ok{ $algorithm11->evolve(
- selection => "foo",
- crossover => "onepoint",
- generations => 33,
- )};
-
+{
+	 my $algorithm = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	
+	 $algorithm->initialize(4);
+	
+	 dies_ok{ $algorithm->evolve(
+		 selection => "foo",
+		 crossover => "onepoint",
+		 generations => 33,
+	 )} "evolve: die painfully if undefined selection strategy";
+}
 
 # evolve: die painfully if undefined crossover strategy
-
- my $algorithm12 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- $algorithm12->initialize(4);
-
- dies_ok{ $algorithm12->evolve(
- selection => "tournament",
- crossover => "bar",
-generations => 33,
- )};
+{
+	 my $algorithm = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	
+	 $algorithm->initialize(4);
+	
+	 dies_ok{ $algorithm->evolve(
+	 	selection => "tournament",
+	 	crossover => "bar",
+	 	generations => 33,
+	 )} "evolve: die painfully if undefined crossover strategy";
+}
 
 # evolve: die painfully if numGenerations negative or zero
-
- my $algorithm13 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- $algorithm13->initialize(4);
-
- dies_ok{ $algorithm13->evolve(
- selection =>"tournament",
- crossover =>"onepoint",
- generations => 0,
- )};
+{
+	 my $algorithm = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	
+	 $algorithm->initialize(4);
+	
+	 dies_ok{ $algorithm->evolve(
+		 selection =>"tournament",
+		 crossover =>"onepoint",
+		 generations => 0,
+	 )} "evolve: die painfully if numGenerations negative or zero";
+}
 
 # evolve: die painfully if numgenerations is negative or zero
-
- my $algorithm14 = GABitVector->new(
- popSize => 12,
- crossover => 0.3,
- mutation => 0.4,
- fitness => \&fitness,
- );
-
- $algorithm14->initialize(4);
-
- dies_ok{ $algorithm14->evolve(
- selection =>"tournament",
- crossover =>"onepoint",
- generations => -10,
- )};
+{
+	 my $algorithm14 = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	
+	 $algorithm14->initialize(4);
+	
+	 dies_ok{ $algorithm14->evolve(
+		 selection =>"tournament",
+		 crossover =>"onepoint",
+		 generations => -10,
+	 )} "evolve: die painfully if numgenerations is negative or zero";
+}
 	
 # evolve: example that works.
 
-	my $algorithm15 = GABitVector->new(
-									   popSize   => 20,
-									   crossover => 0.8,
-									   mutation  => 0.05,
-									   fitness   => \&fitness,
-                                       terminate => \&terminate,
-	);
-	
-	$algorithm15->initialize(20);
-	
-	$algorithm15->evolve(
-		selection =>"tournament",
-		crossover =>"onepoint",
-        generations => 10
-	);
-	
-	my @ind = $algorithm15->getFittest();
-	
-	print "Score of fittest:", $ind[0]->getScore(), "\n";
+#	my $algorithm15 = GABitVector->new(
+#									   popSize   => 20,
+#									   crossover => 0.8,
+#									   mutation  => 0.05,
+#									   fitness   => \&fitness,
+#                                       terminate => \&terminate,
+#	);
+#	
+#	$algorithm15->initialize(20);
+#	
+#	$algorithm15->evolve(
+#		selection =>"tournament",
+#		crossover =>"onepoint",
+#        generations => 10
+#	);
+#	
+#	my @ind = $algorithm15->getFittest();
+#	
+#	print "Score of fittest:", $ind[0]->getScore(), "\n";
 
 # _terminateFunc: implicit check of currentGeneration
 
 # _terminateFunc: Check default behavior.
 # _terminateFunc: define custom behavior and check if it works as expected.
+
+done_testing;
