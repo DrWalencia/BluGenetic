@@ -163,6 +163,7 @@ sub evolve {
 	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
 	my ( $this, %args) = @_;
 	
+	
 	my $numberOfKeys = scalar keys %args;
 	
 	if ( $numberOfKeys <= 2 ){
@@ -177,12 +178,15 @@ sub evolve {
 	
 	my $selectionStr;
 	
+	# Lowercase whatever is coming inside selection...
+	my $selection = lc($args{selection});
+	
 	# Create the proper selection strategy or die painfully
-	if ( $args{selection} eq "roulette" ){
+	if ( $selection eq "roulette" ){
 		$selectionStr = Roulette->new();
-	}elsif ( $args{selection} eq "tournament" ){
+	}elsif ( $selection eq "tournament" ){
 		$selectionStr = Tournament->new();
-	}elsif ( $args{selection} eq "random"){
+	}elsif ( $selection eq "random"){
 		$selectionStr = Random->new();
 	}else{
 		$log->logconfess("Undefined selection strategy: ", $args{selection});
@@ -190,12 +194,15 @@ sub evolve {
 	
 	my $crossoverStr;
 	
+	# Lowercase whatever is coming inside crossover...
+	my $crossover = lc($args{crossover});
+	
 	# Create the proper crossover strategy or die painfully
-	if ( $args{crossover} eq "onepoint" ){
+	if ( $crossover eq "onepoint" ){
 		$crossoverStr = OnePoint->new();
-	}elsif ( $args{crossover} eq "twopoint" ){
+	}elsif ( $crossover eq "twopoint" ){
 		$crossoverStr = TwoPoint->new();
-	}elsif ( $args{crossover} eq "uniform"){
+	}elsif ( $crossover eq "uniform"){
 		$crossoverStr = Uniform->new();
 	}else{
 		$log->logconfess("Undefined crossover strategy: ", $args{crossover});
@@ -338,10 +345,6 @@ sub evolve {
             $log->info("INDIVIDUALS FINISHED MATING");
         }
         
-        #TODO: CHECK IMPLEMENTATION OF MUTATION, HOW IT SHOULD BE DONE
-        # THERE'S SOMETHING WEIRD WITH THE SCORE CALCULATION. CHECK LOGS
-     
-
         # MUTATION stage
 
         $log->info("MUTATION STAGE STARTED");

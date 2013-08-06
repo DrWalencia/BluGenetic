@@ -482,7 +482,7 @@ sub terminate() {
 	 $algorithm->initialize(4);
 
 	 dies_ok{ $algorithm->evolve(
-	 	crossover => "onepoint",
+	 	crossover => "OnePoint",
 	 )} "evolve: die painfully if no selection strategy";
 }
 
@@ -499,7 +499,7 @@ sub terminate() {
 	 $algorithm->initialize(4);
 	
 	 dies_ok{ $algorithm->evolve(
-		 selection => "tournament",
+		 selection => "Tournament",
 		 generations => 34,
 	 )} "evolve: die painfully if no crossover strategy";
 }
@@ -534,7 +534,7 @@ sub terminate() {
 	 $algorithm->initialize(4);
 	
 	 dies_ok{ $algorithm->evolve(
-	 	selection => "tournament",
+	 	selection => "Tournament",
 	 	crossover => "bar",
 	 	generations => 33,
 	 )} "evolve: die painfully if undefined crossover strategy";
@@ -552,24 +552,24 @@ sub terminate() {
 	 $algorithm->initialize(4);
 	
 	 dies_ok{ $algorithm->evolve(
-		 selection =>"tournament",
-		 crossover =>"onepoint",
+		 selection =>"Tournament",
+		 crossover =>"ONEPOINT",
 		 generations => 0,
 	 )} "evolve: die painfully if numGenerations negative or zero";
 }
 
 # evolve: die painfully if numgenerations is negative or zero
 {
-	 my $algorithm14 = GABitVector->new(
+	 my $algorithm = GABitVector->new(
 		 popSize => 12,
 		 crossover => 0.3,
 		 mutation => 0.4,
 		 fitness => \&fitness,
 	 );
 	
-	 $algorithm14->initialize(4);
+	 $algorithm->initialize(4);
 	
-	 dies_ok{ $algorithm14->evolve(
+	 dies_ok{ $algorithm->evolve(
 		 selection =>"tournament",
 		 crossover =>"onepoint",
 		 generations => -10,
@@ -577,27 +577,27 @@ sub terminate() {
 }
 	
 # evolve: example that works.
-
-#	my $algorithm15 = GABitVector->new(
-#									   popSize   => 20,
-#									   crossover => 0.8,
-#									   mutation  => 0.05,
-#									   fitness   => \&fitness,
-#                                       terminate => \&terminate,
+#{
+#	my $algorithm = GABitVector->new(
+#		popSize   => 20,
+#		crossover => 0.8,
+#		mutation  => 0.05,
+#		fitness   => \&fitness,
+#        terminate => \&terminate,
 #	);
 #	
-#	$algorithm15->initialize(20);
+#	$algorithm->initialize(20);
 #	
-#	$algorithm15->evolve(
+#	$algorithm->evolve(
 #		selection =>"tournament",
 #		crossover =>"onepoint",
 #        generations => 10
 #	);
 #	
-#	my @ind = $algorithm15->getFittest();
+#	my @ind = $algorithm->getFittest();
 #	
 #	print "Score of fittest:", $ind[0]->getScore(), "\n";
-
+#}
 # _terminateFunc: implicit check of currentGeneration
 
 # _terminateFunc: Check default behavior.
