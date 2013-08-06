@@ -38,7 +38,7 @@ use fields 'population',    # ARRAY of individuals comprising the population.
   'genotypeLength',         # INT the length of the Genotype.
   'mutation',               # FLOAT chance of mutation 0..1
   'crossover',              # FLOAT chance of crossover 0..1
-  'initialized',			# INT 1 if initialized, 0 otherwise
+  'initialized',            # INT 1 if initialized, 0 otherwise
   'popSize',                # INT size of the population
   'currentGeneration',      # INT indicates the current generation
   'fitness',                # REFERENCE to the fitness function passed as
@@ -54,8 +54,6 @@ use fields 'population',    # ARRAY of individuals comprising the population.
 #				i -> index of the last element of the population to be sorted
 #   			by fitness function value. Usually population_size() - 1
 #
-#   			JULIAN PASSED ALWAYS ZERO AS THE FIRST PARAMETER (OMG!!)
-#   			I IN THIS CASE IS THE SECOND PARAMETER
 #
 #      RETURNS: NOTHING.
 #  DESCRIPTION: The first function to sort the population by the score. Side by
@@ -68,12 +66,12 @@ sub _quickSort {
 
     # Retrieve fields as reference to a hash and the parameters
     my ( $j, $i, $this ) = @_;
-    
+
     if ( $j < $i ) {
-        my ($pivot, $this) = _place($j, $i, $this);
-        $this = _quickSort( $j,          $pivot - 1, $this);
-        $this = _quickSort( $pivot + 1, $i, $this);
-    }	
+        my ( $pivot, $this ) = _place( $j, $i, $this );
+        $this = _quickSort( $j,         $pivot - 1, $this );
+        $this = _quickSort( $pivot + 1, $i,         $this );
+    }
 
     return $this;
 }    ## --- end sub _quickSort
@@ -96,39 +94,315 @@ sub _place {
 
     # Retrieve fields as reference to a hash and the parameters
     my ( $k, $j, $this ) = @_;
-    
+
     # Make a copy of the Algorithm's population
     # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
     my $populationRef = $this->{population};
-    my @population = @$populationRef;
-    
+    my @population    = @$populationRef;
+
     my $i;
     my $pivot;
     my $pivot_value;
     my $individualTemp;
-    
+
     $pivot       = $k;
     $pivot_value = $population[$pivot]->getScore();
-    for ( $i = $k+1 ; $i <= $j ; $i++ ) {
+
+    for ( $i = $k + 1 ; $i <= $j ; $i++ ) {
 
         if ( $population[$i]->getScore() < $pivot_value ) {
             $pivot++;
-            $individualTemp             = $population[$i];
+            $individualTemp     = $population[$i];
             $population[$i]     = $population[$pivot];
             $population[$pivot] = $individualTemp;
         }
     }
-    $individualTemp             = $population[$k];
-    $population[$k]      = $population[$pivot];
+
+    $individualTemp     = $population[$k];
+    $population[$k]     = $population[$pivot];
     $population[$pivot] = $individualTemp;
 
-	# Assign to the field population a REFERENCE to the pop just modified
+    # Assign to the field population a REFERENCE to the pop just modified
     $this->{population} = \@population;
-    
-    return ($pivot, $this);
+
+    return ( $pivot, $this );
 }    ## --- end sub _place
 
+#=== CLASS METHOD  =============================================================
+#        CLASS: GeneticAlgorithm
+#       METHOD: _getProperCrossoverStr
+#
+#   PARAMETERS: crossover -> string containing the crossover strategy type
+#                wanted.
+#
+#      RETURNS: The adequate instance of a Crossover Strategy.
+#
+#  DESCRIPTION: Factory method that decides which crossover strategy 
+#               instantiate.
+#
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub _getProperCrossoverStr{
 
+    # Get the parameters...
+    my $this = shift;
+    my $crossover = shift;
+
+    my $crossoverStr;
+
+    # Lowercase whatever is coming inside crossover...
+    $crossover = lc( $crossover );
+
+    # Create the proper crossover strategy or die painfully
+    if ( $crossover eq "onepoint" ) {
+        $crossoverStr = OnePoint->new();
+    }elsif ( $crossover eq "twopoint" ) {
+        $crossoverStr = TwoPoint->new();
+    }elsif ( $crossover eq "uniform" ) {
+        $crossoverStr = Uniform->new();
+    }else {
+        $log->logconfess( "Undefined crossover strategy: ", $crossover);
+    }
+
+    return $crossoverStr;
+}
+
+#=== CLASS METHOD  =============================================================
+#        CLASS: GeneticAlgorithm
+#       METHOD: _getProperSelectionStr
+#
+#   PARAMETERS: selection -> string containing the selection strategy type
+#                             wanted.
+#
+#      RETURNS: The adequate instance of a Selection Strategy.
+#
+#  DESCRIPTION: Factory method to decide which Selection Strategy 
+#               instantiate.
+#
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub _getProperSelectionStr{
+
+    # Get the parameters...
+    my $this = shift;
+    my $selection = shift;
+
+    # Lowercase whatever is coming inside selection...
+    $selection = lc($selection);
+
+    my $selectionStr;
+
+    # Create the proper selection strategy or die painfully
+    if ( $selection eq "roulette" ) {
+        $selectionStr = Roulette->new();
+    }elsif ( $selection eq "tournament" ) {
+        $selectionStr = Tournament->new();
+    }elsif ( $selection eq "random" ) {
+        $selectionStr = Random->new();
+    }else {
+        $log->logconfess( "Undefined selection strategy: ", $selection );
+    }
+
+    return $selectionStr;
+
+}
+
+#=== CLASS METHOD  =============================================================
+#        CLASS: GeneticAlgorithm
+#       METHOD: _performMutation
+#
+#   PARAMETERS: population -> the population in which the method operates.
+#
+#      RETURNS: an array of individuals that is the result of the mating
+#               process.
+#
+#  DESCRIPTION: Encapsulates the logic regarding the mutation operation in
+#               the GA.
+#
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub _performMutation {
+
+    # Get the parameters...
+    my $this       = shift;
+    my @population = @_;
+
+    $log->info("MUTATION STAGE STARTED");
+
+    for ( my $j = 0 ; $j < @population ; $j++ ) {
+
+        # If a random number below mutation*100 is produced
+        # then perform a mutation on the individual whose
+        # index corresponds to j, otherwise do nothing.
+
+        if ( int( rand(101) ) < ( $this->{mutation} * 100 ) ) {
+
+            # Apply mutation on the individual and calculate new score
+            my $position =
+              int( rand( $population[0]->getGenotype()->getLength() ) );
+
+            $log->info("Position to mute: $position \n");
+
+            my $genotypeTemp = $population[$j]->getGenotype();
+
+            my $c = $genotypeTemp->{genotype};
+            $log->info( "Genotype before change: (",
+                @$c, ") Score: ", $population[$j]->getScore(), "\n" );
+
+            $genotypeTemp->changeGen($position);
+            $population[$j]->setGenotype($genotypeTemp);
+            my $score = $this->fitnessFunc( $population[$j] );
+            $population[$j]->setScore($score);
+
+            my $genotypeTemp2 = $population[$j]->getGenotype();
+            my $e             = $genotypeTemp2->{genotype};
+            $log->info( "Genotype after change: (",
+                @$e, ") Score: ", $population[$j]->getScore(), "\n" );
+
+        }
+    }
+
+    $log->info("MUTATION STAGE FINISHED");
+
+    return @population;
+}
+
+#=== CLASS METHOD  =============================================================
+#        CLASS: GeneticAlgorithm
+#       METHOD: _performCrossover
+#
+#   PARAMETERS: crossoverStr    -> the crossover strategy to apply to the pop.
+#               population      -> the population in which the method operates.
+#
+#      RETURNS: an array of individuals that is the result of the mating
+#               process.
+#
+#  DESCRIPTION: Encapsulates the logic regarding the crossover operation in
+#               the GA.
+#
+#       THROWS: no exceptions
+#     COMMENTS: it doesn't operate on the population stored at $this because
+#               the latter hasn't suffered the selection process.
+#     SEE ALSO: n/a
+#===============================================================================
+sub _performCrossover {
+
+    $log->info("SELECTION STAGE STARTED");
+
+    # Get the arguments...
+    my $this         = shift;
+    my $crossoverStr = shift;
+    my @population   = @_;
+
+    my @recombinationSet;
+    my @noRecombinationSet;
+
+    # If a random number below crossover*100 is produced, then
+    # the individual given by j goes to the recombination set.
+    # Otherwise, it goes to the no recombination set.
+    for ( my $j = 0 ; $j < $this->{popSize} ; $j++ ) {
+        if ( int( rand(101) ) <= ( $this->{crossover} * 100 ) ) {
+            push @recombinationSet, $population[$j];
+        }
+        else {
+            push @noRecombinationSet, $population[$j];
+        }
+    }
+
+    # If the recombination set has an odd number of individuals
+    # take one from the no recombination set randomly and insert
+    # it in the recombination set.
+    # But before, make sure that there's something to do...
+    if ( (@recombinationSet) != 0 ) {
+
+        # Solve the "cardinality issue"
+        if ( ( ( scalar @recombinationSet ) % 2 ) != 0 ) {
+            my $randomPos = int( rand( scalar @noRecombinationSet ) );
+            push @recombinationSet, $noRecombinationSet[$randomPos];
+            splice( @noRecombinationSet, $randomPos, 1 );
+        }
+
+        # And let the individuals mate...
+        do {
+
+            my $position1;
+            my $position2;
+
+            $log->info("INDIVIDUALS START TO MATE");
+
+            # Get a couple of random elements from the recombination set
+            do {
+                $position1 = int( rand(@recombinationSet) );
+                $position2 = int( rand(@recombinationSet) );
+
+            } while ( $position1 == $position2 );
+
+            $log->info("Elements to be mated: $position1, $position2");
+            $log->info( "Size of recombinationSet: ",
+                scalar @recombinationSet );
+
+            # Mate them and make sure TWO elements are returned
+            my @crossoverOffspring =
+              $crossoverStr->crossIndividuals( $recombinationSet[$position1],
+                $recombinationSet[$position2] );
+
+            my $nIndCrossover = ( scalar @crossoverOffspring );
+            $log->logconfess(
+                "Wrong number of individuals as a product of a
+                crossover operation: $nIndCrossover"
+            ) if ( @crossoverOffspring != 2 );
+
+            # Calculate the score for the NEW child one
+            my $individualTemp1 = $crossoverOffspring[0];
+            my $score           = $this->fitnessFunc($individualTemp1);
+            $individualTemp1->setScore($score);
+
+            # Calculate the score for the NEW child two
+            my $individualTemp2 = $crossoverOffspring[1];
+            $score = $this->fitnessFunc($individualTemp2);
+            $individualTemp2->setScore($score);
+
+            # And put them in the no recombination set
+            push @noRecombinationSet, $individualTemp1;
+            push @noRecombinationSet, $individualTemp2;
+
+            # Erase the elements who just mated from the recombination set
+
+            if ( $position1 == 0 ) {
+                shift @recombinationSet;
+            }
+            elsif ( $position1 == @recombinationSet ) {
+                pop @recombinationSet;
+            }
+            else {
+                splice( @recombinationSet, $position1, 1 );
+            }
+
+            if ( $position2 == 0 ) {
+                shift @recombinationSet;
+            }
+            elsif ( $position2 == @recombinationSet ) {
+                pop @recombinationSet;
+            }
+            else {
+                splice( @recombinationSet, $position2, 1 );
+            }
+
+        } while ( (@recombinationSet) != 0 );
+
+        $log->info("INDIVIDUALS FINISHED MATING");
+    }
+
+    $log->info("SELECTION STAGE FINISHED");
+
+    return @noRecombinationSet;
+}
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
@@ -147,26 +421,26 @@ sub getFittest {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my ( $this, $nIndWanted ) = @_;
-    
+
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
-    $log->logconfess("The algorithm has not been initialized") 
-    if ($this->{initialized} == 0);
+    $log->logconfess("The algorithm has not been initialized")
+      if ( $this->{initialized} == 0 );
 
     # Before taking any decisions, sort the population
     $this->sortPopulation();
 
     # Individual(s) to be returned at the end
     my @fittest;
-    
+
     # Dereference population to play with its elements
-    my $popRef = $this->{population};
+    my $popRef     = $this->{population};
     my @population = @$popRef;
 
     # If no parameters are found, just push the fittest
     # Otherwise, select as many elements as needed and push them
     # CAREFUL!! THE POPULATION WILL BE SORTED BY ASCENDING FITNESS VALUE
     if ( !( defined $nIndWanted ) ) {
-        push @fittest, $population[$this->{popSize}-1];
+        push @fittest, $population[ $this->{popSize} - 1 ];
     }
     else {
         # A couple of situations in which the program dies painfully
@@ -175,13 +449,13 @@ sub getFittest {
           if $nIndWanted <= 0;
         $log->logconfess(
             "Too many fittest individuals (more than the total 
-		  population)($nIndWanted,$this->{popSize}"
+            population)($nIndWanted,$this->{popSize}"
         ) if $nIndWanted > $this->{popSize};
         my $i;
 
         # Take as many fittest individuals as needed
         for ( $i = 0 ; $i < $nIndWanted ; $i++ ) {
-            push @fittest, $population[$this->{popSize} - $i -1];
+            push @fittest, $population[ $this->{popSize} - $i - 1 ];
         }
     }
     my $individualsReturned = scalar @fittest;
@@ -204,11 +478,11 @@ sub getPopulation {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this = shift;
-    
+
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
-    $log->logconfess("The algorithm has not been initialized") 
-    if ($this->{initialized} == 0);
-    
+    $log->logconfess("The algorithm has not been initialized")
+      if ( $this->{initialized} == 0 );
+
     $log->info("Population REFERENCE returned.");
     return $this->{population};
 }    ## --- end sub getPopulation
@@ -234,7 +508,7 @@ sub getPopSize {
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: getCrossChance 
+#       METHOD: getCrossChance
 #   PARAMETERS: None.
 #      RETURNS: FLOAT the crossover chance
 #  DESCRIPTION: Getter for the crossover chance 0..1
@@ -242,18 +516,18 @@ sub getPopSize {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub getCrossChance{
+sub getCrossChance {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this        = shift;
     my $crossChance = $this->{crossover};
     $log->info("Crossover chance returned: $crossChance ");
     return $crossChance;
-}    ## --- end sub getCrossChance 
+}    ## --- end sub getCrossChance
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: getMutChance 
+#       METHOD: getMutChance
 #   PARAMETERS: None.
 #      RETURNS: FLOAT the mutation chance
 #  DESCRIPTION: Getter for the mutation chance 0..1
@@ -261,15 +535,14 @@ sub getCrossChance{
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub getMutChance{
+sub getMutChance {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this      = shift;
     my $mutChance = $this->{mutation};
     $log->info("Mutation chance returned: $mutChance");
     return $mutChance;
-}    ## --- end sub getMutChance 
-
+}    ## --- end sub getMutChance
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
@@ -304,9 +577,9 @@ sub sortPopulation {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this = shift;
-    
-    # Redefine this with the AG coming from the _quickSort method 
-    $this =  _quickSort(0, $this->{popSize} - 1, $this );
+
+    # Redefine this with the AG coming from the _quickSort method
+    $this = _quickSort( 0, $this->{popSize} - 1, $this );
 
     return;
 }    ## --- end sub sortPopulation
@@ -324,7 +597,8 @@ sub sortPopulation {
 #     SEE ALSO: n/a
 #===============================================================================
 sub initialize {
-    $log->logconfess('The function initialize() must be defined in a subclass.\n');
+    $log->logconfess(
+        'The function initialize() must be defined in a subclass.\n');
     return;
 }    ## --- end sub initialize
 
@@ -402,5 +676,38 @@ sub fitnessFunc {
 
     return $score;
 }    ## --- end sub fitnessFunc
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: GeneticAlgorithm
+#       METHOD: terminateFunc
+#   PARAMETERS: None.
+#      RETURNS: 1 if the custom condition defined here is satisfied, 0
+#               otherwise.
+#  DESCRIPTION: Allows for a custom termination routine to be defined.
+#       THROWS: no exceptions
+#     COMMENTS: DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
+#               TILL THE MAXIMUM NUMBER OF GENERATIONS. THIS IS A PRIVATE
+#               METHOD.
+#     SEE ALSO: n/a
+#===============================================================================
+sub terminateFunc {
+
+    $log->info("Terminate function called.");
+
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
+    my $this = shift;
+    my $result;
+
+    # If there's a terminate function, use it and get its result
+    if ( defined $this->{terminate} ) {
+        $result = $this->{terminate}($this);
+        $log->info("Terminate function defined. Result: $result");
+    }
+    else {
+        $result = 0;
+        $log->info("Terminate function undefined. Result: $result");
+    }
+    return $result;
+}    ## --- end sub terminateFunc
 
 1;

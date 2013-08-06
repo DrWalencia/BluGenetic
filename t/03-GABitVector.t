@@ -577,30 +577,69 @@ sub terminate() {
 }
 	
 # evolve: example that works.
-#{
-#	my $algorithm = GABitVector->new(
-#		popSize   => 20,
-#		crossover => 0.8,
-#		mutation  => 0.05,
-#		fitness   => \&fitness,
-#        terminate => \&terminate,
-#	);
-#	
-#	$algorithm->initialize(20);
-#	
-#	$algorithm->evolve(
-#		selection =>"tournament",
-#		crossover =>"onepoint",
-#        generations => 10
-#	);
-#	
-#	my @ind = $algorithm->getFittest();
-#	
-#	print "Score of fittest:", $ind[0]->getScore(), "\n";
-#}
+{
+	my $algorithm = GABitVector->new(
+		popSize   => 20,
+		crossover => 0.8,
+		mutation  => 0.05,
+		fitness   => \&fitness,
+        terminate => \&terminate,
+	);
+	
+	$algorithm->initialize(20);
+	
+	$algorithm->evolve(
+		selection =>"tournament",
+		crossover =>"onepoint",
+        generations => 10
+	);
+	
+	my @ind = $algorithm->getFittest();
+	
+	print "Score of fittest:", $ind[0]->getScore(), "\n";
+}
+
+
 # _terminateFunc: implicit check of currentGeneration
 
-# _terminateFunc: Check default behavior.
-# _terminateFunc: define custom behavior and check if it works as expected.
+sub myTerminate() {
+
+    my $GA = shift;
+
+    print ($GA->getCurrentGeneration());
+    print "\n";
+
+    my @fittest = $GA->getFittest();
+
+
+    if ( $fittest[0]->getScore() > 14 ){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
+{
+    my $algorithm = GABitVector->new(
+        popSize =>  20,
+        crossover => 0.9,
+        mutation => 0.04,
+        fitness =>  \&fitness,
+        terminate => \&myTerminate,
+   );
+
+   $algorithm->initialize(20);
+
+   $algorithm->evolve(
+       selection    => "tournament",
+       crossover    => "twopoint",
+       generations  => 10,
+   );
+
+	my @ind = $algorithm->getFittest();
+	
+	print "Score of fittest:", $ind[0]->getScore(), "\n";
+
+}
 
 done_testing;

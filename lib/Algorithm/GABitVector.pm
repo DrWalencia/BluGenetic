@@ -47,20 +47,21 @@ our $log = Log::Log4perl::get_logger("GABitVector");
 #       THROWS: no exceptions
 #===============================================================================
 sub new {
+
     $log->info("Creation of new GABitVector started.");
-   
+
     # Every method of a class passes first argument as class name
-    my $class = shift; 
+    my $class = shift;
 
     my %args = @_; # After the class name is removed, take the hash of arguments
 
     # Reference to anonymous hash to store instance variables (AKA FIELDS)
     my $this = {
-        popSize   => $args{popSize},
-        crossover => $args{crossover},
-        mutation  => $args{mutation},
-        fitness   => $args{fitness},
-        terminate => $args{terminate},   # no function defined: terminate: undef
+        popSize     => $args{popSize},
+        crossover   => $args{crossover},
+        mutation    => $args{mutation},
+        fitness     => $args{fitness},
+        terminate   => $args{terminate}, # no function defined: terminate: undef
         initialized => 0,
     };
 
@@ -93,18 +94,18 @@ sub initialize {
 
     # Dereference hash leaving it ready to be used
     my %fields = %$this;
-    
-    $log->logconfess("Argument genotypeLength missing") 
-    if ( !(defined $genotypeLength) );
-    
+
+    $log->logconfess("Argument genotypeLength missing")
+      if ( !( defined $genotypeLength ) );
+
     $log->logconfess("Wrong genotypeLength value: $genotypeLength")
-    if ( $genotypeLength <= 0);
+      if ( $genotypeLength <= 0 );
 
     $log->info(
         "Initializing population of $fields{popSize} individuals of
         type BitVector with length $genotypeLength"
     );
-    
+
     # Initialize the current generation
     $this->{currentGeneration} = 0;
 
@@ -117,7 +118,7 @@ sub initialize {
     for ( $i = 0 ; $i < $fields{popSize} ; $i++ ) {
         my $individualTemp = Individual->new();
         $individualTemp->setGenotype( BitVector->new($genotypeLength) );
-        $individualTemp->setScore( $this->SUPER::fitnessFunc($individualTemp) );
+        $individualTemp->setScore( $this->fitnessFunc($individualTemp) );
         push @pop, $individualTemp;
     }
 
@@ -125,15 +126,15 @@ sub initialize {
     # REFERENCE TO THE ARRAY, IF JUST PASS @POP THEN POPULATION WILL HAVE THE
     # AMOUNT OF ELEMENTS IN THE POPULATION.
     $this->{population} = \@pop;
-    
+
     # And set the genotype length inside the hash of fields
-    $this->{genotypeLength}= $genotypeLength;
+    $this->{genotypeLength} = $genotypeLength;
 
     $log->info(
         "Population of $fields{popSize} individuals of type BitVector
         with length $genotypeLength initialized"
     );
-    
+
     # Mark the GA as initialized, so that many other methods can be used
     $this->{initialized} = 1;
 
@@ -157,246 +158,81 @@ sub initialize {
 #     SEE ALSO: n/a
 #===============================================================================
 sub evolve {
-	
-	$log->info("EVOLVE METHOD CALLED. PREPARE FOR TROUBLE");
-	
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
-	my ( $this, %args) = @_;
-	
-	
-	my $numberOfKeys = scalar keys %args;
-	
-	if ( $numberOfKeys <= 2 ){
-		
-		$log->logconfess("Cannot evolve without a selection strategy")
-		if ( !(defined $args{selection}) );
-		
-		$log->logconfess("Cannot evolve without a crossover strategy")
-		if ( !(defined $args{crossover}) );
 
-	}
-	
-	my $selectionStr;
-	
-	# Lowercase whatever is coming inside selection...
-	my $selection = lc($args{selection});
-	
-	# Create the proper selection strategy or die painfully
-	if ( $selection eq "roulette" ){
-		$selectionStr = Roulette->new();
-	}elsif ( $selection eq "tournament" ){
-		$selectionStr = Tournament->new();
-	}elsif ( $selection eq "random"){
-		$selectionStr = Random->new();
-	}else{
-		$log->logconfess("Undefined selection strategy: ", $args{selection});
-	}
-	
-	my $crossoverStr;
-	
-	# Lowercase whatever is coming inside crossover...
-	my $crossover = lc($args{crossover});
-	
-	# Create the proper crossover strategy or die painfully
-	if ( $crossover eq "onepoint" ){
-		$crossoverStr = OnePoint->new();
-	}elsif ( $crossover eq "twopoint" ){
-		$crossoverStr = TwoPoint->new();
-	}elsif ( $crossover eq "uniform"){
-		$crossoverStr = Uniform->new();
-	}else{
-		$log->logconfess("Undefined crossover strategy: ", $args{crossover});
-	}
-	
-	my $numGenerations;
+    $log->info("EVOLVE METHOD CALLED. PREPARE FOR TROUBLE");
 
-	# If numGenerations is undef, default it to 1
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
+    my ( $this, %args ) = @_;
+
+    my $numberOfKeys = scalar keys %args;
+
+    if ( $numberOfKeys <= 2 ) {
+
+        $log->logconfess("Cannot evolve without a selection strategy")
+          if ( !( defined $args{selection} ) );
+
+        $log->logconfess("Cannot evolve without a crossover strategy")
+          if ( !( defined $args{crossover} ) );
+
+    }
+
+    # Instantiate the proper selection/crossover strategies...
+    my $selectionStr = $this->_getProperSelectionStr( $args{selection} );
+    my $crossoverStr = $this->_getProperCrossoverStr( $args{crossover} );
+
+    my $numGenerations;
+
+    # If numGenerations is undef, default it to 1
     if ( !( defined $args{generations} ) ) {
         $numGenerations = 1;
-    }else{
-    	$numGenerations = $args{generations};
     }
-    
+    else {
+        $numGenerations = $args{generations};
+    }
+
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
-    $log->logconfess("The algorithm has not been initialized") 
-    if ($this->{initialized} == 0);
-      
+    $log->logconfess("The algorithm has not been initialized")
+      if ( $this->{initialized} == 0 );
+
     # if numGenerations is zero or negative, die painfully
     $log->logconfess("Wrong number of generations: $numGenerations")
-     if ( $numGenerations <= 0);
+      if ( $numGenerations <= 0 );
 
     # Initialize the current generation
     $this->{currentGeneration} = 0;
-    
-    my @recombinationSet;
-    my @noRecombinationSet;
-    my @crossoverOffspring;
-    my $position1;
-    my $position2;
-    my $score;
-    my $i;
 
     # Unless interrupted by terminateFunc, run $numGenerations times
-    for ( $i = 0 ; $i < $numGenerations ; $i++ ) {
+    for ( my $i = 0 ; $i < $numGenerations ; $i++ ) {
 
         # Generation i complete...
         $this->{currentGeneration}++;
 
-        # Apply SELECTION STRATEGY...
-        
         # Dereference the population to use it
-        my $popRef = $this->{population};
+        my $popRef     = $this->{population};
         my @population = @$popRef;
-        
+
+        # Apply SELECTION STRATEGY...
         @population = $selectionStr->performSelection(@population);
 
-        # Fill the recombination and no recombination sets
-        # It's VITAL to empty them on each iteration
-        undef @recombinationSet;
-        undef @noRecombinationSet;
-        my $j;
+        # Apply CROSSOVER STRATEGY...
+        @population = $this->_performCrossover( $crossoverStr, @population );
 
-        # If a random number below crossover*100 is produced, then
-        # the individual given by j goes to the recombination set.
-        # Otherwise, it goes to the no recombination set.
-        for ( $j = 0 ; $j < $this->{popSize} ; $j++ ) {
-            if ( int( rand(101) ) <= ( $this->{crossover} * 100 ) ) {
-                push @recombinationSet, $population[$j];
-            }
-            else {
-                push @noRecombinationSet, $population[$j];
-            }
-        }
+        # Apply MUTATION...
+        @population = $this->_performMutation(@population);
 
-        # If the recombination set has an odd number of individuals
-        # take one from the no recombination set randomly and insert
-        # it in the recombination set.
-        # But before, make sure that there's something to do...
-        if ( ( @recombinationSet ) != 0 ) {
-
-            # Solve the "cardinality issue"
-            if ( ( ( scalar @recombinationSet ) % 2 ) != 0 ) {
-                my $randomPos = int( rand( scalar @noRecombinationSet ) );
-                push @recombinationSet, $noRecombinationSet[$randomPos];
-                splice (@noRecombinationSet, $randomPos, 1);
-            }
-
-            # And let the individuals mate...
-            do {
-            	
-            	$log->info("INDIVIDUALS START TO MATE");
-                # Get a couple of random elements from the recombination set
-                do {
-                    $position1 = int( rand( @recombinationSet ) );
-                    $position2 = int( rand( @recombinationSet ) );
-                    
-                    
-                } while ( $position1 == $position2 );
-                
-                $log->info("Elements to be mated: $position1, $position2");
-                $log->info("Size of recombinationSet: ", scalar @recombinationSet);
-
-                # Mate them and make sure TWO elements are returned
-                @crossoverOffspring = $crossoverStr->crossIndividuals(
-                    $recombinationSet[$position1],
-                    $recombinationSet[$position2]
-                );
-                
-                my $nIndCrossover = ( scalar @crossoverOffspring );
-                $log->logconfess(
-                    "Wrong number of individuals as a product of a
-				crossover operation: $nIndCrossover"
-                ) if (@crossoverOffspring != 2);
-
-                # Calculate the score for the NEW child one
-                my $individualTemp1 = $crossoverOffspring[0];
-                $score = $this->fitnessFunc($individualTemp1);
-                $individualTemp1->setScore($score);
-
-                # Calculate the score for the NEW child two
-                my $individualTemp2 = $crossoverOffspring[1];
-                $score = $this->fitnessFunc($individualTemp2);
-                $individualTemp2->setScore($score);
-
-                # And put them in the no recombination set
-                push @noRecombinationSet, $individualTemp1;
-                push @noRecombinationSet, $individualTemp2;
-
-                # Erase the elements who just mated from the recombination set
-                
-                if ($position1 == 0){
-                	shift @recombinationSet;
-                }elsif ($position1 == @recombinationSet){
-                	pop @recombinationSet;
-                }else{
-                	splice(@recombinationSet, $position1,1);
-                }
-                
-                if ($position2 == 0){
-                	shift @recombinationSet;
-                }elsif ($position2 == @recombinationSet){
-                	pop @recombinationSet;
-                }else{
-                	splice(@recombinationSet, $position2,1);
-                }
-                
-            } while ( ( @recombinationSet ) != 0 );
-            
-            $log->info("INDIVIDUALS FINISHED MATING");
-        }
-        
-        # MUTATION stage
-
-        $log->info("MUTATION STAGE STARTED");
-        
-        for ( $j = 0 ; $j < ( @noRecombinationSet ) ; $j++ ) {
-
-            # If a random number below mutation*100 is produced
-            # then perform a mutation on the individual whose
-            # index corresponds to j, otherwise do nothing.
-            
-            if ( int( rand(101) ) < ( $this->{mutation} * 100 ) ) {
-
-                # Apply mutation on the individual and calculate new score
-                my $position     = int( rand( $population[0]->getGenotype()->getLength() ) );
-
-                $log->info("Position to mute: $position \n");
-
-                my $genotypeTemp = $noRecombinationSet[$j]->getGenotype();
-
-                my $c = $genotypeTemp->{genotype};
-                $log->info("Genotype before change: (",@$c,") Score: ", $noRecombinationSet[$j]->getScore(), "\n");
-
-                $genotypeTemp->changeGen($position);
-                $noRecombinationSet[$j]->setGenotype($genotypeTemp);
-                $score = $this->fitnessFunc( $noRecombinationSet[$j] );
-                $noRecombinationSet[$j]->setScore($score);
-
-                my $genotypeTemp2 = $noRecombinationSet[$j]->getGenotype();
-                my $e = $genotypeTemp2->{genotype};
-                $log->info("Genotype after change: (", @$e, ") Score: ", $noRecombinationSet[$j]->getScore(),"\n"); 
-
-            }
-        }
-
-        $log->info("MUTATION STAGE FINISHED");
-
-        
         # Always insert in the population a REFERENCE
-        $this->{population} = \@noRecombinationSet;
+        $this->{population} = \@population;
 
         # If the terminate criterion is met, iteration finishes.
-        if ( _terminateFunc($this) ) {
+        if ( $this->terminateFunc() ) {
             return;
         }
     }
-    
+
     $log->info("EVOLVE METHOD FINISHED. ARE THERE ANY SURVIVORS?");
-    
+
     return;
 }    ## --- end sub evolve
-
-
 
 #=== CLASS METHOD  =============================================================
 #        CLASS: GABitVector
@@ -419,41 +255,42 @@ sub insertIndividual {
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my $this = shift;
 
-    # Get the arguments
+    # Get the arguments...
     my ( $individual, $index ) = @_;
-    
+
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
-    $log->logconfess("The algorithm has not been initialized") 
-    if ($this->{initialized} == 0);
-    
+    $log->logconfess("The algorithm has not been initialized")
+      if ( $this->{initialized} == 0 );
+
     # Check if the individual is defined
-    $log->logconfess("Undefined individual") if (!(defined $individual));
-    $log->logconfess("Undefined index") if (!(defined $index));
-    
-    my $genotypeLength = $individual->getGenotype()->getLength();
+    $log->logconfess("Undefined individual") if ( !( defined $individual ) );
+    $log->logconfess("Undefined index")      if ( !( defined $index ) );
+
+    my $genotypeLength  = $individual->getGenotype()->getLength();
     my $aGenotypeLength = $this->{genotypeLength};
-    
+
     # Check if the length of the individual is compatible with lengthGenotype
-    $log->logconfess("Incompatible genotype lengths: ind: $genotypeLength, AG: $aGenotypeLength ")
-    if ($genotypeLength != $aGenotypeLength);
+    $log->logconfess(
+"Incompatible genotype lengths: ind: $genotypeLength, AG: $aGenotypeLength "
+    ) if ( $genotypeLength != $aGenotypeLength );
 
     # Couple of cases in which the program dies horribly
     $log->logconfess("Index bigger than population size ($index)")
       if ( $index > $this->{popSize} );
 
     $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
-    
+
     # Make a copy of the Algorithm's population
     # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
-    my $pop = $this->{population};
+    my $pop        = $this->{population};
     my @population = @$pop;
-    
+
     # Calculate the individual's score before inserting it
     $individual->setScore( $this->fitnessFunc($individual) );
 
     # Put the individual on the position specified, destroying what was there
     $population[$index] = $individual;
-    
+
     $this->{population} = \@population;
 
     $log->info(
@@ -486,67 +323,33 @@ sub deleteIndividual {
 
     # Get the argument
     my ($index) = @_;
-    
+
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
-    $log->logconfess("The algorithm has not been initialized") 
-    if ($this->{initialized} == 0);
+    $log->logconfess("The algorithm has not been initialized")
+      if ( $this->{initialized} == 0 );
 
     # Couple of cases in which the program dies horribly
     $log->logconfess("Index bigger than population size ($index)")
-      if ( $index > $this->{popSize}-1);
+      if ( $index > $this->{popSize} - 1 );
 
     $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
 
-    my $genotypeTemp   = BitVector->new( $this->{genotypeLength} );
-    my $individualTemp = Individual->new(
-    							genotype => $genotypeTemp);
+    my $genotypeTemp = BitVector->new( $this->{genotypeLength} );
+    my $individualTemp = Individual->new( genotype => $genotypeTemp );
 
-    $individualTemp->setScore($this->fitnessFunc($individualTemp));
-    
+    $individualTemp->setScore( $this->fitnessFunc($individualTemp) );
+
     # Make a copy of the Algorithm's population
     # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
-    my $pop = $this->{population};
+    my $pop        = $this->{population};
     my @population = @$pop;
-    
+
     $population[$index] = $individualTemp;
-    
+
     $this->{population} = \@population;
 
     return 1;
 
 }    ## --- end sub deleteIndividual
-
-#===  CLASS METHOD  ============================================================
-#        CLASS: GABitVector 
-#       METHOD: _terminateFunc
-#   PARAMETERS: None.
-#      RETURNS: 1 if the custom condition defined here is satisfied, 0
-#               otherwise.
-#  DESCRIPTION: Allows for a custom termination routine to be defined.
-#       THROWS: no exceptions
-#     COMMENTS: DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
-#               TILL THE MAXIMUM NUMBER OF GENERATIONS. THIS IS A PRIVATE
-#               METHOD.
-#     SEE ALSO: n/a
-#===============================================================================
-sub _terminateFunc {
-
-    $log->info("Terminate function called.");
-
-    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
-    my $this = shift;
-    my $result;
-
-    # If there's a terminate function, use it and get its result
-    if ( defined $this->{terminate} ) {
-        $result = $this->{terminate}($this);
-        $log->info("Terminate function defined. Result: $result");
-    }
-    else {
-        $result = 0;
-        $log->info("Terminate function undefined. Result: $result");
-    }
-    return $result;
-}    ## --- end sub terminateFunc
 
 1;
