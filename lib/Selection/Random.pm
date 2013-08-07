@@ -1,15 +1,14 @@
 #
 #===============================================================================
 #
-#         FILE: Roulette.pm
+#         FILE: Random.pm
 #
-#  DESCRIPTION: Concrete implementation of the selection strategy Interface
-#  				comprising the Roulette selection technique, which consists
-#  				on giving to each individual a chance of being selected 
-#  				proportional to its fitness value. This way fitter individuals
-#  				are more prone to be selected.
-#
-#        FILES: ---
+#  DESCRIPTION: Concrete implementation of the selection strategy interface 
+#				comprising the random selection technique which consists on 
+#				selecting a random element from the population passed as a 
+#				parameter till a new population of the same size is complete.
+#        
+#		 FILES: ---
 #         BUGS: ---
 #        NOTES: ---
 #       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
@@ -19,17 +18,24 @@
 #     REVISION: ---
 #===============================================================================
 
+package Random;
+
 use strict;
 use warnings;
+use diagnostics;
+
+use Log::Log4perl qw(get_logger);
+
+# Get a logger from the singleton
+our $log = Log::Log4perl::get_logger("Random");
 
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
 
-package Roulette;
 
 # Random inherits from Selection::SelectionStrategy
 use Selection::SelectionStrategy;
-our @ISA = qw(SelectionStrategy);
+use base qw(SelectionStrategy);
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Roulette
@@ -67,12 +73,22 @@ sub new {
 #     SEE ALSO: n/a
 #===============================================================================
 sub performSelection {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
+	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS ARRAY
 	my $this = shift;
 
-	# DO STUFF
+	# Get the arguments...
+	my @population = @_;
+	
+	my @returnPopulation;
+	
+	# Push random elements till returnPopulation has the same size as
+	# population
+	while ( @returnPopulation < @population ){
+		push @returnPopulation, $population[int(rand(@population))];
+	}
 
-	return ;
+	return @returnPopulation;
+	
 } ## --- end sub performSelection
 
 1; # Required for all packages in Perl

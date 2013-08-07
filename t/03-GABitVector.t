@@ -393,6 +393,7 @@ sub terminate() {
 	 $algorithm->sortPopulation();
 	
 	 my $population = $algorithm->getPopulation();
+	 
 	 my $i;
 	
 	 for ( $i = 0; $i < $algorithm->{popSize} - 1; $i++ ){

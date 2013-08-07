@@ -46,88 +46,6 @@ use fields 'population',    # ARRAY of individuals comprising the population.
   'terminate';              # REFERENCE to the terminate function passed as
                             # a parameter
 
-#===  CLASS METHOD  ============================================================
-#        CLASS: GeneticAlgorithm
-#       METHOD: _quickSort
-#
-#   PARAMETERS: j -> index of the first element of the population to be sorted
-#				i -> index of the last element of the population to be sorted
-#   			by fitness function value. Usually population_size() - 1
-#
-#
-#      RETURNS: NOTHING.
-#  DESCRIPTION: The first function to sort the population by the score. Side by
-#  				side with _place() implement the quicksort algorithm.
-#       THROWS: no exceptions
-#     COMMENTS: PRIVATE METHOD: NO $THIS CONTAINING FIELDS AS A PARAMETER
-#     SEE ALSO: n/a
-#===============================================================================
-sub _quickSort {
-
-    # Retrieve fields as reference to a hash and the parameters
-    my ( $j, $i, $this ) = @_;
-
-    if ( $j < $i ) {
-        my ( $pivot, $this ) = _place( $j, $i, $this );
-        $this = _quickSort( $j,         $pivot - 1, $this );
-        $this = _quickSort( $pivot + 1, $i,         $this );
-    }
-
-    return $this;
-}    ## --- end sub _quickSort
-
-#===  CLASS METHOD  ============================================================
-#        CLASS: GeneticAlgorithm
-#       METHOD: _place
-#
-#   PARAMETERS: k -> index of the first element of the population to be sorted
-#				j -> index of the last element of the population to be sorted
-#   			by fitness function value. Usually the i from _quickSort()
-#
-#      RETURNS: The pivot
-#  DESCRIPTION: The second part of the quicksort algorithm.
-#       THROWS: no exceptions
-#     COMMENTS: PRIVATE METHOD. NO $THIS CONTAINING FIELDS AS A PARAMETER
-#     SEE ALSO: n/a
-#===============================================================================
-sub _place {
-
-    # Retrieve fields as reference to a hash and the parameters
-    my ( $k, $j, $this ) = @_;
-
-    # Make a copy of the Algorithm's population
-    # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
-    my $populationRef = $this->{population};
-    my @population    = @$populationRef;
-
-    my $i;
-    my $pivot;
-    my $pivot_value;
-    my $individualTemp;
-
-    $pivot       = $k;
-    $pivot_value = $population[$pivot]->getScore();
-
-    for ( $i = $k + 1 ; $i <= $j ; $i++ ) {
-
-        if ( $population[$i]->getScore() < $pivot_value ) {
-            $pivot++;
-            $individualTemp     = $population[$i];
-            $population[$i]     = $population[$pivot];
-            $population[$pivot] = $individualTemp;
-        }
-    }
-
-    $individualTemp     = $population[$k];
-    $population[$k]     = $population[$pivot];
-    $population[$pivot] = $individualTemp;
-
-    # Assign to the field population a REFERENCE to the pop just modified
-    $this->{population} = \@population;
-
-    return ( $pivot, $this );
-}    ## --- end sub _place
-
 #=== CLASS METHOD  =============================================================
 #        CLASS: GeneticAlgorithm
 #       METHOD: _getProperCrossoverStr
@@ -577,9 +495,13 @@ sub sortPopulation {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this = shift;
-
-    # Redefine this with the AG coming from the _quickSort method
-    $this = _quickSort( 0, $this->{popSize} - 1, $this );
+    
+    my $populationRef = $this->{population};
+    
+    # Sort population by ASCENDING Individual scores...
+    my @population = sort {$a->getScore() <=> $b->getScore()} @$populationRef;
+    
+    $this->{population} = \@population;
 
     return;
 }    ## --- end sub sortPopulation
