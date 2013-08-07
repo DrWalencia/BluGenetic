@@ -175,7 +175,7 @@ sub _performMutation {
 
             $genotypeTemp->changeGen($position);
             $population[$j]->setGenotype($genotypeTemp);
-            my $score = $this->fitnessFunc( $population[$j] );
+            my $score = $this->_fitnessFunc( $population[$j] );
             $population[$j]->setScore($score);
 
             my $genotypeTemp2 = $population[$j]->getGenotype();
@@ -278,12 +278,12 @@ sub _performCrossover {
 
             # Calculate the score for the NEW child one
             my $individualTemp1 = $crossoverOffspring[0];
-            my $score           = $this->fitnessFunc($individualTemp1);
+            my $score           = $this->_fitnessFunc($individualTemp1);
             $individualTemp1->setScore($score);
 
             # Calculate the score for the NEW child two
             my $individualTemp2 = $crossoverOffspring[1];
-            $score = $this->fitnessFunc($individualTemp2);
+            $score = $this->_fitnessFunc($individualTemp2);
             $individualTemp2->setScore($score);
 
             # And put them in the no recombination set
@@ -324,12 +324,47 @@ sub _performCrossover {
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
+#       METHOD: getType
+#   PARAMETERS: None
+#      RETURNS: A string representation of the data type the GA is operating 
+#               with.
+#  DESCRIPTION: Returns the data type the GA is operating with.
+#       THROWS: no exceptions
+#     COMMENTS: none
+#     SEE ALSO: n/a
+#===============================================================================
+sub getType{
+
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
+    my ($this) = shift;
+
+    my $returnValue;
+
+    if ( $this->isa("GABitVector") ){
+        $returnValue = "bitvector";
+        $log->info("Data type to operate with returned: bitvector");
+    }elsif ( $this->isa("GAListVector")){
+        $returnValue = "listvector"; 
+        $log->info("Data type to operate with returned: listvector");
+    }elsif ( $this->isa("GARangeVector")){
+        $returnValue = "rangevector";
+        $log->info("Data type to operate with returned: rangevector");
+    }else{
+        $log->logconfess("FATAL: unknown data type for the current GA");
+    }
+    
+    return $returnValue;
+}
+
+#===  CLASS METHOD  ============================================================
+#        CLASS: GeneticAlgorithm
 #       METHOD: getFittest
 #
 #   PARAMETERS: N -> the number of fittest individuals wanted to be retrieved.
 #   			DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
 #
-#      RETURNS: A list containing as much as N individuals
+#      RETURNS: A list containing as much as N individuals or just one
+#               individual if no parameter is passed.
 #  DESCRIPTION: Returns the N fittest individuals of the population
 #       THROWS: no exceptions
 #     COMMENTS: none
@@ -379,7 +414,12 @@ sub getFittest {
     my $individualsReturned = scalar @fittest;
     $log->info("Returned the $individualsReturned best individuals.");
 
-    return @fittest;
+    if ( @fittest == 1){
+        return $fittest[0];
+    }else{
+        return @fittest;
+    }
+
 }    ## --- end sub getFittest
 
 #===  CLASS METHOD  ============================================================
@@ -566,7 +606,7 @@ sub deleteIndividual {
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: fitnessFunc
+#       METHOD: _fitnessFunc
 #
 #   PARAMETERS: individual -> the individual whose fitness score is wanted
 #   			to be calculated.
@@ -579,7 +619,7 @@ sub deleteIndividual {
 #     			CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
 #     SEE ALSO: n/a
 #===============================================================================
-sub fitnessFunc {
+sub _fitnessFunc {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my ( $this, $individual ) = @_;
@@ -597,11 +637,11 @@ sub fitnessFunc {
     $log->info("Fitness function called. Score: $score");
 
     return $score;
-}    ## --- end sub fitnessFunc
+}    ## --- end sub _fitnessFunc
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: terminateFunc
+#       METHOD: _terminateFunc
 #   PARAMETERS: None.
 #      RETURNS: 1 if the custom condition defined here is satisfied, 0
 #               otherwise.
@@ -612,7 +652,7 @@ sub fitnessFunc {
 #               METHOD.
 #     SEE ALSO: n/a
 #===============================================================================
-sub terminateFunc {
+sub _terminateFunc {
 
     $log->info("Terminate function called.");
 
@@ -630,6 +670,6 @@ sub terminateFunc {
         $log->info("Terminate function undefined. Result: $result");
     }
     return $result;
-}    ## --- end sub terminateFunc
+}    ## --- end sub _terminateFunc
 
 1;

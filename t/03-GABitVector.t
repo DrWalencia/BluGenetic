@@ -403,6 +403,19 @@ sub terminate() {
 	 }
 }
 
+# getType: generate AG and call getType. Check if it returns the
+# expected value.
+{
+	 my $algorithm = GABitVector->new(
+	    popSize => 12,
+	    crossover => 0.3,
+	    mutation => 0.4,
+	    fitness => \&fitness,
+	 );
+
+     ok( $algorithm->getType() eq "bitvector", "generate AG and call getType. Check if it returns the expected value");
+}
+
 # getFittest: No parameter, pass zero as a parameter, pass more than the
 # total population.
 {
@@ -415,7 +428,7 @@ sub terminate() {
 	
 	$algorithm->initialize(30);
 	 
- 	my @fittest = $algorithm->getFittest();
+ 	my $fittest = $algorithm->getFittest();
 
 	# Population inside the algorithm is just a reference, so to play with it
 	# it must be dereferenced first.
@@ -424,7 +437,7 @@ sub terminate() {
 	my @population = @$refPopulation;
 	
 	my $byHandFittest = $population[$algorithm->{popSize} -1];
-	ok ( $byHandFittest->getScore() == $fittest[0]->getScore(), "getFittest: No parameter, pass zero as a parameter, pass more than the total population." );
+	ok ( $byHandFittest->getScore() == $fittest->getScore(), "getFittest: No parameter, pass zero as a parameter, pass more than the total population." );
 }
 
 # getFittest: Pass a parameter between limits. Very basic, just checking
@@ -595,9 +608,9 @@ sub terminate() {
         generations => 10
 	);
 	
-	my @ind = $algorithm->getFittest();
+	my $ind = $algorithm->getFittest();
 	
-	print "Score of fittest:", $ind[0]->getScore(), "\n";
+	print "Score of fittest:", $ind->getScore(), "\n";
 }
 
 
@@ -610,10 +623,10 @@ sub myTerminate() {
     print ($GA->getCurrentGeneration());
     print "\n";
 
-    my @fittest = $GA->getFittest();
+    my $fittest = $GA->getFittest();
 
 
-    if ( $fittest[0]->getScore() > 14 ){
+    if ( $fittest->getScore() > 14 ){
         return 1;
     }else{
         return 0;
@@ -637,9 +650,9 @@ sub myTerminate() {
        generations  => 10,
    );
 
-	my @ind = $algorithm->getFittest();
+	my $ind = $algorithm->getFittest();
 	
-	print "Score of fittest:", $ind[0]->getScore(), "\n";
+	print "Score of fittest:", $ind->getScore(), "\n";
 
 }
 

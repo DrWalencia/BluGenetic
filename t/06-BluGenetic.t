@@ -47,6 +47,7 @@ Log::Log4perl->init( \$conf );
 
 # This fitness function just returns the amount of ones in
 # the genotype.
+
 sub fitness() {
 	my ($individual) = @_;
 	my $genotype = $individual->getGenotype();
@@ -208,36 +209,33 @@ dies_ok{
 	)
 } "Constructor: unknown data type. Dies";
 
-# Example that works.
+# Example that works
 
-#my $algorithm = BluGenetic->new(
-#
-#    popSize     => 12,
-#    crossover   => 0.9,
-#    mutation    => 0.05,
-#    type        => 'BITVECTOR',
-#    fitness     => \&fitness,
-#    terminate   => \&terminate,
-#);
-#
-#$algorithm->initialize(10);
-#
-#$algorithm->evolve(
-#    selection   => 'tournament',
-#    crossover   =>  'onepoint',
-#    generations =>  25,
-#);
+my $algorithm = BluGenetic->new(
 
+    popSize     => 12,
+    crossover   => 0.9,
+    mutation    => 0.05,
+    type        => 'BITVECTOR',
+    fitness     => \&fitness,
+    terminate   => \&terminate,
+);
 
+$algorithm->initialize(10);
 
+$algorithm->evolve(
+    selection   => 'tournament',
+    crossover   =>  'onepoint',
+    generations =>  25,
+);
 
 
 # TODO make getFittest return just an individual, not an array if
 # it is called without arguments.
 
-#my @ind = $algorithm->getFittest();
-#
-#print "Score of fittest: ", $ind[0]->getScore(), "\n";
+my $ind = $algorithm->getFittest();
+
+print "Score of fittest: ", $ind->getScore(), "\n";
 
 done_testing;
 

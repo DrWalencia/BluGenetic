@@ -118,7 +118,7 @@ sub initialize {
     for ( $i = 0 ; $i < $fields{popSize} ; $i++ ) {
         my $individualTemp = Individual->new();
         $individualTemp->setGenotype( BitVector->new($genotypeLength) );
-        $individualTemp->setScore( $this->fitnessFunc($individualTemp) );
+        $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
         push @pop, $individualTemp;
     }
 
@@ -224,7 +224,7 @@ sub evolve {
         $this->{population} = \@population;
 
         # If the terminate criterion is met, iteration finishes.
-        if ( $this->terminateFunc() ) {
+        if ( $this->_terminateFunc() ) {
             return;
         }
     }
@@ -286,7 +286,7 @@ sub insertIndividual {
     my @population = @$pop;
 
     # Calculate the individual's score before inserting it
-    $individual->setScore( $this->fitnessFunc($individual) );
+    $individual->setScore( $this->_fitnessFunc($individual) );
 
     # Put the individual on the position specified, destroying what was there
     $population[$index] = $individual;
@@ -337,7 +337,7 @@ sub deleteIndividual {
     my $genotypeTemp = BitVector->new( $this->{genotypeLength} );
     my $individualTemp = Individual->new( genotype => $genotypeTemp );
 
-    $individualTemp->setScore( $this->fitnessFunc($individualTemp) );
+    $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
 
     # Make a copy of the Algorithm's population
     # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
