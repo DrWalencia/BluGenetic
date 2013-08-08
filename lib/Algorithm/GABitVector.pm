@@ -57,14 +57,14 @@ sub new {
 
     # Reference to anonymous hash to store instance variables (AKA FIELDS)
     my $this = {
-        popSize    				=> $args{popSize},
-        crossover  				=> $args{crossover},
-        mutation    			=> $args{mutation},
-        fitness     			=> $args{fitness},
-        customCrossStrategies	=> {},
-        customSelStrategies		=> {},
-        terminate   			=> $args{terminate}, # no function defined: terminate: undef
-        initialized 			=> 0,
+        popSize                 => $args{popSize},
+        crossover               => $args{crossover},
+        mutation                => $args{mutation},
+        fitness                 => $args{fitness},
+        customCrossStrategies   => {},
+        customSelStrategies     => {},
+        terminate               => $args{terminate}, # no function defined: terminate: undef
+        initialized             => 0,
     };
 
     # Connect a class name with a hash is known as blessing an object

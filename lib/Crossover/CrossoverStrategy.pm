@@ -43,6 +43,7 @@ no warnings 'redefine';
 #===============================================================================
 sub crossIndividuals {
 	$log->logconfess("The function crossIndividuals() must be defined in a subclass.\n");
+    return;
 } ## --- end sub crossIndividuals
 
 1; # Required for all packages in Perl

@@ -17,22 +17,25 @@
 #     REVISION: ---
 #===============================================================================
 
+package RangeVector;
+
 use strict;
 use warnings;
+use diagnostics;
+use Log::Log4perl qw(get_logger);
 
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
 
-package RangeVector ;
 
 # RangeVector inherits from Genotype::Genotype
 use Genotype::Genotype;
-our @ISA = qw(Genotype);
+use base qw(Genotype);
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields 'genotype', # list of genes belonging to an individual, e.g:[3,-2,4]
-		   'actualRanges'; # Set of possible values for each gen. In this case
+use fields 'genotype', # Array of genes belonging to an individual, e.g:[3,-2,4]
+		   'actualRanges'; # Hash of possible values for each gen. In this case
 		   				   # it will contain the minimum and the maximum values.
 
 #===  FUNCTION  ================================================================

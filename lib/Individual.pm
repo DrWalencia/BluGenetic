@@ -213,7 +213,7 @@ sub getGenotype {
 
     $log->info("Returned a REFERENCE to the genotype of the individual with
         genotype (@$genotypeListRef) ");
-\
+
     return $this->{genotype};
 
 }    ## --- end sub getGenotype

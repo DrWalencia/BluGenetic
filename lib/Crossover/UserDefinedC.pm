@@ -38,8 +38,8 @@ use base qw(CrossoverStrategy);
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields 'indOne', 'indTwo',	# The two individuals to be mated.
-			'strategyRef';		# Function pointer to custom Crossover strategy
+use fields 'indOne', 'indTwo',  # The two individuals to be mated.
+			'strategyRef';      # Function pointer to custom Crossover strategy
 			
 #===  FUNCTION  ================================================================
 #         NAME: new

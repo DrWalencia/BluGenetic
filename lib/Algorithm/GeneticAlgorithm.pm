@@ -43,8 +43,8 @@ use fields 'population',    # ARRAY of individuals comprising the population.
   'initialized',            # INT 1 if initialized, 0 otherwise
   'popSize',                # INT size of the population
   'currentGeneration',      # INT indicates the current generation
-  'customCrossStrategies',	# HASH that stores custom mutation strategies
-  'customSelStrategies',	# HASH that stores custom selection strategies
+  'customCrossStrategies',  # HASH that stores custom mutation strategies
+  'customSelStrategies',    # HASH that stores custom selection strategies
   'fitness',                # REFERENCE to the fitness function passed as
                             # a parameter
   'terminate';              # REFERENCE to the terminate function passed as
@@ -461,8 +461,8 @@ sub createCrossoverStrategy {
     # Allow anything as the name of an strategy...
     # Check that $strategyRef is a function pointer
 	$log->logconfess("Not a function pointer in the second argument of function.")
-	if (!(UNIVERSAL::isa($strategyRef,'CODE')));
-	
+    if (!(eval{$strategyRef->("CODE")}));
+
 	# Create a UserDefined crossover strategy with the value passed as a 
 	# parameter.
 	my $customStrategy = UserDefinedC->new($strategyRef);
@@ -498,7 +498,7 @@ sub createSelectionStrategy {
     # Allow anything as the name of an strategy...
     # Check that $strategyRef is a function pointer
 	$log->logconfess("Not a function pointer in the second argument of function.")
-	if (!(UNIVERSAL::isa($strategyRef,'CODE')));
+    if (!(eval{$strategyRef->("CODE")}));
     
 	# Create a UserDefined selection strategy with the value passed as a 
 	# parameter.

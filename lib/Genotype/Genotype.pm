@@ -45,6 +45,7 @@ our $log = Log::Log4perl::get_logger("Genotype");
 #===============================================================================
 sub setGen {
 	$log->logconfess("The function setGen must be implemented in a subclass.\n");
+    return;
 } ## --- end sub setGen
 
 
@@ -64,6 +65,7 @@ sub setGen {
 #===============================================================================
 sub getGen {
 	$log->logconfess("The function getGen must be implemented in a subclass.\n");
+    return;
 } ## --- end sub getGen
 
 
@@ -78,6 +80,7 @@ sub getGen {
 #===============================================================================
 sub getLength {
 	$log->logconfess("The function getLength must be implemented in a subclass.\n");
+    return;
 } ## --- end sub getLength
 
 
@@ -94,6 +97,7 @@ sub getLength {
 #===============================================================================
 sub changeGen {
 	$log->logconfess("The function changeGen must be implemented in a subclass.\n");
+    return;
 } ## --- end sub changeGen
 
 #===  CLASS METHOD  ============================================================
@@ -107,6 +111,7 @@ sub changeGen {
 #===============================================================================
 sub getRanges {
 	$log->logconfess("The function getRanges must be implemented in a subclass.\n");
+    return;
 } ## --- end sub getRanges
 
 1;

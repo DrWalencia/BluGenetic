@@ -40,6 +40,7 @@ our $log = Log::Log4perl::get_logger("SelectionStrategy");
 #===============================================================================
 sub performSelection {
 	$log->logconfess("The function performSelection() must be implemented in a subclass.\n");
+    return;
 } ## --- end sub performSelection
 
 1;

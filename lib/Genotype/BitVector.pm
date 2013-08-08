@@ -120,7 +120,7 @@ sub setGen {
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
     $log->logconfess(
-    "The position passed as a parameter can only be between 
+        "The position passed as a parameter can only be between 
 		0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
 
@@ -167,7 +167,7 @@ sub getGen {
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
     $log->logconfess(
-    "The position passed as a parameter can only be between 
+        "The position passed as a parameter can only be between 
 		0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
 
@@ -232,7 +232,7 @@ sub changeGen {
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
     $log->logconfess(
-    "The position passed as a parameter can only be between 
+        "The position passed as a parameter can only be between 
 		0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
 
