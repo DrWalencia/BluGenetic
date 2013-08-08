@@ -67,10 +67,6 @@ sub new {
         initialized 			=> 0,
     };
 
-
-  'customCrossStrategies',	# HASH that stores custom mutation strategies
-  'customSelStrategies',	
-
     # Connect a class name with a hash is known as blessing an object
     bless $this, $class;
 
@@ -244,14 +240,15 @@ sub evolve {
 #        CLASS: GABitVector
 #       METHOD: insertIndividual
 #
-#   PARAMETERS: individual -> the individual to be inserted.
-#				index 		-> the position where the individual will be placed.
-
-#      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
-
-#  DESCRIPTION: Inserts an individual in the population on the position given
-#				by index. Calculates its fitness value previously.
-
+#   PARAMETERS: n		-> number of individuals to insert in the population.
+#				args	-> array of refs to array that specifies the ranges
+#						   of the new individuals to be inserted.
+#
+#      RETURNS: Nothing
+#
+#  DESCRIPTION: Inserts an individual in the population, increasing popSize in
+#				as many individuals as specified by n.
+#
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -262,49 +259,58 @@ sub insertIndividual {
     my $this = shift;
 
     # Get the arguments...
-    my ( $individual, $index ) = @_;
-
+    my $n = shift;
+    
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
     $log->logconfess("The algorithm has not been initialized")
-      if ( $this->{initialized} == 0 );
+    if ( $this->{initialized} == 0 );
+    
+    # If anything strange is inserted in n, die painfully
+    $log->logconfess(" Wrong number of individuals to insert: $n")
+    if ($n <= 0);
+    
+    # Nobody gives a shit about the ranges if the data type is bitvector
+    # So, do nothing with them
+    my @ranges = @_;
+    
+    # Array to store generated elements into
+    my @newMembers;
+    
+    # Get genotype of one of its members...
+    my $popRef = $this->getPopulation();
+	my @pop = @$popRef;
+	my $genotype = $pop[0]->getGenotype();
 
-    # Check if the individual is defined
-    $log->logconfess("Undefined individual") if ( !( defined $individual ) );
-    $log->logconfess("Undefined index")      if ( !( defined $index ) );
+	# Generate individuals..
+	for ( my $i = 0; $i< $n; $i++){
+		my $individualTemp = Individual->new();
+        $individualTemp->setGenotype( BitVector->new($genotype->getLength()));
+        $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+        push @newMembers, $individualTemp;
+	}
+	
+	# DEPENDING ON THE DATA TYPE THESE ARE THE OPERATIONS TO PERFORM WITH
+	# THE ARRAY OF REFS CALLED ARGS:
+	#
+	#		BITVECTOR	-> IGNORE IT (RANGES ALREADY KNOWN)
+	#		RANGEVECTOR -> PRODUCE A RANDOM FLOAT VALUE BETWEEN RANGES
+	#		LISTVECTOR	-> CHOOSE RANDOMLY ONE OF THE VALUES GIVEN BY RANGES
+	#
+	# FOR THE TWO LAST ONES WE COULD GET AS MANY REFERENCES TO ARRAYS AS
+	# INDIVIDUALS TO  BE INSERTED. IF LESS ELEMENTS ARE PASSED THEN CHOOSE
+	# RANGES RANDOMLY FROM THE ONES PREVIOUSLY DEFINED BY THE GENOTYPE WHERE
+	# INDIVIDUALS ARE TO BE INSERTED
+	
+	# Population update...
+	my @population = $this->getPopulation();
+	@pop = (@population,@pop);
+	$this->{population} = @pop;
+	
+	# Popsize update...
+	$this->{popSize} = @pop;
 
-    my $genotypeLength  = $individual->getGenotype()->getLength();
-    my $aGenotypeLength = $this->{genotypeLength};
-
-    # Check if the length of the individual is compatible with lengthGenotype
-    $log->logconfess(
-"Incompatible genotype lengths: ind: $genotypeLength, AG: $aGenotypeLength "
-    ) if ( $genotypeLength != $aGenotypeLength );
-
-    # Couple of cases in which the program dies horribly
-    $log->logconfess("Index bigger than population size ($index)")
-      if ( $index > $this->{popSize} );
-
-    $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
-
-    # Make a copy of the Algorithm's population
-    # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
-    my $pop        = $this->{population};
-    my @population = @$pop;
-
-    # Calculate the individual's score before inserting it
-    $individual->setScore( $this->_fitnessFunc($individual) );
-
-    # Put the individual on the position specified, destroying what was there
-    $population[$index] = $individual;
-
-    $this->{population} = \@population;
-
-    $log->info(
-        "Individual with genotype ($individual->getGenotype()) inserted
-        on position $index"
-    );
-
-    return 1;
+	return;
+	
 }    ## --- end sub insertIndividual
 
 #=== CLASS METHOD  ============================================================
@@ -313,10 +319,10 @@ sub insertIndividual {
 #
 #   PARAMETERS: index -> the position of the individual to be deleted.
 #
-#      RETURNS: 1 if the deletion was performed correctly. 0 otherwise.
+#      RETURNS: Nothing
 #
-#  DESCRIPTION: Deletes the individual given by index and inserts another
-#				individual randomly generated in the same position.
+#  DESCRIPTION: Deletes the individual given by index, making the population
+#				one individual smaller.
 #
 #       THROWS: no exceptions
 #     COMMENTS: none
@@ -340,22 +346,28 @@ sub deleteIndividual {
 
     $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
 
-    my $genotypeTemp = BitVector->new( $this->{genotypeLength} );
-    my $individualTemp = Individual->new( genotype => $genotypeTemp );
+	# Update population...
+	
+	# Make a copy of the population
+	my $popRef = $this->getPopulation();
+	my @pop = @$popRef;
+	
+	# Eliminate the damned individual
+	if ( $index == 0 ) {
+        shift @pop;
+    }elsif ( $index == $this->{popSize} ) {
+        pop @pop;
+    }else {
+		splice( @pop, $index, 1 );
+    }
+	
+	# And reassign population
+	$this->{population} = @pop;
+	
+	# Update popsize
+	$this->{popSize} = @pop;
 
-    $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
-
-    # Make a copy of the Algorithm's population
-    # THIS RETURNS A REFERENCE TO THE POPULATION, NOT THE POPULATION ITSELF
-    my $pop        = $this->{population};
-    my @population = @$pop;
-
-    $population[$index] = $individualTemp;
-
-    $this->{population} = \@population;
-
-    return 1;
-
+    return;
 }    ## --- end sub deleteIndividual
 
 1;
