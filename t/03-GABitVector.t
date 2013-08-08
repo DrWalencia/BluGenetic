@@ -380,6 +380,7 @@ sub terminate() {
 	
 	ok ( $individual2->getScore() == 2, "_fitnessFunc: Generate population, insert individual in which we already know the fitness value and check if this function returns the expected value." );
 }
+
 # sortPopulation: generate population and sort it. Check results.
 {
 	 my $algorithm = GABitVector->new(
@@ -403,6 +404,64 @@ sub terminate() {
 	 }
 }
 
+# sortIndividuals: try to sort an undef list. Dies painfully
+{
+	 my $algorithm = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	 );
+	
+	my @array = undef;
+	dies_ok{$algorithm->sortIndividuals(@array)} "try to sort an undef list. Dies painfully";
+}
+
+# sortIndividuals: try to sort a list with one element which is not an Individual. Dies painfully
+{
+	my $algorithm = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	);
+	 
+	my @array;
+	 
+	push @array, Individual->new( genotype => BitVector->new(3));
+	push @array, "Whatever";
+	
+	dies_ok{$algorithm->sortIndividuals(@array)} "try to sort a list with one element which is not an Individual. Dies painfully";
+}
+
+# sortIndividuals: sort a proper list of individuals. Check that it works correctly.
+{
+	my $algorithm = GABitVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
+	);
+	 
+	my @array;
+	 
+	push @array, Individual->new(
+		score	 => 9, 
+		genotype => BitVector->new(3)
+	);
+	
+	push @array, Individual->new(
+		score	 => 3, 
+		genotype => BitVector->new(3)
+	);
+
+	@array = $algorithm->sortIndividuals(@array);
+	
+	ok( $array[0]->getScore() == 3, "First element of sortIndividuals sorted");
+	ok( $array[1]->getScore() == 9, "Second element of sortIndividuals sorted");
+
+}
+
 # getType: generate AG and call getType. Check if it returns the
 # expected value.
 {
@@ -414,6 +473,94 @@ sub terminate() {
 	 );
 
      ok( $algorithm->getType() eq "bitvector", "generate AG and call getType. Check if it returns the expected value");
+}
+
+# createCrossoverStrategy: pass anything but a function pointer as the second
+# parameter. Dies painfully.
+{
+	my $algorithm = GABitVector->new(
+	    popSize => 12,
+	    crossover => 0.3,
+	    mutation => 0.4,
+	    fitness => \&fitness,
+	);
+	
+	dies_ok{$algorithm->createCrossoverStrategy("Incredible", undef)} "createCrossoverStrategy: pass anything but a function pointer as the second parameter. Dies painfully.";
+	 
+}
+
+# createSelectionStrategy: pass a valid function pointer and check the custom
+# selection strategies hash to prove it's there.
+{
+	my $algorithm = GABitVector->new(
+	    popSize => 12,
+	    crossover => 0.3,
+	    mutation => 0.4,
+	    fitness => \&fitness,
+	);
+
+	sub selection {
+	
+		# Get the arguments...
+		my @population = @_;
+		
+		my @returnPopulation;
+		
+		# Push random elements till returnPopulation has the same size as
+		# population
+		while ( @returnPopulation < @population ){
+			push @returnPopulation, $population[int(rand(@population))];
+		}
+	
+		return @returnPopulation;
+		
+	} ## --- end sub selection
+	
+	$algorithm->createSelectionStrategy("simple", \&selection);
+	
+	ok ( defined $algorithm->{customSelStrategies}->{simple}, "createSelectionStrategy: pass a valid function pointer and check the custom selection strategies hash to prove it's there" );
+}
+
+# createSelectionStrategy: pass anything but a function pointer as the second
+# parameter. Dies painfully.
+{
+	my $algorithm = GABitVector->new(
+	    popSize => 12,
+	    crossover => 0.3,
+	    mutation => 0.4,
+	    fitness => \&fitness,
+	);
+	
+	dies_ok{$algorithm->createSelectionStrategy("Incredible", undef)} "createSelectionStrategy: pass anything but a function pointer as the second parameter. Dies painfully.";
+	 
+}
+
+# createCrossoverStrategy: pass a valid function pointer and check the custom
+# crossover strategies hash to prove it's there.
+{
+	my $algorithm = GABitVector->new(
+	    popSize => 12,
+	    crossover => 0.3,
+	    mutation => 0.4,
+	    fitness => \&fitness,
+	);
+
+	sub cross {
+	
+		# Retrieve parameters..
+		my ( $individualOne, $individualTwo ) = @_;
+	
+
+		my @v;
+		push @v, $individualOne;
+		push @v, $individualTwo;
+
+		return @v;
+	}     ## --- end sub cross
+	
+	$algorithm->createCrossoverStrategy("Incredible", \&cross);
+	
+	ok ( defined $algorithm->{customCrossStrategies}->{incredible}, "createCrossoverStrategy: pass a valid function pointer and check the custom crossover strategies hash to prove it's there" );
 }
 
 # getFittest: No parameter, pass zero as a parameter, pass more than the
@@ -600,10 +747,29 @@ sub terminate() {
         terminate => \&terminate,
 	);
 	
+	sub selection {
+	
+		# Get the arguments...
+		my @population = @_;
+		
+		my @returnPopulation;
+		
+		# Push random elements till returnPopulation has the same size as
+		# population
+		while ( @returnPopulation < @population ){
+			push @returnPopulation, $population[int(rand(@population))];
+		}
+	
+		return @returnPopulation;
+		
+	} ## --- end sub selection
+	
+	$algorithm->createSelectionStrategy("simple", \&selection);
+	
 	$algorithm->initialize(20);
 	
 	$algorithm->evolve(
-		selection =>"tournament",
+		selection =>"simple",
 		crossover =>"onepoint",
         generations => 10
 	);
@@ -643,10 +809,25 @@ sub myTerminate() {
    );
 
    $algorithm->initialize(20);
+   
+   	sub cross {
+	
+		# Retrieve parameters..
+		my ( $individualOne, $individualTwo ) = @_;
+	
+
+		my @v;
+		push @v, $individualOne;
+		push @v, $individualTwo;
+
+		return @v;
+	}     ## --- end sub cross
+	
+	$algorithm->createCrossoverStrategy("Incredible", \&cross);
 
    $algorithm->evolve(
        selection    => "tournament",
-       crossover    => "twopoint",
+       crossover    => "onepoint",
        generations  => 10,
    );
 

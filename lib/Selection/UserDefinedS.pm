@@ -1,12 +1,12 @@
 #
 #===============================================================================
 #
-#         FILE: Random.pm
+#         FILE: UserDefinedS.pm
 #
 #  DESCRIPTION: Concrete implementation of the selection strategy interface 
-#				comprising the random selection technique which consists on 
-#				selecting a random element from the population passed as a 
-#				parameter till a new population of the same size is complete.
+#				comprising the UserDefinedS selection strategy in which
+#				a reference to a custom selection strategy is passed as
+#				a parameter in the constructor of the class.
 #        
 #		 FILES: ---
 #         BUGS: ---
@@ -18,7 +18,7 @@
 #     REVISION: ---
 #===============================================================================
 
-package Random;
+package UserDefinedS;
 
 use strict;
 use warnings;
@@ -27,22 +27,22 @@ use diagnostics;
 use Log::Log4perl qw(get_logger);
 
 # Get a logger from the singleton
-our $log = Log::Log4perl::get_logger("Random");
+our $log = Log::Log4perl::get_logger("UserDefinedS");
 
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
 
 
-# Random inherits from Selection::SelectionStrategy
+# UserDefinedS inherits from Selection::SelectionStrategy
 use Selection::SelectionStrategy;
 use base qw(SelectionStrategy);
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: Random
+#        CLASS: UserDefinedS
 #       METHOD: new
 #   PARAMETERS: None. 
 #      RETURNS: A reference to the instance just created. 
-#  DESCRIPTION:	Creates a newly allocated Random selection strategy.
+#  DESCRIPTION:	Creates a newly allocated UserDefinedS selection strategy.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -50,8 +50,13 @@ use base qw(SelectionStrategy);
 sub new {
 	my $class = shift; # Every method of a class passes first argument as class name
 
+	# Take the parameters..
+	my $ref = shift;
+
 	# Anonymous hash to store instance variables (AKA FIELDS)
-	my $this = {};
+	my $this = {
+		strategyRef => $ref
+	};
 
 	# Connect class name with hash is known as blessing an object
 	bless $this, $class;
@@ -62,12 +67,12 @@ sub new {
 
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: Random
+#        CLASS: UserDefinedS
 #       METHOD: performSelection
 #   PARAMETERS: population -> the population on which the selection must be based
 #   			on.
 #      RETURNS: a list containing the result of the selection process.
-#  DESCRIPTION: Performs the Random selection technique.
+#  DESCRIPTION: Performs the UserDefinedS selection technique.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -79,13 +84,7 @@ sub performSelection {
 	# Get the arguments...
 	my @population = @_;
 	
-	my @returnPopulation;
-	
-	# Push random elements till returnPopulation has the same size as
-	# population
-	while ( @returnPopulation < @population ){
-		push @returnPopulation, $population[int(rand(@population))];
-	}
+	my @returnPopulation = $this->{strategyRef}(@population);
 
 	return @returnPopulation;
 	
