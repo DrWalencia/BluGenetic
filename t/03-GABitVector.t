@@ -144,16 +144,96 @@ sub terminate() {
 
 # insertIndividual: check that if the amount of individuals to be inserted
 # is zero or negative, it dies.
+{
+	my $algorithm = GABitVector->new(
+		popSize => 4,
+		crossover => 0.3,
+		mutation => 0.4,
+		fitness => \&fitness,
+	);
+	
+	dies_ok{$algorithm->insertIndividual(0)} "insertIndividual: check that insertIndividual dies if amount of individuals is 0.";
+}
+
+{
+        my $algorithm = GABitVector->new(
+        popSize => 4,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
+    
+    dies_ok{$algorithm->insertIndividual(-4)} "insertIndividual: check that insertIndividual dies if amount of individuals is negative.";
+}
 
 # insertIndividual: check after successful insertion that the population
 # have grown as much as n.
+{
+    my $algorithm = GABitVector->new(
+        popSize => 4,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
+
+    $algorithm->initialize(23);
+
+    $algorithm->insertIndividual(3);
+
+    ok ( $algorithm->getPopSize() == 7, "insertIndividual: Population grew from 4 to 7" );
+
+    my $popRef = $algorithm->getPopulation();
+
+    ok ( $algorithm->getPopSize() == @$popRef, "insertIndividual: Population array size is the same as algorithm->getPopSize()");
+
+}
 
 # deleteIndividual: check that if the index given is less than zero or more
 # than the population size, it dies.
+{
+        my $algorithm = GABitVector->new(
+        popSize => 4,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
+    
+    dies_ok{$algorithm->deleteIndividual(-4)} "deleteIndividual: check that deleteIndividual dies if amount of individuals is negative.";
+}
+
+{
+        my $algorithm = GABitVector->new(
+        popSize => 4,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
+    
+    dies_ok{$algorithm->insertIndividual(5)} "deleteIndividual: check that insertIndividual dies if amount of individuals is bigger than the highest index.";
+}
 
 # deleteIndividual: check after successful deletion that de population had
 # become 1 individual smaller.
+{
+        my $algorithm = GABitVector->new(
+        popSize => 4,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
 
+    $algorithm->initialize(20);
+
+    $algorithm->deleteIndividual(3);
+
+    ok ( $algorithm->getPopSize() == 3, "deleteIndividual: population smaller by 1 individual");
+
+    my $popRef = $algorithm->getPopulation();
+
+    ok ( $algorithm->getPopSize() == @$popRef, "deleteIndividual: population array size is the same as algorithm->getPopSize()");
+
+    
+}
 
 # Population inside the algorithm is just a reference, so to play with it
 # it must be dereferenced first.

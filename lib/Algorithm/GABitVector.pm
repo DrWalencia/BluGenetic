@@ -302,9 +302,8 @@ sub insertIndividual {
 	# INDIVIDUALS ARE TO BE INSERTED
 	
 	# Population update...
-	my @population = $this->getPopulation();
-	@pop = (@population,@pop);
-	$this->{population} = @pop;
+	@pop = (@pop,@newMembers);
+	$this->{population} = \@pop;
 	
 	# Popsize update...
 	$this->{popSize} = @pop;
@@ -362,7 +361,7 @@ sub deleteIndividual {
     }
 	
 	# And reassign population
-	$this->{population} = @pop;
+	$this->{population} = \@pop;
 	
 	# Update popsize
 	$this->{popSize} = @pop;
