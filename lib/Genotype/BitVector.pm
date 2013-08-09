@@ -41,7 +41,8 @@ use fields
 
 #===  FUNCTION  ================================================================
 #         NAME: new
-#      PURPOSE: Creates a newly allocated BitVector genotype.
+#      PURPOSE: Creates a newly allocated BitVector genotype randomly
+#				initializing its genes.
 #   PARAMETERS: lengthGen -> length of the genotype to be created.
 #      RETURNS: A reference to the instance just created.
 #       THROWS: no exceptions
@@ -56,15 +57,12 @@ sub new {
     # Take the first and only argument
     my $lengthGen = shift;
 
-    $log->logconfess("Invalid number of genes for the genotype: $lengthGen")
-      if $lengthGen < 1;
-
     # Genotype to be inserted as a field in the object being created
     my @genotype;
     my $i;
 
+	# Fill the genotype with random values between 0..1
     for ( $i = 0 ; $i < $lengthGen ; $i++ ) {
-
         # Void rand returns something between 0..1
         push( @genotype, int( rand(2) ) );
     }
@@ -189,9 +187,6 @@ sub getLength {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
     my $this = shift;
-
-    # Take the arguments and put them in proper variables
-    my ($position) = @_;
 
     # Get the genotype dereferencing the $this hash
     my %hash        = %$this;

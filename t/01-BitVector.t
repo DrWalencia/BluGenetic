@@ -51,18 +51,6 @@ Log::Log4perl->init( \$conf );
 # If it doesn't complain we're okay
 ok( BitVector->new(1), "Constructor: memory allocated and correct number of genes" );
 
-# Constructor: zero or negative genotypeLength
-dies_ok { ( BitVector->new(0) ) } "Constructor: zero genotypeLength";
-dies_ok { ( BitVector->new(-1) ) } "Constructor: negative genotypeLength";
-
-# setGen: Introduce bit 0 and bit 1 and check if it returns true.
-{
-	my $genotype = BitVector->new(DUMMYVECTORSIZE);
-	
-	ok( $genotype->setGen( 0, 1 ), "setGen: introduce bit 0 in pos 0 and check if it returns true" );
-	ok( $genotype->setGen( 0, 0 ), "setGen: introduce bit 1 in pos 1 and check if it returns true" );
-}
-
 # setGen: Introduce something different than a bit e.g=5 and check if it returns false
 {
 	my $genotype = BitVector->new(DUMMYVECTORSIZE);

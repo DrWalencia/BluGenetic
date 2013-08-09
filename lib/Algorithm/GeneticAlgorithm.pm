@@ -458,6 +458,12 @@ sub createCrossoverStrategy {
     # Take the arguments...
     my ( $strategyName, $strategyRef ) = @_;
     
+	$log->logconfess("Missing custom strategy name")
+		if (! (defined $strategyName));
+	
+	$log->logconfess("Missing strategy reference")
+		if (! (defined $strategyRef ));
+    
     # Allow anything as the name of an strategy...
     # Check that $strategyRef is a function pointer
 	$log->logconfess("Not a function pointer in the second argument of function.")
@@ -494,6 +500,12 @@ sub createSelectionStrategy {
     
     # Take the arguments...
     my ( $strategyName, $strategyRef ) = @_;
+    
+    $log->logconfess("Missing custom strategy name")
+		if (! (defined $strategyName));
+	
+	$log->logconfess("Missing strategy reference")
+		if (! (defined $strategyRef ));
     
     # Allow anything as the name of an strategy...
     # Check that $strategyRef is a function pointer

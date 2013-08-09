@@ -32,30 +32,72 @@ no warnings 'redefine';
 use Genotype::Genotype;
 use base qw(Genotype);
 
+# Get a logger from the singleton
+our $log = Log::Log4perl::get_logger("RangeVector");
+
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields 'genotype', # Array of genes belonging to an individual, e.g:[3,-2,4]
-		   'actualRanges'; # Hash of possible values for each gen. In this case
-		   				   # it will contain the minimum and the maximum values.
+use fields 'genotype',		# Array of genes belonging to an individual, e.g:[3,-2,4]
+		   'ranges';		# List of references to arrays of possible values for 
+							# each gen. In this case it will contain the minimum 
+		   				    # and the maximum values.
 
 #===  FUNCTION  ================================================================
 #         NAME: new
-#      PURPOSE: Creates a newly allocated RangeVector genotype.
-#   PARAMETERS: lengthGen    -> length of the genotype to be created.
-#   			actualRanges -> set of possible values for each gen.
+#
+#      PURPOSE: Creates a newly allocated RangeVector genotype randomly
+#				initializing its genes.
+#
+#   PARAMETERS: ranges -> Array of references to arrays containing
+#				the maximum and minimum limits for each gen. As much genes as
+#				limits passed are going to be created.
+#
 #      RETURNS: A reference to the instance just created.
 #       THROWS: no exceptions
 #===============================================================================
 sub new {
-	my $class = shift; # Every method of a class passes first argument as class name
+	
+	$log->info("Creation of a new RangeVector genotype started.");
+	
+    # Every method of a class passes first argument as class name
+    my $class = shift;
+ 
+ 	# Take the arguments...
+ 	my $rangesRef = shift;
+ 	my @ranges = @$rangesRef;
+	
+	# Generate genotype...
+	my @genotype;
+	
+	# Generate random genes between limits
+	for ( my $i = 0; $i < @ranges; $i++ ){
+		
+		my $rangeGenRef = $ranges[$i];
+		my @rangeGen = @$rangeGenRef;
+		
+		# Sum one to the rand seed because it generates
+		# numbers from 0 to n-1
+		my $seed = $rangeGen[1] - $rangeGen[0] + 1;
+		
+		$seed = abs($seed);
+		
+		my $value = int( rand( $seed )) + $rangeGen[0];
+		push @genotype, $value;
+	}
 
 	# Anonymous hash to store instance variables (AKA FIELDS)
-	my $this = {};
+	my $this = {
+		genotype	=> \@genotype,
+		ranges		=> $rangesRef
+	};
 
 	# Connect a class name with a hash is known as blessing an object
 	bless $this , $class;
 
+    $log->info("Creation of a new BitVector genotype finished.");
+
 	return $this;
+	
 } ## --- end sub new
 
 #===  CLASS METHOD  ============================================================
@@ -74,15 +116,37 @@ sub new {
 #     COMMENTS: locus -> value
 #===============================================================================
 sub setGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
+	
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
 	my $this = shift;
+	
+	# Take the arguments
+	my ($position, $value) = @_;
+	
+	# If the position is incorrect, die painfully
+	$log->logconfess("Incorrect position: $position")
+		if ( ($position <0) or ($position >$this->getLength()) );
+		
+	# If the value is out of ranges, die painfully
+	my $rangesRef = $this->{ranges};
+	my @ranges = @$rangesRef;
+	
+	my $myRangeRef = $ranges[$position];
+	my @myRange = @$myRangeRef;
 
-	# DO STUFF... 
+	$log->logconfess("Value out of ranges: $value (Ranges: [", $myRange[0], ",", $myRange[1], "])")
+		if ( ($value > $myRange[1]) or ($value < $myRange[0]) );
+		
+	my $genotypeRef = $this->{genotype};
+	my @genotype = @$genotypeRef;
+	
+	$genotype[$position] = $value;
+	
+	$this->{genotype} = \@genotype;
 
 	return;
+	
 } ## --- end sub setGen
-
-
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: RangeVector
@@ -98,14 +162,20 @@ sub setGen {
 #     COMMENTS: none
 #===============================================================================
 sub getGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
+	
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
 	my $this = shift;
+	
+	# Take the arguments
+	my $position = shift;
+	
+	# If the position is incorrect, die painfully
+	$log->logconfess("Incorrect position: $position")
+		if ( ($position <0) or ($position >$this->getLength()) ); 
 
-	# DO STUFF... 
-
-	return;
+	return $this->{genotype}[$position];
+	
 } ## --- end sub getGen
-
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: RangeVector
@@ -117,19 +187,23 @@ sub getGen {
 #     COMMENTS: none
 #===============================================================================
 sub getLength {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
-	my $this = shift;
+	
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
+    my $this = shift;
 
-	# DO STUFF... 
+    # Get the genotype dereferencing the $this hash
+    my $genotypeRef = $this->{genotype};
+    my @genotype    = @$genotypeRef;
 
-	return;
+    return scalar (@genotype);
+    
 } ## --- end sub getLength
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: RangeVector
 #       METHOD: changeGen
 #   PARAMETERS: position -> indicates the position of the gen that will change.
-#      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
+#      RETURNS: Nothing	
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
 #  				mutation purposes only.
 #       THROWS: no exceptions
@@ -137,33 +211,53 @@ sub getLength {
 #     SEE ALSO: n/a
 #===============================================================================
 sub changeGen {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
+	
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
 	my $this = shift;
 
-	# DO STUFF... 
+	# Take the arguments...
+	my $position = shift;
+	
+	# If the position is incorrect, die painfully
+	$log->logconfess("Incorrect position: $position")
+		if ( ($position <0) or ($position >$this->getLength()) ); 
+	
+	# Get ranges and generate a random number inside them	
+	my $rangesRef = $this->{ranges};
+	my @ranges = @$rangesRef;
+	my $myRangeRef = $ranges[$position];
+	my @myRange = @$myRangeRef;
+
+	my $value = int( rand( abs( $myRange[1] - $myRange[0] + 1))) + $myRange[0];
+	
+	my $genotypeRef = $this->{genotype};
+	my @genotype = @$genotypeRef;
+	
+	$genotype[$position] = $value;
+	
+	$this->{genotype} = \@genotype;
 
 	return;
+	
 } ## --- end sub changeGen
 
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: RangeVector 
 #       METHOD: getRanges
-#   PARAMETERS: ????
-#      RETURNS: A list containing the possible values for a gen.
+#   PARAMETERS: None
+#      RETURNS: A reference to a list containing the possible values for a gen.
 #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #===============================================================================
 sub getRanges {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
+	
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
 	my $this = shift;
 
-	# DO STUFF... 
+	return $this->{ranges};
 
-	return;
 } ## --- end sub getRanges
-
-
 
 1;
