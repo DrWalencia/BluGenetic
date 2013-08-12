@@ -91,7 +91,7 @@ Log::Log4perl->init( \$conf );
 	dies_ok{$genotype->setGen(0,0)} "setGen: fails if value below limits";
 }
 
-# setGen: make sure a zero is inserted in bit 0 by inserting it
+# setGen: make sure a zero is inserted in gen 0 by inserting it
 {
 	my $genotype = RangeVector->new([ [-5,3], [-3,4], [1,5] ]);
 	
@@ -158,7 +158,7 @@ Log::Log4perl->init( \$conf );
 
 	ok ( @ranges == 3, "getRanges: call the function and check that it contains the right number of elements");
 	
-	ok ( ref(@ranges[0]) eq "ARRAY" , "getRanges: call the function and check that it contains a reference to an array of references to array");
+	ok ( ref($ranges[0]) eq "ARRAY" , "getRanges: call the function and check that it contains a reference to an array of references to array");
 }
 
 done_testing;

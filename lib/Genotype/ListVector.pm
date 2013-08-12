@@ -122,8 +122,8 @@ sub setGen {
 	# If the value is not in ranges, die painfully
 	my $rangesRef = $this->{ranges};
 	my @ranges = @$rangesRef;
-	my @myRange = $ranges[$position];
-	
+	my $myRangeRef = $ranges[$position];
+	my @myRange = @$myRangeRef;
 	my $flag = 0;
 	
 	foreach my $el (@myRange){
@@ -134,7 +134,7 @@ sub setGen {
 	}
 
 	$log->logconfess("Value not present in set: $element [", @myRange, "]")
-		if ($flag);
+		if (!($flag));
 		
 	my $genotypeRef = $this->{genotype};
 	my @genotype = @$genotypeRef;
