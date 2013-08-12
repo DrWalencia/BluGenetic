@@ -47,7 +47,7 @@ use fields 'genotype', # list of genes belonging to an individual, e.g:['hola','
 #         NAME: new
 #      PURPOSE: Creates a newly allocated ListVector genotype. As much genes as
 #				limits passed are going to be created.
-#   PARAMETERS: actualRanges -> set of possible values for each gen.
+#   PARAMETERS: ranges -> set of possible values for each gen.
 #      RETURNS: A reference to the instance just created.
 #       THROWS: no exceptions
 #===============================================================================

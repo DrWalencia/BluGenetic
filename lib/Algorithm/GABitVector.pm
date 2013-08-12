@@ -41,6 +41,10 @@ our $log = Log::Log4perl::get_logger("GABitVector");
 #      PURPOSE: Creates a newly allocated GABitVector genetic algorithm.
 #
 #   PARAMETERS: popSize 	-> size of the population (fixed)
+#				crossover	-> crossover chance (0..1)
+#				mutation	-> mutation chance (0..1)
+#				fitness		-> (function pointer) fitness function
+#				terminate	-> (function pointer) terminate function
 #
 #
 #      RETURNS: A reference to the instance just created.
@@ -73,6 +77,7 @@ sub new {
     $log->info("Creation of a new GABitVector ended.");
 
     return $this;
+    
 }    ## --- end sub new
 
 # ===  CLASS METHOD  ===========================================================
@@ -81,8 +86,7 @@ sub new {
 #
 #   PARAMETERS: genotypeLength -> length of the genotype to be generated
 #
-#      RETURNS: 1 if the initialization was performed correctly. 0
-#				otherwise.
+#      RETURNS: Nothing
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
 #				randomly generated.
 #       THROWS: no exceptions
@@ -140,11 +144,11 @@ sub initialize {
     # Mark the GA as initialized, so that many other methods can be used
     $this->{initialized} = 1;
 
-    return 1;
+    return;
 }    ## --- end sub initialize
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: GeneticAlgorithm
+#        CLASS: GABitVector
 #       METHOD: evolve
 #
 #   PARAMETERS: selectionStr	-> Selection strategy to apply to the pop.
@@ -241,8 +245,11 @@ sub evolve {
 #       METHOD: insertIndividual
 #
 #   PARAMETERS: n		-> number of individuals to insert in the population.
-#				args	-> array of refs to array that specifies the ranges
-#						   of the new individuals to be inserted.
+#				args	-> reference to array of references that stores as many
+#						   as n custom arrays that store custom genotypes for 
+#						   the inserted individuals. OPTIONAL: if no genotypes
+#						   are present then the individuals are going to be
+#						   randomly generated.
 #
 #      RETURNS: Nothing
 #
@@ -269,12 +276,13 @@ sub insertIndividual {
     $log->logconfess(" Wrong number of individuals to insert: $n")
     if ($n <= 0);
     
-    # Nobody gives a shit about the ranges if the data type is bitvector
-    # So, do nothing with them
-    my @ranges = @_;
+    # Take the array of custom genotypes...
+    my @args = @_;
     
     # Array to store generated elements into
     my @newMembers;
+    
+    
     
     # Get genotype of one of its members...
     my $popRef = $this->getPopulation();
