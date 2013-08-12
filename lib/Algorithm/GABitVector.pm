@@ -242,7 +242,7 @@ sub evolve {
 
 #=== CLASS METHOD  =============================================================
 #        CLASS: GABitVector
-#       METHOD: insertIndividual
+#       METHOD: insert
 #
 #   PARAMETERS: n		-> number of individuals to insert in the population.
 #				args	-> reference to array of references that stores as many
@@ -260,7 +260,7 @@ sub evolve {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub insertIndividual {
+sub insert {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my $this = shift;
@@ -278,47 +278,105 @@ sub insertIndividual {
     
     # Take the array of custom genotypes...
     my @args = @_;
-    
+
+    # If the number of custom genotypes passed as parameters is bigger than
+    # n, then die painfully
+    $log->logconfess("Too many custom genotypes. Just $n are allowed")
+        if (@args > $n);
+
     # Array to store generated elements into
     my @newMembers;
-    
-    
     
     # Get genotype of one of its members...
     my $popRef = $this->getPopulation();
 	my @pop = @$popRef;
 	my $genotype = $pop[0]->getGenotype();
 
-	# Generate individuals..
-	for ( my $i = 0; $i< $n; $i++){
-		my $individualTemp = Individual->new();
-        $individualTemp->setGenotype( BitVector->new($genotype->getLength()));
-        $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
-        push @newMembers, $individualTemp;
-	}
-	
-	# DEPENDING ON THE DATA TYPE THESE ARE THE OPERATIONS TO PERFORM WITH
-	# THE ARRAY OF REFS CALLED ARGS:
-	#
-	#		BITVECTOR	-> IGNORE IT (RANGES ALREADY KNOWN)
-	#		RANGEVECTOR -> PRODUCE A RANDOM FLOAT VALUE BETWEEN RANGES
-	#		LISTVECTOR	-> CHOOSE RANDOMLY ONE OF THE VALUES GIVEN BY RANGES
-	#
-	# FOR THE TWO LAST ONES WE COULD GET AS MANY REFERENCES TO ARRAYS AS
-	# INDIVIDUALS TO  BE INSERTED. IF LESS ELEMENTS ARE PASSED THEN CHOOSE
-	# RANGES RANDOMLY FROM THE ONES PREVIOUSLY DEFINED BY THE GENOTYPE WHERE
-	# INDIVIDUALS ARE TO BE INSERTED
-	
-	# Population update...
-	@pop = (@pop,@newMembers);
-	$this->{population} = \@pop;
-	
-	# Popsize update...
-	$this->{popSize} = @pop;
+    # If the optional array of values is defined, use it
+    if (@args){
+        
+        foreach my $valueRef (@args){
+            $log->logconfess("Not an ARRAY reference in args array")
+            if !(ref($valueRef) eq "ARRAY");
+        }
+        
+        # Check that each one of the sub arrays is composed by as many elements
+        # as genotypeLength of the rest of individuals.
+        my $genotypeLength = $genotype->getLength();
 
-	return;
-	
-}    ## --- end sub insertIndividual
+        foreach my $valueRef (@args){
+            my @value = @$valueRef;
+            
+            log->logconfess("Wrong number of genes inserted in genotype: ", scalar @value, " != ", $genotypeLength)
+            if (@value != $genotypeLength);
+        }
+        
+        # Use those arrays to create custom individuals and insert them
+        # into the population.
+        for ( my $i = 0; $i < $n; $i++ ){
+            my $valuesRef = $args[$i];
+            
+            # If custom genotype is defined, use it
+            if (defined $valuesRef){
+                
+                my @customValues = @$valuesRef;
+                
+                my $individualTemp = Individual->new();
+                my $customGenotype = BitVector->new($genotype->getLength());
+                
+                for ( my $j = 0; $j < @customValues; $j++ ){
+                    $customGenotype->setGen($j, $customValues[$j]);
+                }
+
+                $individualTemp->setGenotype( $customGenotype );
+                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                push @newMembers, $individualTemp;
+                
+            }else{ # If not generate random individuals
+            
+                my $individualTemp = Individual->new();
+                $individualTemp->setGenotype( BitVector->new($genotype->getLength()) );
+                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                push @newMembers, $individualTemp;
+            }
+        }
+
+        
+    }else{
+        
+        # Generate as many as n random individuals and insert them into
+        # the population.
+        for ( my $i = 0; $i < $n; $i++ ){
+                my $individualTemp = Individual->new();
+        
+                $individualTemp->setGenotype( BitVector->new($genotype->getLength()) );
+                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                push @newMembers, $individualTemp;
+        }
+    }
+    
+    # DEPENDING ON THE DATA TYPE THESE ARE THE OPERATIONS TO PERFORM WITH
+    # THE ARRAY OF REFS CALLED ARGS:
+    #
+    #       BITVECTOR   -> IGNORE IT (RANGES ALREADY KNOWN)
+    #       RANGEVECTOR -> PRODUCE A RANDOM FLOAT VALUE BETWEEN RANGES
+    #       LISTVECTOR  -> CHOOSE RANDOMLY ONE OF THE VALUES GIVEN BY RANGES
+    #
+    # FOR THE TWO LAST ONES WE COULD GET AS MANY REFERENCES TO ARRAYS AS
+    # INDIVIDUALS TO  BE INSERTED. IF LESS ELEMENTS ARE PASSED THEN CHOOSE
+    # RANGES RANDOMLY FROM THE ONES PREVIOUSLY DEFINED BY THE GENOTYPE WHERE
+    # INDIVIDUALS ARE TO BE INSERTED
+    
+    # Population update...
+    @pop = (@pop,@newMembers);
+    $this->{population} = \@pop;
+    
+    # Popsize update...
+    $this->{popSize} = @pop;
+
+    return;
+		
+}    ## --- end sub insert
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: GABitVector

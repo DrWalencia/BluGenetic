@@ -97,18 +97,20 @@ sub new {
 sub initialize {
 
     # Retrieve fields as reference to a hash and the parameter
-    my ( $this, $valuesPerIndividualRef ) = @_;
+    my $this = shift;
+    my @valuesPerIndividual = @_;
 
     $log->logconfess("Argument valuesPerIndividual missing")
-      if ( !( defined $valuesPerIndividualRef ) );
+      if ( !( @valuesPerIndividual ) );
       
-    # check that valuesPerIndividual is an array of references to
+    # check that valuesPerIndividual is an array of refereces to
     # arrays
-    my @valuesPerIndividual = @$valuesPerIndividualRef;
+
+    print @valuesPerIndividual, "\n";
     
     foreach my $valueRef (@valuesPerIndividual){
     	$log->logconfess("Not an ARRAY reference in valuesPerIndividual array")
-    	if (!(ref($valueRef eq "ARRAY")));
+    	if (!(ref($valueRef) eq "ARRAY"));
     }
 
     $log->info(
@@ -127,7 +129,7 @@ sub initialize {
     # randomly generated (such action takes part in the new() method)
     for ( $i = 0 ; $i < $this->{popSize} ; $i++ ) {
         my $individualTemp = Individual->new();
-        $individualTemp->setGenotype( ListVector->new($valuesPerIndividualRef) );
+        $individualTemp->setGenotype( ListVector->new(@valuesPerIndividual) );
         $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
         push @pop, $individualTemp;
     }
@@ -272,7 +274,6 @@ sub insertIndividual {
 
     # Get the arguments...
     my $n = shift;
-    my $argsRef = shift;
     
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
     $log->logconfess("The algorithm has not been initialized")
@@ -281,101 +282,106 @@ sub insertIndividual {
     # If anything strange is inserted in n, die painfully
     $log->logconfess(" Wrong number of individuals to insert: $n")
     if ($n <= 0);
-    
+   
+    # Take the array of custom genotypes...
+    my @args = @_;
+
+    # If the number of custom genotypes passed as parameters is bigger than
+    # n, then die painfully
+    $log->logconfess("Too many custom genotypes. Just $n are allowed")
+        if (@args > $n);
+
     # Array to store generated elements into
     my @newMembers;
     
     # Get genotype of one of its members...
     my $popRef = $this->getPopulation();
-	my @pop = @$popRef;
-	my $genotype = $pop[0]->getGenotype();
+    my @pop = @$popRef;
+    my $genotype = $pop[0]->getGenotype();
+
+    # If the optional array of values is defined, use it
+    if (@args){
+        
+        foreach my $valueRef (@args){
+            $log->logconfess("Not an ARRAY reference in args array")
+            if !(ref($valueRef) eq "ARRAY");
+        }
+        
+        # Check that each one of the sub arrays is composed by as many elements
+        # as genotypeLength of the rest of individuals.
+        my $genotypeLength = $genotype->getLength();
+
+        foreach my $valueRef (@args){
+            my @value = @$valueRef;
+            
+            log->logconfess("Wrong number of genes inserted in genotype: ", scalar @value, " != ", $genotypeLength)
+            if (@value != $genotypeLength);
+        }
+        
+        # Use those arrays to create custom individuals and insert them
+        # into the population.
+        for ( my $i = 0; $i < $n; $i++ ){
+            my $valuesRef = $args[$i];
+            
+            # If custom genotype is defined, use it
+            if (defined $valuesRef){
+                
+                my @customValues = @$valuesRef;
+                
+                my $individualTemp = Individual->new();
+                my $customGenotype = ListVector->new($genotype->getRanges());
+                
+                for ( my $j = 0; $j < @customValues; $j++ ){
+                    $customGenotype->setGen($j, $customValues[$j]);
+                }
+
+                $individualTemp->setGenotype( $customGenotype );
+                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                push @newMembers, $individualTemp;
+                
+            }else{ # If not generate random individuals
+            
+                my $individualTemp = Individual->new();
+                $individualTemp->setGenotype( ListVector->new($genotype->getRanges()) );
+                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                push @newMembers, $individualTemp;
+            }
+        }
+
+        
+    }else{
+        
+        # Generate as many as n random individuals and insert them into
+        # the population.
+        for ( my $i = 0; $i < $n; $i++ ){
+                my $individualTemp = Individual->new();
+        
+                $individualTemp->setGenotype( ListVector->new($genotype->getRanges()) );
+                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                push @newMembers, $individualTemp;
+        }
+    }
     
-
-	# If the optional array of values is defined, use it
-	if (defined $argsRef){
-		
-		# Check if the args array (dereferenced) is an array of array references
-    	my @args = @$argsRef;
+    # DEPENDING ON THE DATA TYPE THESE ARE THE OPERATIONS TO PERFORM WITH
+    # THE ARRAY OF REFS CALLED ARGS:
+    #
+    #       BITVECTOR   -> IGNORE IT (RANGES ALREADY KNOWN)
+    #       RANGEVECTOR -> PRODUCE A RANDOM FLOAT VALUE BETWEEN RANGES
+    #       LISTVECTOR  -> CHOOSE RANDOMLY ONE OF THE VALUES GIVEN BY RANGES
+    #
+    # FOR THE TWO LAST ONES WE COULD GET AS MANY REFERENCES TO ARRAYS AS
+    # INDIVIDUALS TO  BE INSERTED. IF LESS ELEMENTS ARE PASSED THEN CHOOSE
+    # RANGES RANDOMLY FROM THE ONES PREVIOUSLY DEFINED BY THE GENOTYPE WHERE
+    # INDIVIDUALS ARE TO BE INSERTED
     
-    	foreach my $valueRef (@args){
-    		$log->logconfess("Not an ARRAY reference in args array")
-    		if (!(ref($valueRef eq "ARRAY")));
-   		}
-   		
-   		# Check that each one of the sub arrays is composed by as many elements
-   		# as genotypeLength of the rest of individuals.
-   		my $genotypeLength = $genotype->getLength();
-   		
-   		foreach my $valueRef (@args){
-   			my @value = @$valueRef;
-   			
-   			log->logconfess("Wrong number of genes inserted in genotype: ", scalar @value, " != ", $genotypeLength)
-   			if (@value != $genotypeLength);
-   		}
-   		
-   		# Use those arrays to create custom individuals and insert them
-   		# into the population.
-   		for ( my $i = 0; $i < $n; $i++ ){
-   			my $valuesRef = $args[$i];
-   			
-   			# If custom genotype is defined, use it
-			if (defined $valuesRef){
-				
-				my @customValues = @$valuesRef;
-				
-				my $individualTemp = Individual->new();
-				my $customGenotype = ListVector->new($genotype->{ranges});
-				
-				for ( my $j = 0; $j < @customValues; $j++ ){
-					$customGenotype->setGen($j, $customValues[$j]);
-				}
+    # Population update...
+    @pop = (@pop,@newMembers);
+    $this->{population} = \@pop;
+    
+    # Popsize update...
+    $this->{popSize} = @pop;
 
-        		$individualTemp->setGenotype( $customGenotype );
-        		$individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
-        		push @newMembers, $individualTemp;
-				
-			}else{ # If not generate random individuals
-			
-				my $individualTemp = Individual->new();
-				$individualTemp->setGenotype( ListVector->new($genotype->{ranges}) );
-				$individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
-				push @newMembers, $individualTemp;
-			}
-   		}
-
-		
-	}else{
-		
-		# Generate as many as n random individuals and insert them into
-		# the population.
-		for ( my $i = 0; $i < $n; $i++ ){
-				my $individualTemp = Individual->new();
-				$individualTemp->setGenotype( ListVector->new($genotype->{ranges}) );
-				$individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
-				push @newMembers, $individualTemp;
-		}
-	}
-	
-	# DEPENDING ON THE DATA TYPE THESE ARE THE OPERATIONS TO PERFORM WITH
-	# THE ARRAY OF REFS CALLED ARGS:
-	#
-	#		BITVECTOR	-> IGNORE IT (RANGES ALREADY KNOWN)
-	#		RANGEVECTOR -> PRODUCE A RANDOM FLOAT VALUE BETWEEN RANGES
-	#		LISTVECTOR	-> CHOOSE RANDOMLY ONE OF THE VALUES GIVEN BY RANGES
-	#
-	# FOR THE TWO LAST ONES WE COULD GET AS MANY REFERENCES TO ARRAYS AS
-	# INDIVIDUALS TO  BE INSERTED. IF LESS ELEMENTS ARE PASSED THEN CHOOSE
-	# RANGES RANDOMLY FROM THE ONES PREVIOUSLY DEFINED BY THE GENOTYPE WHERE
-	# INDIVIDUALS ARE TO BE INSERTED
-	
-	# Population update...
-	@pop = (@pop,@newMembers);
-	$this->{population} = \@pop;
-	
-	# Popsize update...
-	$this->{popSize} = @pop;
-
-	return;
+    return;
 	
 }    ## --- end sub insertIndividual
 

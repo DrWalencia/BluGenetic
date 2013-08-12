@@ -766,7 +766,7 @@ sub initialize {
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: insertIndividual
+#       METHOD: insert
 #
 #   PARAMETERS: individual -> the individual to be inserted.
 #				index 		-> the position where the individual will be placed.
@@ -777,11 +777,11 @@ sub initialize {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub insertIndividual {
+sub insert {
     $log->logconfess(
         'The function insertIndividual() must be defined in a subclass.\n');
     return;
-}    ## --- end sub insertIndividual
+}    ## --- end sub insert
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm

@@ -19,7 +19,7 @@
 use Test::More;
 use Log::Log4perl qw(get_logger);
 use Individual;
-use Algorithm::GABitVector;
+use Algorithm::GAListVector;
 use diagnostics;
 use strict;
 use warnings;
@@ -68,81 +68,7 @@ sub terminate() {
 	return 0;
 }
 
-# Initialize: check that genotypeLength is a positive number bigger than 0.
-# Die otherwise.
-{
-	my $algorithm = GAListVector->new(
-		popSize => 4,
-		crossover => 0.3,
-		mutation => 0.4,
-		fitness => \&fitness,
-	);
-	
-	dies_ok { $algorithm->initialize() } "Initialize: check that genotypeLength is a positive number (undefined). Dies";
-	dies_ok { $algorithm->initialize(0) } "Initialize: check that genotypeLength is a positive number (zero). Dies";
-}
-
-# initialize: check that evolve dies if algorithm not initialized.
-{
-	my $algorithm = GAListVector->new(
-		popSize => 4,
-		crossover => 0.3,
-		mutation => 0.4,
-		fitness => \&fitness,
-	);
-
-	dies_ok{$algorithm->evolve()} "initialize: check that evolve dies if algorithm not initialized.";
-}
-
-# initialize: check that getFittest dies if algorithm not initialized.
-{
-	my $algorithm = GAListVector->new(
-		popSize => 4,
-		crossover => 0.3,
-		mutation => 0.4,
-		fitness => \&fitness,
- 	);
-
-	dies_ok{$algorithm->getFittest()} "initialize: check that getFittest dies if algorithm not initialized.";
-}
-
-# initialize: check that getPopulation dies if algorithm not initialized.
-{
-	my $algorithm = GAListVector->new(
-		popSize => 4,
-		crossover => 0.3,
-		mutation => 0.4,
-		fitness => \&fitness,
-	);
- 
-	dies_ok{$algorithm->getPopulation()} "initialize: check that getPopulation dies if algorithm not initialized.";
-}
-
-# initialize: check that insertIndividual dies if algorithm not initialized.
-{
-	my $algorithm = GAListVector->new(
-		popSize => 4,
-		crossover => 0.3,
-		mutation => 0.4,
-		fitness => \&fitness,
-	);
-
-	dies_ok{$algorithm->insertIndividual(3)} "initialize: check that insertIndividual dies if algorithm not initialized.";
-}
-
-# initialize: check that deleteIndividual dies if algorithm not initialized.
-{
-	my $algorithm = GAListVector->new(
-		popSize => 4,
-		crossover => 0.3,
-		mutation => 0.4,
-		fitness => \&fitness,
-	);
-	
-	dies_ok{$algorithm->deleteIndividual(2)} "initialize: check that deleteIndividual dies if algorithm not initialized.";
-}
-
-# insertIndividual: check that if the amount of individuals to be inserted
+# insert: check that if the amount of individuals to be inserted
 # is zero or negative, it dies.
 {
 	my $algorithm = GAListVector->new(
@@ -166,7 +92,7 @@ sub terminate() {
     dies_ok{$algorithm->insertIndividual(-4)} "insertIndividual: check that insertIndividual dies if amount of individuals is negative.";
 }
 
-# insertIndividual: check after successful insertion that the population
+# insert: check after successful insertion that the population
 # have grown as much as n.
 {
     my $algorithm = GAListVector->new(
@@ -176,11 +102,11 @@ sub terminate() {
         fitness => \&fitness,
     );
 
-    $algorithm->initialize(23);
+    $algorithm->initialize(4);
 
-    $algorithm->insertIndividual(3);
+    $algorithm->insertIndividual(1);
 
-    ok ( $algorithm->getPopSize() == 7, "insertIndividual: Population grew from 4 to 7" );
+    ok ( $algorithm->getPopSize() == 5, "insertIndividual: Population grew from 4 to 5" );
 
     my $popRef = $algorithm->getPopulation();
 
@@ -188,7 +114,7 @@ sub terminate() {
 
 }
 
-# deleteIndividual: check that if the index given is less than zero or more
+# delete: check that if the index given is less than zero or more
 # than the population size, it dies.
 {
         my $algorithm = GABitVector->new(
@@ -212,7 +138,7 @@ sub terminate() {
     dies_ok{$algorithm->insertIndividual(5)} "deleteIndividual: check that insertIndividual dies if amount of individuals is bigger than the highest index.";
 }
 
-# deleteIndividual: check after successful deletion that de population had
+# delete: check after successful deletion that de population had
 # become 1 individual smaller.
 {
         my $algorithm = GABitVector->new(
@@ -315,7 +241,7 @@ sub terminate() {
 #	 );
 #	
 #	 $algorithm->initialize(3);
-#	 $algorithm->insertIndividual($individual,0);
+#	 $algorithm->insert($individual,0);
 #
 #	# Population inside the algorithm is just a reference, so to play with it
 #	# it must be dereferenced first.

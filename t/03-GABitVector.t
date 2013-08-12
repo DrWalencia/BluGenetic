@@ -118,7 +118,7 @@ sub terminate() {
 	dies_ok{$algorithm->getPopulation()} "initialize: check that getPopulation dies if algorithm not initialized.";
 }
 
-# initialize: check that insertIndividual dies if algorithm not initialized.
+# initialize: check that insert dies if algorithm not initialized.
 {
 	my $algorithm = GABitVector->new(
 		popSize => 4,
@@ -127,7 +127,7 @@ sub terminate() {
 		fitness => \&fitness,
 	);
 
-	dies_ok{$algorithm->insertIndividual(3)} "initialize: check that insertIndividual dies if algorithm not initialized.";
+	dies_ok{$algorithm->insert(3)} "initialize: check that insert dies if algorithm not initialized.";
 }
 
 # initialize: check that deleteIndividual dies if algorithm not initialized.
@@ -142,7 +142,7 @@ sub terminate() {
 	dies_ok{$algorithm->deleteIndividual(2)} "initialize: check that deleteIndividual dies if algorithm not initialized.";
 }
 
-# insertIndividual: check that if the amount of individuals to be inserted
+# insert: check that if the amount of individuals to be inserted
 # is zero or negative, it dies.
 {
 	my $algorithm = GABitVector->new(
@@ -152,7 +152,7 @@ sub terminate() {
 		fitness => \&fitness,
 	);
 	
-	dies_ok{$algorithm->insertIndividual(0)} "insertIndividual: check that insertIndividual dies if amount of individuals is 0.";
+	dies_ok{$algorithm->insert(0)} "insert: check that insert dies if amount of individuals is 0.";
 }
 
 {
@@ -163,10 +163,10 @@ sub terminate() {
         fitness => \&fitness,
     );
     
-    dies_ok{$algorithm->insertIndividual(-4)} "insertIndividual: check that insertIndividual dies if amount of individuals is negative.";
+    dies_ok{$algorithm->insert(-4)} "insert: check that insert dies if amount of individuals is negative.";
 }
 
-# insertIndividual: check after successful insertion that the population
+# insert: check after successful insertion that the population
 # have grown as much as n.
 {
     my $algorithm = GABitVector->new(
@@ -178,15 +178,96 @@ sub terminate() {
 
     $algorithm->initialize(23);
 
-    $algorithm->insertIndividual(3);
+    $algorithm->insert(3);
 
-    ok ( $algorithm->getPopSize() == 7, "insertIndividual: Population grew from 4 to 7" );
+    ok ( $algorithm->getPopSize() == 7, "insert: Population grew from 4 to 7" );
 
     my $popRef = $algorithm->getPopulation();
 
-    ok ( $algorithm->getPopSize() == @$popRef, "insertIndividual: Population array size is the same as algorithm->getPopSize()");
+    ok ( $algorithm->getPopSize() == @$popRef, "insert: Population array size is the same as algorithm->getPopSize()");
 
 }
+
+# insert: insertion of custom genotype: as many as n
+{
+    my $algorithm = GABitVector->new(
+        popSize => 4,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
+
+    $algorithm->initialize(4);
+
+    $algorithm->insert(1,[0,0,1,1]);
+
+    ok ( $algorithm->getPopSize() == 5, "insertion of custom genotype: as many as n. Population grew from 4 to 5" );
+
+    my $popRef = $algorithm->getPopulation();
+    my @population = @$popRef;
+
+    my $lastIndividual = pop @population;
+    my $genotype = $lastIndividual->getGenotype();
+
+    ok ( $genotype->getGen(0) == 0, "first bit equals 0" );
+    ok ( $genotype->getGen(1) == 0, "second bit equals 0" );
+    ok ( $genotype->getGen(2) == 1, "third bit equals 1" );
+    ok ( $genotype->getGen(3) == 1, "fourth bit equals 1" );
+
+    ok ( $algorithm->getPopSize() == @$popRef, "insert: Population array size is the same as algorithm->getPopSize()");
+
+}
+
+
+# insert: insertion of custom genotype: less than n
+{
+    my $algorithm = GABitVector->new(
+        popSize => 4,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
+
+    $algorithm->initialize(4);
+
+    $algorithm->insert(2,[0,0,1,1]);
+
+    ok ( $algorithm->getPopSize() == 6, "insertion of custom genotype: less than n. Population grew from 4 to 6" );
+
+    my $popRef = $algorithm->getPopulation();
+    my @population = @$popRef;
+
+    pop @population;
+
+    my $lastIndividual = pop @population;
+    my $genotype = $lastIndividual->getGenotype();
+
+    ok ( $genotype->getGen(0) == 0, "first bit equals 0" );
+    ok ( $genotype->getGen(1) == 0, "second bit equals 0" );
+    ok ( $genotype->getGen(2) == 1, "third bit equals 1" );
+    ok ( $genotype->getGen(3) == 1, "fourth bit equals 1" );
+
+    ok ( $algorithm->getPopSize() == @$popRef, "insert: Population array size is the same as algorithm->getPopSize()");
+
+}
+
+
+# insert: insertion of custom genotype: more than n. Dies painfully
+{
+    my $algorithm = GABitVector->new(
+        popSize => 4,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
+
+    $algorithm->initialize(23);
+
+    dies_ok{$algorithm->insert(1,[0,0,1,1],[0,0,0,1])} "insert: insertion of custom genotype: more than n. Dies painfully";
+
+}
+
+
 
 # deleteIndividual: check that if the index given is less than zero or more
 # than the population size, it dies.
@@ -209,7 +290,7 @@ sub terminate() {
         fitness => \&fitness,
     );
     
-    dies_ok{$algorithm->insertIndividual(5)} "deleteIndividual: check that insertIndividual dies if amount of individuals is bigger than the highest index.";
+    dies_ok{$algorithm->insert(5)} "deleteIndividual: check that insert dies if amount of individuals is bigger than the highest index.";
 }
 
 # deleteIndividual: check after successful deletion that de population had
@@ -315,7 +396,7 @@ sub terminate() {
 #	 );
 #	
 #	 $algorithm->initialize(3);
-#	 $algorithm->insertIndividual($individual,0);
+#	 $algorithm->insert($individual,0);
 #
 #	# Population inside the algorithm is just a reference, so to play with it
 #	# it must be dereferenced first.
