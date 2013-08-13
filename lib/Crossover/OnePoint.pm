@@ -123,12 +123,12 @@ sub _getProperGenotype{
         $log->info("Factory method to get proper genotype called (BitVector)");
     }elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
         $genotype = RangeVector->new( 
-            $this->{indOne}->getGenotype()->getLength() 
+            $this->{indOne}->getGenotype()->getRanges() 
         );
         $log->info("Factory method to get proper genotype called (RangeVector)");
     }elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
         $genotype = ListVector->new( 
-            $this->{indOne}->getGenotype()->getLength() 
+            $this->{indOne}->getGenotype()->getRanges() 
         );
         $log->info("Factory method to get proper genotype called (ListVector)");
     }else {
@@ -169,13 +169,13 @@ sub _getProperIndividual{
     }elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
         $individual = Individual->new(
             genotype => RangeVector->new(
-                $this->{indOne}->getGenotype()->getLength() )
+                $this->{indOne}->getGenotype()->getRanges() )
         );
         $log->info("Factory method to get proper individual called (RangeVector)");
     }elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
         $individual = Individual->new(
             genotype => ListVector->new(
-                $this->{indOne}->getGenotype()->getLength() )
+                $this->{indOne}->getGenotype()->getRanges() )
         );
         $log->info("Factory method to get proper individual called (ListVector)");
     }else {

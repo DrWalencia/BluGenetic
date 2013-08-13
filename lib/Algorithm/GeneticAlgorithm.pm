@@ -779,13 +779,13 @@ sub initialize {
 #===============================================================================
 sub insert {
     $log->logconfess(
-        'The function insertIndividual() must be defined in a subclass.\n');
+        'The function insert() must be defined in a subclass.\n');
     return;
 }    ## --- end sub insert
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
-#       METHOD: deleteIndividual
+#       METHOD: delete
 #
 #   PARAMETERS: index -> the position of the individual to be deleted.
 #
@@ -798,11 +798,11 @@ sub insert {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub deleteIndividual {
+sub delete {
     $log->logconfess(
-        'The function deleteIndividual() must be defined in a subclass.\n');
+        'The function delete() must be defined in a subclass.\n');
     return;
-}    ## --- end sub deleteIndividual
+}    ## --- end sub delete
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm

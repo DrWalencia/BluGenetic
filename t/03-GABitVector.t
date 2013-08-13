@@ -130,7 +130,7 @@ sub terminate() {
 	dies_ok{$algorithm->insert(3)} "initialize: check that insert dies if algorithm not initialized.";
 }
 
-# initialize: check that deleteIndividual dies if algorithm not initialized.
+# initialize: check that delete dies if algorithm not initialized.
 {
 	my $algorithm = GABitVector->new(
 		popSize => 4,
@@ -139,7 +139,7 @@ sub terminate() {
 		fitness => \&fitness,
 	);
 	
-	dies_ok{$algorithm->deleteIndividual(2)} "initialize: check that deleteIndividual dies if algorithm not initialized.";
+	dies_ok{$algorithm->delete(2)} "initialize: check that deleteIndividual dies if algorithm not initialized.";
 }
 
 # insert: check that if the amount of individuals to be inserted
@@ -269,7 +269,7 @@ sub terminate() {
 
 
 
-# deleteIndividual: check that if the index given is less than zero or more
+# delete: check that if the index given is less than zero or more
 # than the population size, it dies.
 {
         my $algorithm = GABitVector->new(
@@ -279,7 +279,7 @@ sub terminate() {
         fitness => \&fitness,
     );
     
-    dies_ok{$algorithm->deleteIndividual(-4)} "deleteIndividual: check that deleteIndividual dies if amount of individuals is negative.";
+    dies_ok{$algorithm->delete(-4)} "deleteIndividual: check that deleteIndividual dies if amount of individuals is negative.";
 }
 
 {
@@ -290,10 +290,10 @@ sub terminate() {
         fitness => \&fitness,
     );
     
-    dies_ok{$algorithm->insert(5)} "deleteIndividual: check that insert dies if amount of individuals is bigger than the highest index.";
+    dies_ok{$algorithm->insert(5)} "delete: check that insert dies if amount of individuals is bigger than the highest index.";
 }
 
-# deleteIndividual: check after successful deletion that de population had
+# delete: check after successful deletion that de population had
 # become 1 individual smaller.
 {
         my $algorithm = GABitVector->new(
@@ -305,13 +305,13 @@ sub terminate() {
 
     $algorithm->initialize(20);
 
-    $algorithm->deleteIndividual(3);
+    $algorithm->delete(3);
 
-    ok ( $algorithm->getPopSize() == 3, "deleteIndividual: population smaller by 1 individual");
+    ok ( $algorithm->getPopSize() == 3, "delete: population smaller by 1 individual");
 
     my $popRef = $algorithm->getPopulation();
 
-    ok ( $algorithm->getPopSize() == @$popRef, "deleteIndividual: population array size is the same as algorithm->getPopSize()");
+    ok ( $algorithm->getPopSize() == @$popRef, "delete: population array size is the same as algorithm->getPopSize()");
 
     
 }
@@ -379,35 +379,27 @@ sub terminate() {
 # _fitnessFunc: (BREAKING ENCAPSULATION) Generate population, insert
 # individual in which we already know the fitness value and check if
 # this function returns the expected value.
-#{
-#	 my $genotype = BitVector->new(3);
-#	
-#	 $genotype->setGen( 0, 0 );
-#	 $genotype->setGen( 1, 1 );
-#	 $genotype->setGen( 2, 1 );
-#	
-#	 my $individual = Individual->new( genotype => $genotype );
-#	
-#	 my $algorithm = GABitVector->new(
-#	 popSize => 12,
-#	 crossover => 0.3,
-#	 mutation => 0.4,
-#	 fitness => \&fitness,
-#	 );
-#	
-#	 $algorithm->initialize(3);
-#	 $algorithm->insert($individual,0);
-#
-#	# Population inside the algorithm is just a reference, so to play with it
-#	# it must be dereferenced first.
-#	
-#	my $populationRef = $algorithm->getPopulation();
-#	my @population = @$populationRef;
-#	
-#	my $individual2 = $population[0];
-#	
-#	ok ( $individual2->getScore() == 2, "_fitnessFunc: Generate population, insert individual in which we already know the fitness value and check if this function returns the expected value." );
-#}
+{
+    my $algorithm = GABitVector->new(
+        popSize => 12,
+        crossover => 0.3,
+        mutation => 0.4,
+        fitness => \&fitness,
+    );
+
+    $algorithm->initialize(3);
+    $algorithm->insert(1,[0,1,1]);
+
+    # Population inside the algorithm is just a reference, so to play with it
+    # it must be dereferenced first.
+
+    my $populationRef = $algorithm->getPopulation();
+    my @population = @$populationRef;
+
+    my $individual2 = $population[@population -1];
+
+    ok ( $individual2->getScore() == 2, "_fitnessFunc: Generate population, insert individual in which we already know the fitness value and check if this function returns the expected value." );
+}
 
 # sortPopulation: generate population and sort it. Check results.
 {

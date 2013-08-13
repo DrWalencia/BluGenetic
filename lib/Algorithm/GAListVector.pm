@@ -38,7 +38,7 @@ our $log = Log::Log4perl::get_logger("GAListVector");
 
 #===  FUNCTION  ================================================================
 #         NAME: new
-#      PURPOSE: Creates a newly allocated GABitVector genetic algorithm.
+#      PURPOSE: Creates a newly allocated GAListVector genetic algorithm.
 #
 #   PARAMETERS: popSize 	-> size of the population (fixed)
 #				crossover	-> crossover chance (0..1)
@@ -99,15 +99,13 @@ sub initialize {
     # Retrieve fields as reference to a hash and the parameter
     my $this = shift;
     my @valuesPerIndividual = @_;
+    my $valuesPerIndividualRef = \@valuesPerIndividual;
 
     $log->logconfess("Argument valuesPerIndividual missing")
-      if ( !( @valuesPerIndividual ) );
+      if ( !(defined $valuesPerIndividualRef ) );
       
     # check that valuesPerIndividual is an array of refereces to
     # arrays
-
-    print @valuesPerIndividual, "\n";
-    
     foreach my $valueRef (@valuesPerIndividual){
     	$log->logconfess("Not an ARRAY reference in valuesPerIndividual array")
     	if (!(ref($valueRef) eq "ARRAY"));
@@ -129,7 +127,7 @@ sub initialize {
     # randomly generated (such action takes part in the new() method)
     for ( $i = 0 ; $i < $this->{popSize} ; $i++ ) {
         my $individualTemp = Individual->new();
-        $individualTemp->setGenotype( ListVector->new(@valuesPerIndividual) );
+        $individualTemp->setGenotype( ListVector->new($valuesPerIndividualRef) );
         $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
         push @pop, $individualTemp;
     }
@@ -151,7 +149,7 @@ sub initialize {
     $this->{initialized} = 1;
 
     return 1;
-}    ## --- end sub initialize
+}     ## --- end sub initialize
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GAListVector
@@ -249,7 +247,7 @@ sub evolve {
 
 #=== CLASS METHOD  =============================================================
 #        CLASS: GAListVector
-#       METHOD: insertIndividual
+#       METHOD: insert
 #
 #   PARAMETERS: n		-> number of individuals to insert in the population.
 #				args	-> array of refs to array that specifies the values of
@@ -267,7 +265,7 @@ sub evolve {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub insertIndividual {
+sub insert {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my $this = shift;
@@ -282,7 +280,7 @@ sub insertIndividual {
     # If anything strange is inserted in n, die painfully
     $log->logconfess(" Wrong number of individuals to insert: $n")
     if ($n <= 0);
-   
+    
     # Take the array of custom genotypes...
     my @args = @_;
 
@@ -298,10 +296,11 @@ sub insertIndividual {
     my $popRef = $this->getPopulation();
     my @pop = @$popRef;
     my $genotype = $pop[0]->getGenotype();
+    my $ranges = $genotype->getRanges();
 
     # If the optional array of values is defined, use it
     if (@args){
-        
+
         foreach my $valueRef (@args){
             $log->logconfess("Not an ARRAY reference in args array")
             if !(ref($valueRef) eq "ARRAY");
@@ -355,7 +354,6 @@ sub insertIndividual {
         # the population.
         for ( my $i = 0; $i < $n; $i++ ){
                 my $individualTemp = Individual->new();
-        
                 $individualTemp->setGenotype( ListVector->new($genotype->getRanges()) );
                 $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
                 push @newMembers, $individualTemp;
@@ -383,11 +381,11 @@ sub insertIndividual {
 
     return;
 	
-}    ## --- end sub insertIndividual
+}    ## --- end sub insert
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: GAListVector
-#       METHOD: deleteIndividual
+#       METHOD: delete
 #
 #   PARAMETERS: index -> the position of the individual to be deleted.
 #
@@ -400,7 +398,7 @@ sub insertIndividual {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub deleteIndividual {
+sub delete {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
     my $this = shift;
@@ -440,6 +438,6 @@ sub deleteIndividual {
 	$this->{popSize} = @pop;
 
     return;
-}    ## --- end sub deleteIndividual
+}    ## --- end sub delete
 
 1;

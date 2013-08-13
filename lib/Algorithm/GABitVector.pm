@@ -380,7 +380,7 @@ sub insert {
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: GABitVector
-#       METHOD: deleteIndividual
+#       METHOD: delete
 #
 #   PARAMETERS: index -> the position of the individual to be deleted.
 #
@@ -393,7 +393,7 @@ sub insert {
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub deleteIndividual {
+sub delete {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE CLASS NAME
     my $this = shift;
@@ -433,6 +433,6 @@ sub deleteIndividual {
 	$this->{popSize} = @pop;
 
     return;
-}    ## --- end sub deleteIndividual
+}    ## --- end sub delete
 
 1;
