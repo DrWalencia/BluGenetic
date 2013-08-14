@@ -1,11 +1,11 @@
 #
 #===============================================================================
 #
-#         FILE: GAListVector.t
+#         FILE: GARangeVector.t
 #
 #  DESCRIPTION: Basic set of tests that attempt to prove that the basic
 #               functionality regarding the representation of a Genetic
-#				Algorithm with ListVector as its data type.
+#				Algorithm with RangeVector as its data type.
 #
 #        FILES: ---
 #         BUGS: ---
@@ -19,7 +19,7 @@
 use Test::More;
 use Log::Log4perl qw(get_logger);
 use Individual;
-use Algorithm::GAListVector;
+use Algorithm::GARangeVector;
 use diagnostics;
 use strict;
 use warnings;
@@ -56,8 +56,7 @@ sub fitness() {
 	my $counter;
 	
 	for ( $i = 0 ; $i < $genotype->getLength() ; $i++ ) {
-        my $temp = $genotype->getGen($i);
-		$counter += length $temp;
+		$counter += $genotype->getGen($i);
 	}
 
 	return $counter;
@@ -73,7 +72,7 @@ sub terminate() {
 # insert: check that if the amount of individuals to be inserted
 # is zero or negative, it dies.
 {
-	my $algorithm = GAListVector->new(
+	my $algorithm = GARangeVector->new(
 		popSize => 4,
 		crossover => 0.3,
 		mutation => 0.4,
@@ -84,7 +83,7 @@ sub terminate() {
 }
 
 {
-        my $algorithm = GAListVector->new(
+        my $algorithm = GARangeVector->new(
         popSize => 4,
         crossover => 0.3,
         mutation => 0.4,
@@ -97,14 +96,14 @@ sub terminate() {
 # insert: check after successful insertion that the population
 # have grown as much as n.
 {
-    my $algorithm = GAListVector->new(
+    my $algorithm = GARangeVector->new(
         popSize => 4,
         crossover => 0.3,
         mutation => 0.4,
         fitness=> \&fitness,
     );
 
-    $algorithm->initialize([qw/red blue green/],[qw/big medium small/],[qw/very_fat fat fit thin very_thin/]);
+    $algorithm->initialize([1, 5], [0, 20], [4, 9]);
 
     $algorithm->insert(1);
 
@@ -119,7 +118,7 @@ sub terminate() {
 # delete: check that if the index given is less than zero or more
 # than the population size, it dies.
 {
-    my $algorithm = GAListVector->new(
+    my $algorithm = GARangeVector->new(
         popSize => 4,
         crossover => 0.3,
         mutation => 0.4,
@@ -130,7 +129,7 @@ sub terminate() {
 }
 
 {
-    my $algorithm = GAListVector->new(
+    my $algorithm = GARangeVector->new(
         popSize => 4,
         crossover => 0.3,
         mutation => 0.4,
@@ -143,7 +142,7 @@ sub terminate() {
 # delete: check after successful deletion that de population had
 # become 1 individual smaller.
 {
-    my $algorithm = GAListVector->new(
+    my $algorithm = GARangeVector->new(
         popSize => 4,
         crossover => 0.3,
         mutation => 0.4,
@@ -151,7 +150,7 @@ sub terminate() {
     );
 
 
-    $algorithm->initialize([qw/red blue green/],[qw/big medium small/],[qw/very_fat fat fit thin very_thin/]);
+        $algorithm->initialize([1, 5], [0, 20], [4, 9]);
 
     $algorithm->delete(3);
 
@@ -165,7 +164,7 @@ sub terminate() {
 # Population inside the algorithm is just a reference, so to play with it
 # it must be dereferenced first.
 {
-	my $algorithm = GAListVector->new(
+	my $algorithm = GARangeVector->new(
 		popSize => 4,
 		crossover => 0.3,
 		mutation => 0.4,
@@ -173,7 +172,7 @@ sub terminate() {
 	);
 	
 
-    $algorithm->initialize([qw/red blue green/],[qw/big medium small/],[qw/very_fat fat fit thin very_thin/]);
+    $algorithm->initialize([1, 5], [0, 20], [4, 9]);
 
 	my $populationRef = $algorithm->getPopulation();
 	my @population = @$populationRef;
@@ -190,15 +189,15 @@ sub terminate() {
 # this function returns the expected value.
 {
 	
-	 my $algorithm = GAListVector->new(
-	 popSize => 12,
-	 crossover => 0.3,
-	 mutation => 0.4,
-	 fitness => \&fitness,
+	 my $algorithm = GARangeVector->new(
+		 popSize => 12,
+		 crossover => 0.3,
+		 mutation => 0.4,
+		 fitness => \&fitness,
 	 );
 	
-     $algorithm->initialize([qw/red blue green/],[qw/big medium small/],[qw/very_fat fat fit thin very_thin/]);
-     $algorithm->insert(1,[qw/ red big fat/]);
+     $algorithm->initialize([1, 5], [0, 20], [4, 9]);
+     $algorithm->insert(1,[2, 3, 5]);
 
 	# Population inside the algorithm is just a reference, so to play with it
 	# it must be dereferenced first.
@@ -208,25 +207,25 @@ sub terminate() {
 	
 	my $individual2 = $population[@population-1];
 	
-    ok ( $individual2->getScore() == 9, "_fitnessFunc: Generate population, insert individual in which we already know the fitness value and check if this function returns the expected value." );
+    ok ( $individual2->getScore() == 10, "_fitnessFunc: Generate population, insert individual in which we already know the fitness value and check if this function returns the expected value." );
 }
     
 # getType: generate AG and call getType. Check if it returns the
 # expected value.
 {
-    my $algorithm = GAListVector->new(
+    my $algorithm = GARangeVector->new(
         popSize => 12,
         crossover => 0.3,
         mutation => 0.4,
         fitness => \&fitness,
     );
 
-    ok( $algorithm->getType() eq "listvector", "generate AG and call getType. Check if it returns the expected value");
+    ok( $algorithm->getType() eq "rangevector", "generate AG and call getType. Check if it returns the expected value");
 }
 
 # evolve: example that works.
 {
-	my $algorithm = GAListVector->new(
+	my $algorithm = GARangeVector->new(
 		popSize   => 20,
 		crossover => 0.8,
 		mutation  => 0.05,
@@ -245,7 +244,7 @@ sub terminate() {
 	
 	$algorithm->createSelectionStrategy("simple", \&sel);
 	
-    $algorithm->initialize([qw/red blue green/],[qw/big medium small/],[qw/very_fat fat fit thin very_thin/]);
+    $algorithm->initialize([1, 5], [0, 20], [4, 9]);
 
 	my $popref = $algorithm->getPopulation();
 	my @population = @$popref;
@@ -282,7 +281,7 @@ sub myTerminate() {
 }
 
 {
-    my $algorithm = GAListVector->new(
+    my $algorithm = GARangeVector->new(
         popSize =>  20,
         crossover => 0.9,
         mutation => 0.04,
@@ -290,8 +289,7 @@ sub myTerminate() {
         terminate => \&myTerminate,
    );
 
-    $algorithm->initialize([qw/red blue green/],[qw/big medium small/],[qw/very_fat fat fit thin very_thin/]);
-
+    $algorithm->initialize([1, 5], [0, 20], [4, 9]);
    
    	sub customCross {
 	

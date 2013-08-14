@@ -115,20 +115,22 @@ sub _getProperGenotype{
     my $this = shift;
 
     my $genotype;
+    my $length = $this->{indOne}->getGenotype()->getLength();
+    my $rangesRef = $this->{indOne}->getGenotype()->getRanges();
     
     if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
         $genotype = BitVector->new( 
-            $this->{indOne}->getGenotype()->getLength() 
+            $length 
         );
         $log->info("Factory method to get proper genotype called (BitVector)");
     }elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
         $genotype = RangeVector->new( 
-            $this->{indOne}->getGenotype()->getRanges() 
+            @$rangesRef 
         );
         $log->info("Factory method to get proper genotype called (RangeVector)");
     }elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
         $genotype = ListVector->new( 
-            $this->{indOne}->getGenotype()->getRanges() 
+            @$rangesRef
         );
         $log->info("Factory method to get proper genotype called (ListVector)");
     }else {
@@ -160,22 +162,22 @@ sub _getProperIndividual{
 
     my $individual;
     
+    my $length = $this->{indOne}->getGenotype()->getLength();
+    my $rangesRef = $this->{indOne}->getGenotype()->getRanges();
+    
     if ( $this->{indOne}->getGenotype()->isa("BitVector") ) {
         $individual = Individual->new(
-            genotype => BitVector->new(
-                $this->{indOne}->getGenotype()->getLength() )
+            genotype => BitVector->new($length)
         );
         $log->info("Factory method to get proper individual called (BitVector)");
     }elsif ( $this->{indOne}->getGenotype()->isa("RangeVector") ) {
         $individual = Individual->new(
-            genotype => RangeVector->new(
-                $this->{indOne}->getGenotype()->getRanges() )
+            genotype => RangeVector->new(@$rangesRef)
         );
         $log->info("Factory method to get proper individual called (RangeVector)");
     }elsif ( $this->{indOne}->getGenotype()->isa("ListVector") ) {
         $individual = Individual->new(
-            genotype => ListVector->new(
-                $this->{indOne}->getGenotype()->getRanges() )
+            genotype => ListVector->new(@$rangesRef)
         );
         $log->info("Factory method to get proper individual called (ListVector)");
     }else {

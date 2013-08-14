@@ -63,8 +63,7 @@ sub new {
     my $class = shift;
  
  	# Take the arguments...
- 	my $rangesRef = shift;
- 	my @ranges = @$rangesRef;
+ 	my @ranges = @_;
 	
 	# Generate genotype...
 	my @genotype;
@@ -88,7 +87,7 @@ sub new {
 	# Anonymous hash to store instance variables (AKA FIELDS)
 	my $this = {
 		genotype	=> \@genotype,
-		ranges		=> $rangesRef
+		ranges		=> \@ranges
 	};
 
 	# Connect a class name with a hash is known as blessing an object

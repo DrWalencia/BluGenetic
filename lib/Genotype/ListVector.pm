@@ -59,8 +59,7 @@ sub new {
 	my $class = shift;
 
  	# Take the arguments...
- 	my $rangesRef = shift;
- 	my @ranges = @$rangesRef;
+ 	my @ranges = @_;
 	
 	# Generate genotype...
 	my @genotype;
@@ -81,7 +80,7 @@ sub new {
 	# Anonymous hash to store instance variables (AKA FIELDS)
 	my $this = {
 		genotype	=> \@genotype,
-		ranges		=> $rangesRef
+		ranges		=> \@ranges
 	};
 
 	# Connect a class name with a hash is known as blessing an object
@@ -120,7 +119,7 @@ sub setGen {
 		if ( ($position <0) or ($position >$this->getLength()) );
 		
 	# If the value is not in ranges, die painfully
-	my $rangesRef = $this->{ranges};
+	my $rangesRef = $this->getRanges();
 	my @ranges = @$rangesRef;
 	my $myRangeRef = $ranges[$position];
 	my @myRange = @$myRangeRef;
@@ -231,7 +230,7 @@ sub changeGen {
 	my $index = int( rand( @myRange ) );
 	
 	# Take the element pointed by index
-	my $element = $myRange[$index];
+	my $element = $ranges[$position][$index];
 	
 	# And redefine the genotype
 	my $genotypeRef = $this->{genotype};

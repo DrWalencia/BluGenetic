@@ -99,13 +99,14 @@ sub initialize {
     # Retrieve fields as reference to a hash and the parameter
     my $this = shift;
     my @valuesPerIndividual = @_;
-    my $valuesPerIndividualRef = \@valuesPerIndividual;
 
     $log->logconfess("Argument valuesPerIndividual missing")
-      if ( !(defined $valuesPerIndividualRef ) );
+      if (!(@valuesPerIndividual));
       
     # check that valuesPerIndividual is an array of refereces to
     # arrays
+    # TODO ON EACH ONE OF THE REFERENCES CHECK THAT THEY ARE COMPOSED
+    # BY A LIST OF STRINGS AND NOTHING ELSE
     foreach my $valueRef (@valuesPerIndividual){
     	$log->logconfess("Not an ARRAY reference in valuesPerIndividual array")
     	if (!(ref($valueRef) eq "ARRAY"));
@@ -127,7 +128,7 @@ sub initialize {
     # randomly generated (such action takes part in the new() method)
     for ( $i = 0 ; $i < $this->{popSize} ; $i++ ) {
         my $individualTemp = Individual->new();
-        $individualTemp->setGenotype( ListVector->new($valuesPerIndividualRef) );
+        $individualTemp->setGenotype( ListVector->new(@valuesPerIndividual) );
         $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
         push @pop, $individualTemp;
     }
@@ -297,6 +298,7 @@ sub insert {
     my @pop = @$popRef;
     my $genotype = $pop[0]->getGenotype();
     my $ranges = $genotype->getRanges();
+   
 
     # If the optional array of values is defined, use it
     if (@args){
@@ -305,7 +307,7 @@ sub insert {
             $log->logconfess("Not an ARRAY reference in args array")
             if !(ref($valueRef) eq "ARRAY");
         }
-        
+
         # Check that each one of the sub arrays is composed by as many elements
         # as genotypeLength of the rest of individuals.
         my $genotypeLength = $genotype->getLength();
@@ -328,7 +330,7 @@ sub insert {
                 my @customValues = @$valuesRef;
                 
                 my $individualTemp = Individual->new();
-                my $customGenotype = ListVector->new($genotype->getRanges());
+                my $customGenotype = ListVector->new(@$ranges);
                 
                 for ( my $j = 0; $j < @customValues; $j++ ){
                     $customGenotype->setGen($j, $customValues[$j]);
@@ -336,12 +338,13 @@ sub insert {
 
                 $individualTemp->setGenotype( $customGenotype );
                 $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                
                 push @newMembers, $individualTemp;
                 
             }else{ # If not generate random individuals
             
                 my $individualTemp = Individual->new();
-                $individualTemp->setGenotype( ListVector->new($genotype->getRanges()) );
+                $individualTemp->setGenotype( ListVector->new(@$ranges) );
                 $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
                 push @newMembers, $individualTemp;
             }
@@ -354,7 +357,7 @@ sub insert {
         # the population.
         for ( my $i = 0; $i < $n; $i++ ){
                 my $individualTemp = Individual->new();
-                $individualTemp->setGenotype( ListVector->new($genotype->getRanges()) );
+                $individualTemp->setGenotype( ListVector->new(@$ranges) );
                 $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
                 push @newMembers, $individualTemp;
         }

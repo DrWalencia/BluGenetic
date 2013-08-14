@@ -47,16 +47,16 @@ Log::Log4perl->init( \$conf );
 # Constructor: memory allocated and correct number of genes
 # If it doesn't complain we're okay
 {
-	ok( ListVector->new([ [qw/red blue green/],
+	ok( ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]), "Constructor: memory allocated and correct number of genes" );
+               [qw/very_fat fat fit thin very_thin/]), "Constructor: memory allocated and correct number of genes" );
 }
 
 # Constructor: size and genotypes are the same
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
 	
 	my $genRef = $genotype->{genotype};
 	my $rangesRef = $genotype->{ranges};
@@ -67,9 +67,9 @@ Log::Log4perl->init( \$conf );
 
 # Constructor: check if gen values randomly generated are within set.
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
 
 	my $rangesRef = $genotype->{ranges};
 	my @ranges = @$rangesRef;
@@ -97,9 +97,9 @@ Log::Log4perl->init( \$conf );
 
 # setGen: Introduce gen in wrong position: over genotype length or below 0. Dies
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
 	
 	dies_ok{$genotype->setGen(-1,"red")} "setGen: fails if index below zero inserted";
 	dies_ok{$genotype->setGen(5,"red")} "setGen: fails if index over length is inserted";
@@ -107,9 +107,9 @@ Log::Log4perl->init( \$conf );
 
 # setGen: value not in set of possible values. Dies
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
 	
 	dies_ok{$genotype->setGen(0,"yellow")} "setGen: fails if value over limits";
 	dies_ok{$genotype->setGen(1,"huge")} "setGen: fails if value below limits";
@@ -118,9 +118,9 @@ Log::Log4perl->init( \$conf );
 
 # setGen: make sure a blue is inserted in gen 0 by inserting it
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
     
     $genotype->setGen(0,"blue");
 	
@@ -133,9 +133,9 @@ Log::Log4perl->init( \$conf );
 # getGen: check that the gen returned and the one got by breaking
 # encapsulation are the same
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
 	
 	my $element = $genotype->getGen(0);
 	
@@ -148,9 +148,9 @@ Log::Log4perl->init( \$conf );
 # getLength: check that the length returned an the one got by
 # breaking encapsulation are the same
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
 	
 	my $length = $genotype->getLength();
 	
@@ -162,9 +162,9 @@ Log::Log4perl->init( \$conf );
 
 # getType: Create a ListVector element and check if the type corresponds to ListVector
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
 
 	ok( $genotype->isa("ListVector"), "getType: Create a ListVector element and check if the type corresponds to ListVector");
 }
@@ -172,9 +172,9 @@ Log::Log4perl->init( \$conf );
 # changeGen: mutate and check that the values are different.
 # COMMENTED -> IT MAY RARELY FAIL BECAUSE OF ITS RANDOM NATURE
 #{
-#	my $genotype = ListVector->new([ [qw/red blue green/],
+#	my $genotype = ListVector->new([qw/red blue green/],
 #               [qw/big medium small/],
-#               [qw/very_fat fat fit thin very_thin/] ]);
+#               [qw/very_fat fat fit thin very_thin/]);
 #	
 #	my $element = $genotype->getGen(0);
 #	$genotype->changeGen(0);
@@ -186,9 +186,9 @@ Log::Log4perl->init( \$conf );
 # getRanges: call the function and check that it contains
 # a reference to an array of references to array
 {
-	my $genotype = ListVector->new([ [qw/red blue green/],
+	my $genotype = ListVector->new([qw/red blue green/],
                [qw/big medium small/],
-               [qw/very_fat fat fit thin very_thin/] ]);
+               [qw/very_fat fat fit thin very_thin/]);
 	
 	my $rangesRef = $genotype->getRanges();
 	my @ranges = @$rangesRef;

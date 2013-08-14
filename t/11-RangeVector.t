@@ -46,12 +46,12 @@ Log::Log4perl->init( \$conf );
 # Constructor: memory allocated and correct number of genes
 # If it doesn't complain we're okay
 {
-	ok( RangeVector->new([ [2,3], [0,4], [1,5] ]), "Constructor: memory allocated and correct number of genes" );
+	ok( RangeVector->new([2,3], [0,4], [1,5]), "Constructor: memory allocated and correct number of genes" );
 }
 
 # Constructor: size and genotypes are the same
 {
-	my $genotype = RangeVector->new([ [2,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([2,3], [-3,4], [1,5]);
 	
 	my $genRef = $genotype->{genotype};
 	my $rangesRef = $genotype->{ranges};
@@ -61,7 +61,7 @@ Log::Log4perl->init( \$conf );
 
 # Constructor: check if gen values randomly generated are within range.
 {
-	my $genotype = RangeVector->new([ [2,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([2,3], [-3,4], [1,5]);
 
 	my $rangesRef = $genotype->{ranges};
 	my @ranges = @$rangesRef;
@@ -77,7 +77,7 @@ Log::Log4perl->init( \$conf );
 
 # setGen: Introduce gen in wrong position: over genotype length or below 0. Dies
 {
-	my $genotype = RangeVector->new([ [2,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([2,3], [-3,4], [1,5]);
 	
 	dies_ok{$genotype->setGen(-1,3)} "setGen: fails if index below zero inserted";
 	dies_ok{$genotype->setGen(5,4)} "setGen: fails if index over length is inserted";
@@ -85,7 +85,7 @@ Log::Log4perl->init( \$conf );
 
 # setGen: value out of range: over and below limits. Dies
 {
-	my $genotype = RangeVector->new([ [2,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([2,3], [-3,4], [1,5]);
 	
 	dies_ok{$genotype->setGen(0,4)} "setGen: fails if value over limits";
 	dies_ok{$genotype->setGen(0,0)} "setGen: fails if value below limits";
@@ -93,7 +93,7 @@ Log::Log4perl->init( \$conf );
 
 # setGen: make sure a zero is inserted in gen 0 by inserting it
 {
-	my $genotype = RangeVector->new([ [-5,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([-5,3], [-3,4], [1,5]);
 	
 	$genotype->setGen(0,0);
 	
@@ -106,7 +106,7 @@ Log::Log4perl->init( \$conf );
 # getGen: check that the gen returned and the one got by breaking
 # encapsulation are the same
 {
-	my $genotype = RangeVector->new([ [-5,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([-5,3], [-3,4], [1,5]);
 	
 	my $element = $genotype->getGen(0);
 	
@@ -119,7 +119,7 @@ Log::Log4perl->init( \$conf );
 # getLength: check that the length returned an the one got by
 # breaking encapsulation are the same
 {
-	my $genotype = RangeVector->new([ [-5,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([-5,3], [-3,4], [1,5]);
 	
 	my $length = $genotype->getLength();
 	
@@ -131,7 +131,7 @@ Log::Log4perl->init( \$conf );
 
 # getType: Create a RangeVector element and check if the type corresponds to RangeVector
 {
-	my $genotype = RangeVector->new([ [-5,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([-5,3], [-3,4], [1,5]);
 
 	ok( $genotype->isa("RangeVector"), "getType: Create a RangeVector element and check if the type corresponds to RangeVector");
 }
@@ -139,7 +139,7 @@ Log::Log4perl->init( \$conf );
 # changeGen: mutate and check that the values are different.
 # COMMENTED -> IT MAY RARELY FAIL BECAUSE OF ITS RANDOM NATURE
 #{
-#	my $genotype = RangeVector->new([ [-5,3], [-3,4], [1,5] ]);
+#	my $genotype = RangeVector->new([-5,3], [-3,4], [1,5]);
 #	
 #	my $element = $genotype->getGen(0);
 #	$genotype->changeGen(0);
@@ -151,7 +151,7 @@ Log::Log4perl->init( \$conf );
 # getRanges: call the function and check that it contains
 # a reference to an array of references to array
 {
-	my $genotype = RangeVector->new([ [-5,3], [-3,4], [1,5] ]);
+	my $genotype = RangeVector->new([-5,3], [-3,4], [1,5]);
 	
 	my $rangesRef = $genotype->getRanges();
 	my @ranges = @$rangesRef;
