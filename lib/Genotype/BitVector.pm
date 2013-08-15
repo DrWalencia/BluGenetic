@@ -7,14 +7,10 @@
 #               that represents a genotype that only contents binary data,
 #               this is, a list of zeros and ones.
 #
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+#       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
 #      CREATED: 07/24/2013 07:44:10 PM
-#     REVISION: ---
 #===============================================================================
 
 package BitVector;
@@ -22,6 +18,7 @@ package BitVector;
 use strict;
 use warnings;
 use diagnostics;
+
 use Log::Log4perl qw(get_logger);
 
 # Avoid warnings regarding class method overriding
@@ -61,8 +58,9 @@ sub new {
     my @genotype;
     my $i;
 
-	# Fill the genotype with random values between 0..1
+    # Fill the genotype with random values between 0..1
     for ( $i = 0 ; $i < $lengthGen ; $i++ ) {
+
         # Void rand returns something between 0..1
         push( @genotype, int( rand(2) ) );
     }
@@ -113,13 +111,12 @@ sub setGen {
     my $genotypeRef = $hash{genotype};
     my @genotype    = @$genotypeRef;
 
-	my $genotypeMaxPos = scalar(@genotype) - 1;
+    my $genotypeMaxPos = scalar(@genotype) - 1;
 
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
     $log->logconfess(
-        "The position passed as a parameter can only be between 
-		0 and $genotypeMaxPos ($position inserted)"
+"The position passed as a parameter can only be between 0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
 
     $genotype[$position] = $value;
@@ -165,8 +162,7 @@ sub getGen {
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
     $log->logconfess(
-        "The position passed as a parameter can only be between 
-		0 and $genotypeMaxPos ($position inserted)"
+"The position passed as a parameter can only be between 0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
 
     my $gen = $genotype[$position];
@@ -227,8 +223,7 @@ sub changeGen {
     # If the position is something lower than 0 or bigger than the genotype
     # size, die horribly.
     $log->logconfess(
-        "The position passed as a parameter can only be between 
-		0 and $genotypeMaxPos ($position inserted)"
+"The position passed as a parameter can only be between 0 and $genotypeMaxPos ($position inserted)"
     ) if ( ( $position > $genotypeMaxPos ) or ( $position < 0 ) );
 
     if ( $genotype[$position] == 1 ) {
@@ -257,7 +252,7 @@ sub changeGen {
 #===============================================================================
 sub getRanges {
 
-    my @ranges = (0,1);
+    my @ranges = ( 0, 1 );
     return @ranges;
 
 }    ## --- end sub getRanges

@@ -8,25 +8,24 @@
 #  				implementation are going to be the same for all of them, that's
 #  				why it's an Abstract class.
 #
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+#       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
 #      CREATED: 07/24/2013 07:47:51 PM
-#     REVISION: ---
 #===============================================================================
+
 package GeneticAlgorithm;
+
 use strict;
 use warnings;
 use diagnostics;
+
 use Log::Log4perl qw(get_logger);
 use Selection::Random;
 use Selection::Roulette;
 use Selection::Tournament;
 use Selection::UserDefinedS;
-use Crossover::OnePoint; 
+use Crossover::OnePoint;
 use Crossover::TwoPoint;
 use Crossover::Uniform;
 use Crossover::UserDefinedC;
@@ -36,19 +35,19 @@ our $log = Log::Log4perl::get_logger("GeneticAlgorithm");
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields 'population',    # ARRAY of individuals comprising the population.
-  'genotypeLength',         # INT the length of the Genotype.
-  'mutation',               # FLOAT chance of mutation 0..1
-  'crossover',              # FLOAT chance of crossover 0..1
-  'initialized',            # INT 1 if initialized, 0 otherwise
-  'popSize',                # INT size of the population
-  'currentGeneration',      # INT indicates the current generation
-  'customCrossStrategies',  # HASH that stores custom mutation strategies
-  'customSelStrategies',    # HASH that stores custom selection strategies
-  'fitness',                # REFERENCE to the fitness function passed as
-                            # a parameter
-  'terminate';              # REFERENCE to the terminate function passed as
-                            # a parameter
+use fields 'population',      # ARRAY of individuals comprising the population.
+  'genotypeLength',           # INT the length of the Genotype.
+  'mutation',                 # FLOAT chance of mutation 0..1
+  'crossover',                # FLOAT chance of crossover 0..1
+  'initialized',              # INT 1 if initialized, 0 otherwise
+  'popSize',                  # INT size of the population
+  'currentGeneration',        # INT indicates the current generation
+  'customCrossStrategies',    # HASH that stores custom mutation strategies
+  'customSelStrategies',      # HASH that stores custom selection strategies
+  'fitness',                  # REFERENCE to the fitness function passed as
+                              # a parameter
+  'terminate';                # REFERENCE to the terminate function passed as
+                              # a parameter
 
 #=== CLASS METHOD  =============================================================
 #        CLASS: GeneticAlgorithm
@@ -59,33 +58,36 @@ use fields 'population',    # ARRAY of individuals comprising the population.
 #
 #      RETURNS: The adequate instance of a Crossover Strategy.
 #
-#  DESCRIPTION: Factory method that decides which crossover strategy 
+#  DESCRIPTION: Factory method that decides which crossover strategy
 #               instantiate.
 #
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub _getProperCrossoverStr{
+sub _getProperCrossoverStr {
 
     # Get the parameters...
-    my $this = shift;
+    my $this      = shift;
     my $crossover = shift;
 
     my $crossoverStr;
 
     # Lowercase whatever is coming inside crossover...
-    $crossover = lc( $crossover );
+    $crossover = lc($crossover);
 
     # Create the proper crossover strategy or die painfully
     if ( $crossover eq "onepoint" ) {
         $crossoverStr = OnePoint->new();
-    }elsif ( $crossover eq "twopoint" ) {
+    }
+    elsif ( $crossover eq "twopoint" ) {
         $crossoverStr = TwoPoint->new();
-    }elsif ( $crossover eq "uniform" ) {
+    }
+    elsif ( $crossover eq "uniform" ) {
         $crossoverStr = Uniform->new();
-    }else {
-    	$crossoverStr = _loadCustomCrossoverStr($this, $crossover);
+    }
+    else {
+        $crossoverStr = _loadCustomCrossoverStr( $this, $crossover );
     }
 
     return $crossoverStr;
@@ -96,37 +98,37 @@ sub _getProperCrossoverStr{
 #       METHOD: _loadCustomCrossoverStr
 #   PARAMETERS: crossoverString -> a string representation of the strategy.
 #      RETURNS: The adequate instance of a Crossover Strategy.
-#  DESCRIPTION: Factory method that decides which crossover strategy 
+#  DESCRIPTION: Factory method that decides which crossover strategy
 #               instantiate. This time searching in the custom crossover
 #				strategies hash.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub _loadCustomCrossoverStr{
-	
-	my $this = shift;
-	my $crossoverString = shift;
-	my $crossoverStrategy;
-	
-	my $hashref = $this->{customCrossStrategies};
-	my %hash = %$hashref;
-	
-	my @keys = keys %hash;
-	
-	# If a key containing the string passed as a parameter is found,
-	# set the return value of function as the value in the key-value
-	# pair that represents the strategy to be selected.
-	foreach my $key (@keys){
-		if ($key eq $crossoverString){
-			$crossoverStrategy = $hash{$crossoverString};
-		}
-	}
-	
-	$log->logconfess( "Undefined crossover strategy: ", $crossoverString)
-	if (!(defined $crossoverStrategy));
-	
-	return $crossoverStrategy;
+sub _loadCustomCrossoverStr {
+
+    my $this            = shift;
+    my $crossoverString = shift;
+    my $crossoverStrategy;
+
+    my $hashref = $this->{customCrossStrategies};
+    my %hash    = %$hashref;
+
+    my @keys = keys %hash;
+
+    # If a key containing the string passed as a parameter is found,
+    # set the return value of function as the value in the key-value
+    # pair that represents the strategy to be selected.
+    foreach my $key (@keys) {
+        if ( $key eq $crossoverString ) {
+            $crossoverStrategy = $hash{$crossoverString};
+        }
+    }
+
+    $log->logconfess( "Undefined crossover strategy: ", $crossoverString )
+      if ( !( defined $crossoverStrategy ) );
+
+    return $crossoverStrategy;
 }
 
 #=== CLASS METHOD  =============================================================
@@ -138,17 +140,17 @@ sub _loadCustomCrossoverStr{
 #
 #      RETURNS: The adequate instance of a Selection Strategy.
 #
-#  DESCRIPTION: Factory method to decide which Selection Strategy 
+#  DESCRIPTION: Factory method to decide which Selection Strategy
 #               instantiate.
 #
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub _getProperSelectionStr{
+sub _getProperSelectionStr {
 
     # Get the parameters...
-    my $this = shift;
+    my $this      = shift;
     my $selection = shift;
 
     # Lowercase whatever is coming inside selection...
@@ -159,12 +161,15 @@ sub _getProperSelectionStr{
     # Create the proper selection strategy or die painfully
     if ( $selection eq "roulette" ) {
         $selectionStr = Roulette->new();
-    }elsif ( $selection eq "tournament" ) {
+    }
+    elsif ( $selection eq "tournament" ) {
         $selectionStr = Tournament->new();
-    }elsif ( $selection eq "random" ) {
+    }
+    elsif ( $selection eq "random" ) {
         $selectionStr = Random->new();
-    }else {
-        $selectionStr = _loadCustomSelectionStr($this, $selection);
+    }
+    else {
+        $selectionStr = _loadCustomSelectionStr( $this, $selection );
     }
 
     return $selectionStr;
@@ -176,37 +181,37 @@ sub _getProperSelectionStr{
 #       METHOD: _loadCustomSelectionStr
 #   PARAMETERS: selectionString -> a string representation of the strategy.
 #      RETURNS: The adequate instance of a Selection Strategy.
-#  DESCRIPTION: Factory method that decides which selection strategy 
+#  DESCRIPTION: Factory method that decides which selection strategy
 #               instantiate. This time searching in the custom selection
 #				strategies hash.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub _loadCustomSelectionStr{
-	
-	my $this = shift;
-	my $selectionString = shift;
-	my $selectionStrategy; 
-	
-	my $hashref = $this->{customSelStrategies};
-	my %hash = %$hashref;
-	
-	my @keys = keys %hash;
-	
-	# If a key containing the string passed as a parameter is found,
-	# set the return value of function as the value in the key-value
-	# pair that represents the strategy to be selected.
-	foreach my $key (@keys){
-		if ($key eq $selectionString){
-			$selectionStrategy = $hash{$selectionString};
-		}
-	}
-	
-	$log->logconfess( "Undefined crossover strategy: ", $selectionString)
-	if (!(defined $selectionStrategy));
-	
-	return $selectionStrategy;
+sub _loadCustomSelectionStr {
+
+    my $this            = shift;
+    my $selectionString = shift;
+    my $selectionStrategy;
+
+    my $hashref = $this->{customSelStrategies};
+    my %hash    = %$hashref;
+
+    my @keys = keys %hash;
+
+    # If a key containing the string passed as a parameter is found,
+    # set the return value of function as the value in the key-value
+    # pair that represents the strategy to be selected.
+    foreach my $key (@keys) {
+        if ( $key eq $selectionString ) {
+            $selectionStrategy = $hash{$selectionString};
+        }
+    }
+
+    $log->logconfess( "Undefined crossover strategy: ", $selectionString )
+      if ( !( defined $selectionStrategy ) );
+
+    return $selectionStrategy;
 }
 
 #=== CLASS METHOD  =============================================================
@@ -406,33 +411,36 @@ sub _performCrossover {
 #        CLASS: GeneticAlgorithm
 #       METHOD: getType
 #   PARAMETERS: None
-#      RETURNS: A string representation of the data type the GA is operating 
+#      RETURNS: A string representation of the data type the GA is operating
 #               with.
 #  DESCRIPTION: Returns the data type the GA is operating with.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
-sub getType{
+sub getType {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my ($this) = shift;
 
     my $returnValue;
 
-    if ( $this->isa("GABitVector") ){
+    if ( $this->isa("GABitVector") ) {
         $returnValue = "bitvector";
         $log->info("Data type to operate with returned: bitvector");
-    }elsif ( $this->isa("GAListVector")){
-        $returnValue = "listvector"; 
+    }
+    elsif ( $this->isa("GAListVector") ) {
+        $returnValue = "listvector";
         $log->info("Data type to operate with returned: listvector");
-    }elsif ( $this->isa("GARangeVector")){
+    }
+    elsif ( $this->isa("GARangeVector") ) {
         $returnValue = "rangevector";
         $log->info("Data type to operate with returned: rangevector");
-    }else{
+    }
+    else {
         $log->logconfess("FATAL: unknown data type for the current GA");
     }
-    
+
     return $returnValue;
 }
 
@@ -451,32 +459,33 @@ sub getType{
 #     SEE ALSO: n/a
 #===============================================================================
 sub createCrossoverStrategy {
-	
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
+
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my ($this) = shift;
-    
+
     # Take the arguments...
     my ( $strategyName, $strategyRef ) = @_;
-    
-	$log->logconfess("Missing custom strategy name")
-		if (! (defined $strategyName));
-	
-	$log->logconfess("Missing strategy reference")
-		if (! (defined $strategyRef ));
-    
+
+    $log->logconfess("Missing custom strategy name")
+      if ( !( defined $strategyName ) );
+
+    $log->logconfess("Missing strategy reference")
+      if ( !( defined $strategyRef ) );
+
     # Allow anything as the name of an strategy...
     # Check that $strategyRef is a function pointer
-	$log->logconfess("Not a function pointer in the second argument of function.")
-    if (!(eval{$strategyRef->("CODE")}));
+    $log->logconfess(
+        "Not a function pointer in the second argument of function.")
+      if ( !( eval { $strategyRef->("CODE") } ) );
 
-	# Create a UserDefined crossover strategy with the value passed as a 
-	# parameter.
-	my $customStrategy = UserDefinedC->new($strategyRef);
-    
+    # Create a UserDefined crossover strategy with the value passed as a
+    # parameter.
+    my $customStrategy = UserDefinedC->new($strategyRef);
+
     # Add them as a key-value pair in the custom crossover strategies hash
-    $this->{customCrossStrategies}->{lc($strategyName)} = $customStrategy;
+    $this->{customCrossStrategies}->{ lc($strategyName) } = $customStrategy;
 
-	return;
+    return;
 }
 
 #===  CLASS METHOD  ============================================================
@@ -494,32 +503,33 @@ sub createCrossoverStrategy {
 #     SEE ALSO: n/a
 #===============================================================================
 sub createSelectionStrategy {
-	
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
+
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
     my ($this) = shift;
-    
+
     # Take the arguments...
     my ( $strategyName, $strategyRef ) = @_;
-    
+
     $log->logconfess("Missing custom strategy name")
-		if (! (defined $strategyName));
-	
-	$log->logconfess("Missing strategy reference")
-		if (! (defined $strategyRef ));
-    
+      if ( !( defined $strategyName ) );
+
+    $log->logconfess("Missing strategy reference")
+      if ( !( defined $strategyRef ) );
+
     # Allow anything as the name of an strategy...
     # Check that $strategyRef is a function pointer
-	$log->logconfess("Not a function pointer in the second argument of function.")
-    if (!(eval{$strategyRef->("CODE")}));
-    
-	# Create a UserDefined selection strategy with the value passed as a 
-	# parameter.
-	my $customSelection = UserDefinedS->new($strategyRef);
-    
-    # Add them as a key-value pair in the custom selection strategies hash
-    $this->{customSelStrategies}->{lc($strategyName)} = $customSelection;
+    $log->logconfess(
+        "Not a function pointer in the second argument of function.")
+      if ( !( eval { $strategyRef->("CODE") } ) );
 
-	return;
+    # Create a UserDefined selection strategy with the value passed as a
+    # parameter.
+    my $customSelection = UserDefinedS->new($strategyRef);
+
+    # Add them as a key-value pair in the custom selection strategies hash
+    $this->{customSelStrategies}->{ lc($strategyName) } = $customSelection;
+
+    return;
 }
 
 #===  CLASS METHOD  ============================================================
@@ -580,9 +590,10 @@ sub getFittest {
     my $individualsReturned = scalar @fittest;
     $log->info("Returned the $individualsReturned best individuals.");
 
-    if ( @fittest == 1){
+    if ( @fittest == 1 ) {
         return $fittest[0];
-    }else{
+    }
+    else {
         return @fittest;
     }
 
@@ -701,12 +712,12 @@ sub sortPopulation {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this = shift;
-    
+
     my $populationRef = $this->{population};
-    
+
     # Sort population by ASCENDING Individual scores...
-    my @population = sort {$a->getScore() <=> $b->getScore()} @$populationRef;
-    
+    my @population = sort { $a->getScore() <=> $b->getScore() } @$populationRef;
+
     $this->{population} = \@population;
 
     return;
@@ -724,27 +735,26 @@ sub sortPopulation {
 #     SEE ALSO: n/a
 #===============================================================================
 sub sortIndividuals {
-	
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
+
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this = shift;
-    
+
     # Get the arguments...
     my @individuals = @_;
-    
-    log->logconfess("Empty array. Nothing to sort") if (!(@individuals));
-    
-    foreach my $ind (@individuals){
-    	$log->logconfess("The array passed as a parameter is not comprised by Individuals")
-    	if (!($ind->isa("Individual")));
+
+    log->logconfess("Empty array. Nothing to sort") if ( !(@individuals) );
+
+    foreach my $ind (@individuals) {
+        $log->logconfess(
+            "The array passed as a parameter is not comprised by Individuals")
+          if ( !( $ind->isa("Individual") ) );
     }
-    
+
     # Sort population by ASCENDING Individual scores...
-    @individuals = sort {$a->getScore() <=> $b->getScore()} @individuals;
-    
-	return @individuals;
+    @individuals = sort { $a->getScore() <=> $b->getScore() } @individuals;
+
+    return @individuals;
 }
-
-
 
 #=== CLASS METHOD  ============================================================
 #        CLASS: GeneticAlgorithm
@@ -778,8 +788,7 @@ sub initialize {
 #     SEE ALSO: n/a
 #===============================================================================
 sub insert {
-    $log->logconfess(
-        'The function insert() must be defined in a subclass.\n');
+    $log->logconfess('The function insert() must be defined in a subclass.\n');
     return;
 }    ## --- end sub insert
 
@@ -799,8 +808,7 @@ sub insert {
 #     SEE ALSO: n/a
 #===============================================================================
 sub delete {
-    $log->logconfess(
-        'The function delete() must be defined in a subclass.\n');
+    $log->logconfess('The function delete() must be defined in a subclass.\n');
     return;
 }    ## --- end sub delete
 

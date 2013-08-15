@@ -7,19 +7,19 @@
 #               functionality regarding the representation of a Uniform
 #               crossover strategy.
 #
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+#       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
 #      CREATED: 08/05/2013 11:08:57 PM
-#     REVISION: ---
 #===============================================================================
+
+use strict;
+use warnings;
+use diagnostics;
+
 use Test::More;
 use Log::Log4perl qw(get_logger);
 use Individual;
-use diagnostics;
 use Genotype::BitVector;
 use Crossover::Uniform;
 
@@ -50,61 +50,64 @@ Log::Log4perl->init( \$conf );
 {
     my $ind1 = Individual->new();
     my $ind2 = Individual->new();
-    
-    dies_ok{ $crossover->crossIndividuals($ind1, $ind2)} "Constructor: individual1 without genotype. Dies painfully";
+
+    my $crossover = Uniform->new();
+
+    dies_ok { $crossover->crossIndividuals( $ind1, $ind2 ) }
+    "Constructor: individual1 without genotype. Dies painfully";
 }
 
 # Constructor: individual2 without genotype. Dies painfully
 {
     my $ind1 = Individual->new();
     my $ind2 = Individual->new();
-    
-    dies_ok{ $crossover->crossIndividuals($ind1, $ind2)} "Constructor: individual2 without genotype. Dies painfully";
+
+    my $crossover = Uniform->new();
+
+    dies_ok { $crossover->crossIndividuals( $ind1, $ind2 ) }
+    "Constructor: individual2 without genotype. Dies painfully";
 }
 
-# From now on, every test is going to be carried out using 
-# manual cut points, and individuals with genotype 111111 
+# From now on, every test is going to be carried out using
+# manual cut points, and individuals with genotype 111111
 # and 000000 (length 6)
 
-    my $indOneGenotype = BitVector->new(6);
-    $indOneGenotype->setGen(0,0);
-    $indOneGenotype->setGen(1,0);
-    $indOneGenotype->setGen(2,0);
-    $indOneGenotype->setGen(3,0);
-    $indOneGenotype->setGen(4,0);
-    $indOneGenotype->setGen(5,0);
+my $indOneGenotype = BitVector->new(6);
+$indOneGenotype->setGen( 0, 0 );
+$indOneGenotype->setGen( 1, 0 );
+$indOneGenotype->setGen( 2, 0 );
+$indOneGenotype->setGen( 3, 0 );
+$indOneGenotype->setGen( 4, 0 );
+$indOneGenotype->setGen( 5, 0 );
 
-    my $indTwoGenotype = BitVector->new(6);
-    $indTwoGenotype->setGen(0,1);
-    $indTwoGenotype->setGen(1,1);
-    $indTwoGenotype->setGen(2,1);
-    $indTwoGenotype->setGen(3,1);
-    $indTwoGenotype->setGen(4,1);
-    $indTwoGenotype->setGen(5,1);
-    
-    my $indOne = Individual->new(
-        genotype => $indOneGenotype
-    );
-    
-    my $indTwo = Individual->new(
-        genotype => $indTwoGenotype
-    );
-    
-    my $crossover = Uniform->new();
+my $indTwoGenotype = BitVector->new(6);
+$indTwoGenotype->setGen( 0, 1 );
+$indTwoGenotype->setGen( 1, 1 );
+$indTwoGenotype->setGen( 2, 1 );
+$indTwoGenotype->setGen( 3, 1 );
+$indTwoGenotype->setGen( 4, 1 );
+$indTwoGenotype->setGen( 5, 1 );
+
+my $indOne = Individual->new( genotype => $indOneGenotype );
+
+my $indTwo = Individual->new( genotype => $indTwoGenotype );
+
+my $crossover = Uniform->new();
 
 # Just check that what the crossover strategy returns
 # is an array with two Individuals, since the result
 # of the crossover is going to be totally random.
 
-    my @offspring = $crossover->crossIndividuals($indOne,$indTwo);
+my @offspring = $crossover->crossIndividuals( $indOne, $indTwo );
 
 #    my $genotype1 = $offspring[0]->getGenotype()->{genotype};
 #    my $genotype2 = $offspring[1]->getGenotype()->{genotype};
 
-#    print @$genotype1; 
+#    print @$genotype1;
 #    print "\n";
-#    print @$genotype2; 
+#    print @$genotype2;
 #    print "\n";
 
-    ok (@offspring,"crossIndividuals: offspring array cardinality");
+ok( @offspring, "crossIndividuals: offspring array cardinality" );
+
 done_testing;

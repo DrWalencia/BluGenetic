@@ -4,19 +4,15 @@
 #         FILE: Tournament.pm
 #
 #  DESCRIPTION: Concrete implementation of the selection strategy Interface
-#  				comprising comprising the Tournament selection technique 
-#				which consists on selecting small subsets of individuals and 
-#				among them the fittest of each one will become part of the 
+#  				comprising comprising the Tournament selection technique
+#				which consists on selecting small subsets of individuals and
+#				among them the fittest of each one will become part of the
 #				selected group.
 #
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+#       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
 #      CREATED: 07/24/2013 12:10:19 AM
-#     REVISION: ---
 #===============================================================================
 
 package Tournament;
@@ -39,73 +35,73 @@ use base qw(SelectionStrategy);
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
-use fields 'numberOfIndividuals'; # Number of individuals that are going to fight
-								  # till death.
-								  
+use fields
+  'numberOfIndividuals';    # Number of individuals that are going to fight
+                            # till death.
+
 #===  CLASS METHOD  ============================================================
 #        CLASS: Tournament
 #       METHOD: battlefieldSize
 #   PARAMETERS: numOfInd -> the amount of individuals that will fight
 #   			till death.
-#      RETURNS: A reference to the instance just created. 
+#      RETURNS: A reference to the instance just created.
 #  DESCRIPTION:	Creates a newly allocated Tournament selection strategy.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
 sub battlefieldSize {
-	
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH 
-	my ($this, $numOfInd) = @_;
-	
-	# If numOfInd is undefined, die painfully
-	$log->logconfess("Undefined amount of individuals")
-	if (!(defined $numOfInd));
 
-	# If the number of individuals is 0 or negative, die painfully.
-	$log->logconfess("Incorrect number of individuals for Tournament: $numOfInd")
-	if ($numOfInd <= 0);
-	
-	$this->{numberOfIndividuals} = $numOfInd;
-	
-	return;
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
+    my ( $this, $numOfInd ) = @_;
+
+    # If numOfInd is undefined, die painfully
+    $log->logconfess("Undefined amount of individuals")
+      if ( !( defined $numOfInd ) );
+
+    # If the number of individuals is 0 or negative, die painfully.
+    $log->logconfess(
+        "Incorrect number of individuals for Tournament: $numOfInd")
+      if ( $numOfInd <= 0 );
+
+    $this->{numberOfIndividuals} = $numOfInd;
+
+    return;
 }
-
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Tournament
 #       METHOD: new
 #   PARAMETERS: numOfInd -> the amount of individuals that will fight
 #   			till death.
-#      RETURNS: A reference to the instance just created. 
+#      RETURNS: A reference to the instance just created.
 #  DESCRIPTION:	Creates a newly allocated Tournament selection strategy.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
 sub new {
-	
-	$log->info("Creation of a new Tournament selection strategy started.");
-	
-	# Every method of a class passes first argument as class name
-	my $class = shift;
-	
-	# Take the argument (number of individuals on each round)
-	my $numOfInd = shift;
 
-	# Anonymous hash to store instance variables (AKA FIELDS)
-	# Set default value for numberOfIndividuals. If wanted to be
-	# changed, use the battlefieldSize method.
-	my $this = { numberOfIndividuals => 2};
+    $log->info("Creation of a new Tournament selection strategy started.");
 
-	# Connect class name with hash is known as blessing an object
-	bless $this, $class;
-	
-	$log->info("Creation of a new Tournament selection strategy finished.");
+    # Every method of a class passes first argument as class name
+    my $class = shift;
 
-	return $this;
-} ## --- end sub new
+    # Take the argument (number of individuals on each round)
+    my $numOfInd = shift;
 
+    # Anonymous hash to store instance variables (AKA FIELDS)
+    # Set default value for numberOfIndividuals. If wanted to be
+    # changed, use the battlefieldSize method.
+    my $this = { numberOfIndividuals => 2 };
+
+    # Connect class name with hash is known as blessing an object
+    bless $this, $class;
+
+    $log->info("Creation of a new Tournament selection strategy finished.");
+
+    return $this;
+}    ## --- end sub new
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Tournament
@@ -118,25 +114,24 @@ sub new {
 #     SEE ALSO: n/a
 #===============================================================================
 sub _fetchWinner {
-	
-	# Take the arguments..
-	my ( @battlefield ) = shift;
-	
-	my $winner = pop @battlefield;
-	
-	# While the battlefield is not empty...
-	while (@battlefield){
-		
-		my $ind = pop @battlefield;
-		
-		if ( $ind->getScore() > $winner->getScore() ){
-			$winner = $ind;
-		}
-	}
 
-	return $winner;
-} ## --- end sub fetchWinner
+    # Take the arguments..
+    my (@battlefield) = shift;
 
+    my $winner = pop @battlefield;
+
+    # While the battlefield is not empty...
+    while (@battlefield) {
+
+        my $ind = pop @battlefield;
+
+        if ( $ind->getScore() > $winner->getScore() ) {
+            $winner = $ind;
+        }
+    }
+
+    return $winner;
+}    ## --- end sub fetchWinner
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Tournament
@@ -150,34 +145,36 @@ sub _fetchWinner {
 #     SEE ALSO: n/a
 #===============================================================================
 sub performSelection {
-	# EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH 
-	my ($this, @population) = @_;
-	
-	# Vector of individuals to be returned
-	my @returnPopulation;
-	# Place where the individuals are going to fight till death
-	my @battlefield;
-	
-	# Now let's PLAY...
-	while ( @returnPopulation < @population ){
-		
-		# Throw a subset of individuals into the battlefield
-		while ( @battlefield < $this->{numberOfIndividuals} ){
-			push @battlefield, $population[int(rand(@population))];
-		}
-		
-		# Take the only survivior and put it into the population to
-		# be returned.
-		my $winner = _fetchWinner(@battlefield);
-				
-		# Remove dead bodies from the battlefield
-		undef @battlefield;
-		
-		# And give to the winner a passport to the next level
-		push @returnPopulation, $winner;
-	}
-	
-	return @returnPopulation;
-} ## --- end sub performSelection
 
-1; # Required for all packages in Perl
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
+    my ( $this, @population ) = @_;
+
+    # Vector of individuals to be returned
+    my @returnPopulation;
+
+    # Place where the individuals are going to fight till death
+    my @battlefield;
+
+    # Now let's PLAY...
+    while ( @returnPopulation < @population ) {
+
+        # Throw a subset of individuals into the battlefield
+        while ( @battlefield < $this->{numberOfIndividuals} ) {
+            push @battlefield, $population[ int( rand(@population) ) ];
+        }
+
+        # Take the only survivior and put it into the population to
+        # be returned.
+        my $winner = _fetchWinner(@battlefield);
+
+        # Remove dead bodies from the battlefield
+        undef @battlefield;
+
+        # And give to the winner a passport to the next level
+        push @returnPopulation, $winner;
+    }
+
+    return @returnPopulation;
+}    ## --- end sub performSelection
+
+1;   # Required for all packages in Perl

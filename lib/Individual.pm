@@ -6,22 +6,19 @@
 #  DESCRIPTION: Class that represents an Individual of a given population. It
 #               is comprised by a genotype and its score.
 #
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+#       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
 #      CREATED: 07/24/2013 07:44:53 PM
-#     REVISION: ---
 #===============================================================================
 
 package Individual;
 
 use strict;
 use warnings;
-use Log::Log4perl qw(get_logger);
 use diagnostics;
+
+use Log::Log4perl qw(get_logger);
 
 # List of ALLOWED fields for this class. If other files are tried to be used,
 # the program will horribly crash.
@@ -118,9 +115,10 @@ sub getScore {
     # Get the genotype dereferencing the $this hash
     my %hash  = %$this;
     my $score = $hash{score};
+
     # Careful! the genotype is an object too, so its info must be dereferenced
     # too.
-    my $genotype = $hash{genotype};
+    my $genotype        = $hash{genotype};
     my $genotypeListRef = $genotype->{genotype};
 
     $log->info("Score returned for individual (@$genotypeListRef): $score");
@@ -140,22 +138,24 @@ sub getScore {
 #===============================================================================
 sub setScore {
 
-    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
     my $this = shift;
 
     # Take the score passed as a parameter
     my $score = shift;
 
     $log->logconfess("Cannot set a negative score on an individual")
-    if ($score < 0);
+      if ( $score < 0 );
 
-    my %hash  = %$this;
+    my %hash = %$this;
+
     # Careful! the genotype is an object too, so its info must be dereferenced
     # too.
-    my $genotype = $hash{genotype};
+    my $genotype        = $hash{genotype};
     my $genotypeListRef = $genotype->{genotype};
 
-    $log->info("Score set ($score) on individual with genotype (@$genotypeListRef)");
+    $log->info(
+        "Score set ($score) on individual with genotype (@$genotypeListRef)");
 
     # Set the score
     $this->{score} = $score;
@@ -182,8 +182,10 @@ sub scoreSet {
     my %hash     = %$this;
     my $scoreSet = $hash{scoreSet};
 
-    $log->info("Checked if the score was set for an individual 
-        . Result: $scoreSet");
+    $log->info(
+        "Checked if the score was set for an individual 
+        . Result: $scoreSet"
+    );
 
     return $scoreSet;
 
@@ -205,14 +207,17 @@ sub getGenotype {
     my $this = shift;
 
     # Get the genotype dereferencing the $this hash
-    my %hash     = %$this;
+    my %hash = %$this;
+
     # Careful! the genotype is an object too, so its info must be dereferenced
     # too.
-    my $genotype = $hash{genotype};
+    my $genotype        = $hash{genotype};
     my $genotypeListRef = $genotype->{genotype};
 
-    $log->info("Returned a REFERENCE to the genotype of the individual with
-        genotype (@$genotypeListRef) ");
+    $log->info(
+        "Returned a REFERENCE to the genotype of the individual with
+        genotype (@$genotypeListRef) "
+    );
 
     return $this->{genotype};
 
@@ -230,13 +235,14 @@ sub getGenotype {
 #===============================================================================
 sub setGenotype {
 
-    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS 
+    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE HASH OF FIELDS
     my $this = shift;
 
     # Get the argument
     my $genotype = shift;
 
-    $log->logconfess("Cannot set an undefined genotype") if (!(defined $genotype));
+    $log->logconfess("Cannot set an undefined genotype")
+      if ( !( defined $genotype ) );
 
     $this->{genotype} = $genotype;
 

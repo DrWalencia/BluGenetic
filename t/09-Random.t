@@ -7,24 +7,25 @@
 #               functionality regarding the representation of a random
 #				selection strategy.
 #
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+#       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
 #      CREATED: 07/29/2013 07:57:29 PM
-#     REVISION: ---
 #===============================================================================
+
+use strict;
+use warnings;
+use diagnostics;
+
 use Test::More;
 use Log::Log4perl qw(get_logger);
 use Individual;
-use diagnostics;
 use Selection::Random;
 use Genotype::BitVector;
 
 # Tests for checking if a certain section of code dies
 use Test::Exception;
+
 my $conf = q(
 
 ############################################################
@@ -41,29 +42,35 @@ log4perl.appender.LOGFILE.layout=PatternLayout
 log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %p - %m%n
 
 );
+
 # Initialize logging behavior
 Log::Log4perl->init( \$conf );
 
 # Create a population with a couple of individuals and perform the selection.
 # Just test that the returned population has two elements.
 {
-	my @population;
-	my $selectionStr = Random->new();
-	
-	push @population, Individual->new(
-			score => 1.0,
-			genotype => BitVector->new(6),
-		);
-		
-	push @population, Individual->new(
-			score => 0,
-			genotype => BitVector->new(6),
-		);
-		
-	my @selectedPop = $selectionStr->performSelection(@population);
-	
-	ok ( @selectedPop == @population);
-    
+    my @population;
+    my $selectionStr = Random->new();
+
+    push @population,
+      Individual->new(
+        score    => 1.0,
+        genotype => BitVector->new(6),
+      );
+
+    push @population,
+      Individual->new(
+        score    => 0,
+        genotype => BitVector->new(6),
+      );
+
+    my @selectedPop = $selectionStr->performSelection(@population);
+
+    ok(
+        @selectedPop == @population,
+"Check that the population size is the same as before the selection process"
+    );
+
 }
 
 done_testing;

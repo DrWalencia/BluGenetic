@@ -7,14 +7,10 @@
 #  				genotypes of the class BitVector, implementing the methods
 #  				that are custom for such data type.
 #
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+#       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
 #      CREATED: 07/24/2013 07:48:17 PM
-#     REVISION: ---
 #===============================================================================
 
 package GABitVector;
@@ -22,6 +18,7 @@ package GABitVector;
 use strict;
 use warnings;
 use diagnostics;
+
 use Individual;
 use Genotype::BitVector;
 use Log::Log4perl qw(get_logger);
@@ -67,7 +64,8 @@ sub new {
         fitness                 => $args{fitness},
         customCrossStrategies   => {},
         customSelStrategies     => {},
-        terminate               => $args{terminate}, # no function defined: terminate: undef
+        # no function defined: terminate: undef
+        terminate               => $args{terminate}, 
         initialized             => 0,
     };
 
@@ -77,7 +75,7 @@ sub new {
     $log->info("Creation of a new GABitVector ended.");
 
     return $this;
-    
+
 }    ## --- end sub new
 
 # ===  CLASS METHOD  ===========================================================
@@ -246,7 +244,7 @@ sub evolve {
 #
 #   PARAMETERS: n		-> number of individuals to insert in the population.
 #				args	-> reference to array of references that stores as many
-#						   as n custom arrays that store custom genotypes for 
+#						   as n custom arrays that store custom genotypes for
 #						   the inserted individuals. OPTIONAL: if no genotypes
 #						   are present then the individuals are going to be
 #						   randomly generated.
@@ -267,94 +265,102 @@ sub insert {
 
     # Get the arguments...
     my $n = shift;
-    
+
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
     $log->logconfess("The algorithm has not been initialized")
-    if ( $this->{initialized} == 0 );
-    
+      if ( $this->{initialized} == 0 );
+
     # If anything strange is inserted in n, die painfully
     $log->logconfess(" Wrong number of individuals to insert: $n")
-    if ($n <= 0);
-    
+      if ( $n <= 0 );
+
     # Take the array of custom genotypes...
     my @args = @_;
 
     # If the number of custom genotypes passed as parameters is bigger than
     # n, then die painfully
     $log->logconfess("Too many custom genotypes. Just $n are allowed")
-        if (@args > $n);
+      if ( @args > $n );
 
     # Array to store generated elements into
     my @newMembers;
-    
+
     # Get genotype of one of its members...
-    my $popRef = $this->getPopulation();
-	my @pop = @$popRef;
-	my $genotype = $pop[0]->getGenotype();
+    my $popRef   = $this->getPopulation();
+    my @pop      = @$popRef;
+    my $genotype = $pop[0]->getGenotype();
 
     # If the optional array of values is defined, use it
-    if (@args){
-        
-        foreach my $valueRef (@args){
+    if (@args) {
+
+        foreach my $valueRef (@args) {
             $log->logconfess("Not an ARRAY reference in args array")
-            if !(ref($valueRef) eq "ARRAY");
+              if !( ref($valueRef) eq "ARRAY" );
         }
-        
+
         # Check that each one of the sub arrays is composed by as many elements
         # as genotypeLength of the rest of individuals.
         my $genotypeLength = $genotype->getLength();
 
-        foreach my $valueRef (@args){
+        foreach my $valueRef (@args) {
             my @value = @$valueRef;
-            
-            log->logconfess("Wrong number of genes inserted in genotype: ", scalar @value, " != ", $genotypeLength)
-            if (@value != $genotypeLength);
+
+            log->logconfess(
+                "Wrong number of genes inserted in genotype: ",
+                scalar @value,
+                " != ", $genotypeLength
+            ) if ( @value != $genotypeLength );
         }
-        
+
         # Use those arrays to create custom individuals and insert them
         # into the population.
-        for ( my $i = 0; $i < $n; $i++ ){
+        for ( my $i = 0 ; $i < $n ; $i++ ) {
             my $valuesRef = $args[$i];
-            
+
             # If custom genotype is defined, use it
-            if (defined $valuesRef){
-                
+            if ( defined $valuesRef ) {
+
                 my @customValues = @$valuesRef;
-                
+
                 my $individualTemp = Individual->new();
-                my $customGenotype = BitVector->new($genotype->getLength());
-                
-                for ( my $j = 0; $j < @customValues; $j++ ){
-                    $customGenotype->setGen($j, $customValues[$j]);
+                my $customGenotype = BitVector->new( $genotype->getLength() );
+
+                for ( my $j = 0 ; $j < @customValues ; $j++ ) {
+                    $customGenotype->setGen( $j, $customValues[$j] );
                 }
 
-                $individualTemp->setGenotype( $customGenotype );
-                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                $individualTemp->setGenotype($customGenotype);
+                $individualTemp->setScore(
+                    $this->_fitnessFunc($individualTemp) );
                 push @newMembers, $individualTemp;
-                
-            }else{ # If not generate random individuals
-            
+
+            }
+            else {    # If not generate random individuals
+
                 my $individualTemp = Individual->new();
-                $individualTemp->setGenotype( BitVector->new($genotype->getLength()) );
-                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                $individualTemp->setGenotype(
+                    BitVector->new( $genotype->getLength() ) );
+                $individualTemp->setScore(
+                    $this->_fitnessFunc($individualTemp) );
                 push @newMembers, $individualTemp;
             }
         }
 
-        
-    }else{
-        
+    }
+    else {
+
         # Generate as many as n random individuals and insert them into
         # the population.
-        for ( my $i = 0; $i < $n; $i++ ){
-                my $individualTemp = Individual->new();
-        
-                $individualTemp->setGenotype( BitVector->new($genotype->getLength()) );
-                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
-                push @newMembers, $individualTemp;
+        for ( my $i = 0 ; $i < $n ; $i++ ) {
+            my $individualTemp = Individual->new();
+
+            $individualTemp->setGenotype(
+                BitVector->new( $genotype->getLength() ) );
+            $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+            push @newMembers, $individualTemp;
         }
     }
-    
+
     # DEPENDING ON THE DATA TYPE THESE ARE THE OPERATIONS TO PERFORM WITH
     # THE ARRAY OF REFS CALLED ARGS:
     #
@@ -366,16 +372,16 @@ sub insert {
     # INDIVIDUALS TO  BE INSERTED. IF LESS ELEMENTS ARE PASSED THEN CHOOSE
     # RANGES RANDOMLY FROM THE ONES PREVIOUSLY DEFINED BY THE GENOTYPE WHERE
     # INDIVIDUALS ARE TO BE INSERTED
-    
+
     # Population update...
-    @pop = (@pop,@newMembers);
+    @pop = ( @pop, @newMembers );
     $this->{population} = \@pop;
-    
+
     # Popsize update...
     $this->{popSize} = @pop;
 
     return;
-		
+
 }    ## --- end sub insert
 
 #=== CLASS METHOD  ============================================================
@@ -411,26 +417,28 @@ sub delete {
 
     $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
 
-	# Update population...
-	
-	# Make a copy of the population
-	my $popRef = $this->getPopulation();
-	my @pop = @$popRef;
-	
-	# Eliminate the damned individual
-	if ( $index == 0 ) {
+    # Update population...
+
+    # Make a copy of the population
+    my $popRef = $this->getPopulation();
+    my @pop    = @$popRef;
+
+    # Eliminate the damned individual
+    if ( $index == 0 ) {
         shift @pop;
-    }elsif ( $index == $this->{popSize} ) {
-        pop @pop;
-    }else {
-		splice( @pop, $index, 1 );
     }
-	
-	# And reassign population
-	$this->{population} = \@pop;
-	
-	# Update popsize
-	$this->{popSize} = @pop;
+    elsif ( $index == $this->{popSize} ) {
+        pop @pop;
+    }
+    else {
+        splice( @pop, $index, 1 );
+    }
+
+    # And reassign population
+    $this->{population} = \@pop;
+
+    # Update popsize
+    $this->{popSize} = @pop;
 
     return;
 }    ## --- end sub delete

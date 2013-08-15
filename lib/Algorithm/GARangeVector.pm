@@ -4,17 +4,13 @@
 #         FILE: GARangeVector.pm
 #
 #  DESCRIPTION: Represents a GeneticAlgorithm implementation that works with
-#  				genotypes of the class RangeVector, implementing the methods 
+#  				genotypes of the class RangeVector, implementing the methods
 #  				that are custom for such data type.
 #
-#        FILES: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Pablo Valencia González (PVG), hybrid-rollert@lavabit.com
+#       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
 #      VERSION: 1.0
 #      CREATED: 07/24/2013 07:48:17 PM
-#     REVISION: ---
 #===============================================================================
 
 package GARangeVector;
@@ -22,6 +18,7 @@ package GARangeVector;
 use strict;
 use warnings;
 use diagnostics;
+
 use Individual;
 use Genotype::RangeVector;
 use Log::Log4perl qw(get_logger);
@@ -29,7 +26,7 @@ use Log::Log4perl qw(get_logger);
 # Avoid warnings regarding class method overriding
 no warnings 'redefine';
 
-# GARangeVector inherits from Algorithm::GeneticAlgorithm 
+# GARangeVector inherits from Algorithm::GeneticAlgorithm
 use Algorithm::GeneticAlgorithm;
 use base qw(GeneticAlgorithm);
 
@@ -61,14 +58,16 @@ sub new {
 
     # Reference to anonymous hash to store instance variables (AKA FIELDS)
     my $this = {
-        popSize                 => $args{popSize},
-        crossover               => $args{crossover},
-        mutation                => $args{mutation},
-        fitness                 => $args{fitness},
-        customCrossStrategies   => {},
-        customSelStrategies     => {},
-        terminate               => $args{terminate}, # no function defined: terminate: undef
-        initialized             => 0,
+        popSize               => $args{popSize},
+        crossover             => $args{crossover},
+        mutation              => $args{mutation},
+        fitness               => $args{fitness},
+        customCrossStrategies => {},
+        customSelStrategies   => {},
+
+        # no function defined: terminate: undef
+        terminate   => $args{terminate},
+        initialized => 0,
     };
 
     # Connect a class name with a hash is known as blessing an object
@@ -77,8 +76,8 @@ sub new {
     $log->info("Creation of a new GARangeVector ended.");
 
     return $this;
-    
-} ## --- end sub new
+
+}    ## --- end sub new
 
 # ===  CLASS METHOD  ===========================================================
 #        CLASS: GARangeVector
@@ -97,19 +96,27 @@ sub new {
 sub initialize {
 
     # Retrieve fields as reference to a hash and the parameter
-    my $this = shift;
+    my $this                = shift;
     my @valuesPerIndividual = @_;
 
     $log->logconfess("Argument valuesPerIndividual missing")
-      if (!(@valuesPerIndividual));
-      
+      if ( !(@valuesPerIndividual) );
+
     # check that valuesPerIndividual is an array of refereces to
     # arrays
-    # TODO ON EACH ONE OF THE REFERENCES CHECK THAT THEY ARE COMPOSED
-    # BY A COUPLE OF INTEGERS AND NOTHING ELSE
-    foreach my $valueRef (@valuesPerIndividual){
-    	$log->logconfess("Not an ARRAY reference in valuesPerIndividual array")
-    	if (!(ref($valueRef) eq "ARRAY"));
+    foreach my $valueRef (@valuesPerIndividual) {
+        $log->logconfess("Not an ARRAY reference in valuesPerIndividual array")
+          if ( !( ref($valueRef) eq "ARRAY" ) );
+
+        my @values = @$valueRef;
+
+        $log->logconfess( "Wrong number of element in list: (",
+            @values, "). Only two permitted" )
+          if ( @values > 2 );
+
+        $log->logconfess( "Wrongly placed arguments in ranges: [",
+            $values[0], ",", $values[1], "]. Must be [Min,Max]" )
+          if ( $values[0] > $values[1] );
     }
 
     $log->info(
@@ -132,21 +139,20 @@ sub initialize {
         $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
         push @pop, $individualTemp;
     }
-    
-        
-#    foreach my $a (@pop){
-#    	my $genotype = $a->getGenotype();
-#    	my @gen = $genotype->{genotype};
-#    	
-#    	foreach my $gen (@gen){
-#    		foreach my $g (@$gen){
-#    			print $g;
-#    			print " ";
-#    		}
-#    	}
-#
-#		print "\n";
-#    }
+
+    #    foreach my $a (@pop){
+    #    	my $genotype = $a->getGenotype();
+    #    	my @gen = $genotype->{genotype};
+    #
+    #    	foreach my $gen (@gen){
+    #    		foreach my $g (@$gen){
+    #    			print $g;
+    #    			print " ";
+    #    		}
+    #    	}
+    #
+    #		print "\n";
+    #    }
 
     # Set the population just created inside the hash of fields
     # REFERENCE TO THE ARRAY, IF JUST PASS @POP THEN POPULATION WILL HAVE THE
@@ -165,7 +171,7 @@ sub initialize {
     $this->{initialized} = 1;
 
     return 1;
-}     ## --- end sub initialize
+}    ## --- end sub initialize
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: GARangeVector
@@ -260,7 +266,6 @@ sub evolve {
     return;
 }    ## --- end sub evolve
 
-
 #=== CLASS METHOD  =============================================================
 #        CLASS: GARangeVector
 #       METHOD: insert
@@ -288,96 +293,101 @@ sub insert {
 
     # Get the arguments...
     my $n = shift;
-    
+
     # CHECK IF INITIALIZE HAS BEEN CALLED FIRST
     $log->logconfess("The algorithm has not been initialized")
-    if ( $this->{initialized} == 0 );
-    
+      if ( $this->{initialized} == 0 );
+
     # If anything strange is inserted in n, die painfully
     $log->logconfess(" Wrong number of individuals to insert: $n")
-    if ($n <= 0);
-    
+      if ( $n <= 0 );
+
     # Take the array of custom genotypes...
     my @args = @_;
 
     # If the number of custom genotypes passed as parameters is bigger than
     # n, then die painfully
     $log->logconfess("Too many custom genotypes. Just $n are allowed")
-        if (@args > $n);
+      if ( @args > $n );
 
     # Array to store generated elements into
     my @newMembers;
-    
+
     # Get genotype of one of its members...
-    my $popRef = $this->getPopulation();
-    my @pop = @$popRef;
+    my $popRef   = $this->getPopulation();
+    my @pop      = @$popRef;
     my $genotype = $pop[0]->getGenotype();
-    my $ranges = $genotype->getRanges();
-   
+    my $ranges   = $genotype->getRanges();
 
     # If the optional array of values is defined, use it
-    if (@args){
+    if (@args) {
 
-        foreach my $valueRef (@args){
+        foreach my $valueRef (@args) {
             $log->logconfess("Not an ARRAY reference in args array")
-            if !(ref($valueRef) eq "ARRAY");
+              if !( ref($valueRef) eq "ARRAY" );
         }
 
         # Check that each one of the sub arrays is composed by as many elements
         # as genotypeLength of the rest of individuals.
         my $genotypeLength = $genotype->getLength();
 
-        foreach my $valueRef (@args){
+        foreach my $valueRef (@args) {
             my @value = @$valueRef;
-            
-            log->logconfess("Wrong number of genes inserted in genotype: ", scalar @value, " != ", $genotypeLength)
-            if (@value != $genotypeLength);
+
+            log->logconfess(
+                "Wrong number of genes inserted in genotype: ",
+                scalar @value,
+                " != ", $genotypeLength
+            ) if ( @value != $genotypeLength );
         }
-        
+
         # Use those arrays to create custom individuals and insert them
         # into the population.
-        for ( my $i = 0; $i < $n; $i++ ){
+        for ( my $i = 0 ; $i < $n ; $i++ ) {
             my $valuesRef = $args[$i];
-            
+
             # If custom genotype is defined, use it
-            if (defined $valuesRef){
-                
+            if ( defined $valuesRef ) {
+
                 my @customValues = @$valuesRef;
-                
+
                 my $individualTemp = Individual->new();
                 my $customGenotype = RangeVector->new(@$ranges);
-                
-                for ( my $j = 0; $j < @customValues; $j++ ){
-                    $customGenotype->setGen($j, $customValues[$j]);
+
+                for ( my $j = 0 ; $j < @customValues ; $j++ ) {
+                    $customGenotype->setGen( $j, $customValues[$j] );
                 }
 
-                $individualTemp->setGenotype( $customGenotype );
-                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
-                
+                $individualTemp->setGenotype($customGenotype);
+                $individualTemp->setScore(
+                    $this->_fitnessFunc($individualTemp) );
+
                 push @newMembers, $individualTemp;
-                
-            }else{ # If not generate random individuals
-            
+
+            }
+            else {    # If not generate random individuals
+
                 my $individualTemp = Individual->new();
                 $individualTemp->setGenotype( RangeVector->new(@$ranges) );
-                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+                $individualTemp->setScore(
+                    $this->_fitnessFunc($individualTemp) );
                 push @newMembers, $individualTemp;
             }
         }
 
-        
-    }else{
-        
+    }
+    else {
+
         # Generate as many as n random individuals and insert them into
         # the population.
-        for ( my $i = 0; $i < $n; $i++ ){
-                my $individualTemp = Individual->new();
-                $individualTemp->setGenotype( RangeVector->new(@$ranges) );
-                $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
-                push @newMembers, $individualTemp;
+        for ( my $i = 0 ; $i < $n ; $i++ ) {
+            my $individualTemp = Individual->new();
+            $individualTemp->setGenotype( RangeVector->new(@$ranges) );
+            $individualTemp->setScore( $this->_fitnessFunc($individualTemp) );
+            push @newMembers, $individualTemp;
         }
     }
-    
+
     # DEPENDING ON THE DATA TYPE THESE ARE THE OPERATIONS TO PERFORM WITH
     # THE ARRAY OF REFS CALLED ARGS:
     #
@@ -389,16 +399,16 @@ sub insert {
     # INDIVIDUALS TO  BE INSERTED. IF LESS ELEMENTS ARE PASSED THEN CHOOSE
     # RANGES RANDOMLY FROM THE ONES PREVIOUSLY DEFINED BY THE GENOTYPE WHERE
     # INDIVIDUALS ARE TO BE INSERTED
-    
+
     # Population update...
-    @pop = (@pop,@newMembers);
+    @pop = ( @pop, @newMembers );
     $this->{population} = \@pop;
-    
+
     # Popsize update...
     $this->{popSize} = @pop;
 
     return;
-	
+
 }    ## --- end sub insert
 
 #=== CLASS METHOD  ============================================================
@@ -434,26 +444,28 @@ sub delete {
 
     $log->logconfess("Index smaller than zero ($index)") if ( $index < 0 );
 
-	# Update population...
-	
-	# Make a copy of the population
-	my $popRef = $this->getPopulation();
-	my @pop = @$popRef;
-	
-	# Eliminate the damned individual
-	if ( $index == 0 ) {
+    # Update population...
+
+    # Make a copy of the population
+    my $popRef = $this->getPopulation();
+    my @pop    = @$popRef;
+
+    # Eliminate the damned individual
+    if ( $index == 0 ) {
         shift @pop;
-    }elsif ( $index == $this->{popSize} ) {
-        pop @pop;
-    }else {
-		splice( @pop, $index, 1 );
     }
-	
-	# And reassign population
-	$this->{population} = \@pop;
-	
-	# Update popsize
-	$this->{popSize} = @pop;
+    elsif ( $index == $this->{popSize} ) {
+        pop @pop;
+    }
+    else {
+        splice( @pop, $index, 1 );
+    }
+
+    # And reassign population
+    $this->{population} = \@pop;
+
+    # Update popsize
+    $this->{popSize} = @pop;
 
     return;
 }    ## --- end sub delete
