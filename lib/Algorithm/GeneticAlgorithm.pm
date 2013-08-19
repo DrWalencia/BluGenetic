@@ -37,16 +37,16 @@ our $log = Log::Log4perl::get_logger("GeneticAlgorithm");
 # the program will horribly crash.
 use fields 'population',      # ARRAY of individuals comprising the population.
   'genotypeLength',           # INT the length of the Genotype.
-  'mutation',                 # FLOAT chance of mutation 0..1
-  'crossover',                # FLOAT chance of crossover 0..1
+  'mutProb',                  # FLOAT chance of mutation 0..1
+  'crossProb',                # FLOAT chance of crossProb 0..1
   'initialized',              # INT 1 if initialized, 0 otherwise
   'popSize',                  # INT size of the population
   'currentGeneration',        # INT indicates the current generation
   'customCrossStrategies',    # HASH that stores custom mutation strategies
   'customSelStrategies',      # HASH that stores custom selection strategies
-  'fitness',                  # REFERENCE to the fitness function passed as
+  'myFitness',                # REFERENCE to the fitness function passed as
                               # a parameter
-  'terminate';                # REFERENCE to the terminate function passed as
+  'myTerminate';                # REFERENCE to the terminate function passed as
                               # a parameter
 
 #=== CLASS METHOD  =============================================================
@@ -240,11 +240,11 @@ sub _performMutation {
 
     for ( my $j = 0 ; $j < @population ; $j++ ) {
 
-        # If a random number below mutation*100 is produced
+        # If a random number below mutProb*100 is produced
         # then perform a mutation on the individual whose
         # index corresponds to j, otherwise do nothing.
 
-        if ( int( rand(101) ) < ( $this->{mutation} * 100 ) ) {
+        if ( int( rand(101) ) < ( $this->{mutProb} * 100 ) ) {
 
             # Apply mutation on the individual and calculate new score
             my $position =
@@ -306,11 +306,11 @@ sub _performCrossover {
     my @recombinationSet;
     my @noRecombinationSet;
 
-    # If a random number below crossover*100 is produced, then
+    # If a random number below crossProb*100 is produced, then
     # the individual given by j goes to the recombination set.
     # Otherwise, it goes to the no recombination set.
     for ( my $j = 0 ; $j < $this->{popSize} ; $j++ ) {
-        if ( int( rand(101) ) <= ( $this->{crossover} * 100 ) ) {
+        if ( int( rand(101) ) <= ( $this->{crossProb} * 100 ) ) {
             push @recombinationSet, $population[$j];
         }
         else {
@@ -655,7 +655,7 @@ sub getCrossChance {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this        = shift;
-    my $crossChance = $this->{crossover};
+    my $crossChance = $this->{crossProb};
     $log->info("Crossover chance returned: $crossChance ");
     return $crossChance;
 }    ## --- end sub getCrossChance
@@ -674,7 +674,7 @@ sub getMutChance {
 
     # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE THE FIELDS HASH
     my $this      = shift;
-    my $mutChance = $this->{mutation};
+    my $mutChance = $this->{mutProb};
     $log->info("Mutation chance returned: $mutChance");
     return $mutChance;
 }    ## --- end sub getMutChance
@@ -834,8 +834,8 @@ sub _fitnessFunc {
     my $score;
 
     # If there's a fitness function, use it, otherwise die painfully
-    if ( defined $this->{fitness} ) {
-        $score = $this->{fitness}($individual);
+    if ( defined $this->{myFitness} ) {
+        $score = $this->{myFitness}($individual);
     }
     else {
         $log->logconfess(
@@ -869,8 +869,8 @@ sub _terminateFunc {
     my $result;
 
     # If there's a terminate function, use it and get its result
-    if ( defined $this->{terminate} ) {
-        $result = $this->{terminate}($this);
+    if ( defined $this->{myTerminate} ) {
+        $result = $this->{myTerminate}($this);
         $log->info("Terminate function defined. Result: $result");
     }
     else {

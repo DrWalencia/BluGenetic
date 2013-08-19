@@ -38,10 +38,10 @@ our $log = Log::Log4perl::get_logger("GABitVector");
 #      PURPOSE: Creates a newly allocated GABitVector genetic algorithm.
 #
 #   PARAMETERS: popSize 	-> size of the population (fixed)
-#				crossover	-> crossover chance (0..1)
-#				mutation	-> mutation chance (0..1)
-#				fitness		-> (function pointer) fitness function
-#				terminate	-> (function pointer) terminate function
+#				crossProb	-> crossover chance (0..1)
+#				mutProb	    -> mutation chance (0..1)
+#				myFitness	-> (function pointer) fitness function
+#				myTerminate	-> (function pointer) terminate function
 #
 #
 #      RETURNS: A reference to the instance just created.
@@ -59,13 +59,13 @@ sub new {
     # Reference to anonymous hash to store instance variables (AKA FIELDS)
     my $this = {
         popSize                 => $args{popSize},
-        crossover               => $args{crossover},
-        mutation                => $args{mutation},
-        fitness                 => $args{fitness},
+        crossProb               => $args{crossProb},
+        mutProb                 => $args{mutProb},
+        myFitness               => $args{myFitness},
         customCrossStrategies   => {},
         customSelStrategies     => {},
         # no function defined: terminate: undef
-        terminate               => $args{terminate}, 
+        myTerminate               => $args{myTerminate}, 
         initialized             => 0,
     };
 

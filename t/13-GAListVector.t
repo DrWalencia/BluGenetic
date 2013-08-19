@@ -75,9 +75,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->initialize() }
@@ -90,9 +90,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->initialize( [qw/red green blue/], 3 ) }
@@ -104,9 +104,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->insert(0) }
@@ -116,9 +116,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->insert(-4) }
@@ -130,9 +130,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize( [qw/red blue green/], [qw/big medium small/],
@@ -156,9 +156,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->delete(-4) }
@@ -168,9 +168,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->insert(5) }
@@ -182,9 +182,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize( [qw/red blue green/], [qw/big medium small/],
@@ -208,9 +208,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize( [qw/red blue green/], [qw/big medium small/],
@@ -233,9 +233,9 @@ sub terminate {
 
     my $algorithm = GAListVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize( [qw/red blue green/], [qw/big medium small/],
@@ -261,9 +261,9 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     ok(
@@ -276,10 +276,10 @@ sub terminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 20,
-        crossover => 0.8,
-        mutation  => 0.05,
-        fitness   => \&fitness,
-        terminate => \&terminate,
+        crossProb => 0.8,
+        mutProb  => 0.05,
+        myFitness   => \&fitness,
+        myTerminate => \&terminate,
     );
 
     sub sel {
@@ -332,10 +332,10 @@ sub myTerminate {
 {
     my $algorithm = GAListVector->new(
         popSize   => 20,
-        crossover => 0.9,
-        mutation  => 0.04,
-        fitness   => \&fitness,
-        terminate => \&myTerminate,
+        crossProb => 0.9,
+        mutProb  => 0.04,
+        myFitness   => \&fitness,
+        myTerminate => \&myTerminate,
     );
 
     $algorithm->initialize( [qw/red blue green/], [qw/big medium small/],

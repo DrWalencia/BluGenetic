@@ -38,11 +38,11 @@ use constant DEF_MUT_CHANCE   => 0.05;
 #       METHOD: new
 #
 #   PARAMETERS: popSize     -> INTEGER size of the population
-#   		    crossover   -> FLOAT chance of crossover (default 0.95)
-#   		    mutation    -> FLOAT chance of mutation (default 0.05)
+#   		    crossProb   -> FLOAT chance of crossProb (default 0.95)
+#   		    mutProb     -> FLOAT chance of mutProb (default 0.05)
 #   		    type	    -> STRING type of data e.g: 'bitvector'
-#   		    fitness	    -> FUNCTION POINTER custom fitness function (MUST)
-#   		    terminate   -> FUNCTION POINTER custom terminate function
+#   		    myFitness	-> FUNCTION POINTER custom fitness function (MUST)
+#   		    myTerminate   -> FUNCTION POINTER custom terminate function
 #   			               (OPTIONAL)
 #
 #      RETURNS: A reference to the proper GA.
@@ -88,24 +88,24 @@ sub new {
         $log->logconfess("type argument undefined.");
     }
 
-    if ( !( defined $args{fitness} ) ) {
-        $log->logconfess("fitness function undefined.");
+    if ( !( defined $args{myFitness} ) ) {
+        $log->logconfess("myFitness function undefined.");
     }
 
     # For optional values, check if they're defined
     # If not, check their ranges
-    if ( !( defined $args{crossover} ) ) {
-        $args{crossover} = DEF_CROSS_CHANCE;
+    if ( !( defined $args{crossProb} ) ) {
+        $args{crossProb} = DEF_CROSS_CHANCE;
     }
-    elsif ( ( $args{crossover} < 0 ) or ( $args{crossover} > 1 ) ) {
-        $log->confess( "Wrong value for crossover: ", $args{crossover} );
+    elsif ( ( $args{crossProb} < 0 ) or ( $args{crossProb} > 1 ) ) {
+        $log->confess( "Wrong value for crossProb: ", $args{crossProb} );
     }
 
-    if ( !( defined $args{mutation} ) ) {
-        $args{mutation} = DEF_MUT_CHANCE;
+    if ( !( defined $args{mutProb} ) ) {
+        $args{mutProb} = DEF_MUT_CHANCE;
     }
-    elsif ( ( $args{mutation} < 0 ) or ( $args{mutation} > 1 ) ) {
-        $log->confess( "Wrong value for mutation: ", $args{mutation} );
+    elsif ( ( $args{mutProb} < 0 ) or ( $args{mutProb} > 1 ) ) {
+        $log->confess( "Wrong value for mutProb: ", $args{mutProb} );
     }
 
     # Terminate is managed by GeneticAlgorithm

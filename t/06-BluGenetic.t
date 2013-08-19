@@ -72,7 +72,7 @@ sub terminate {
 dies_ok {
     my $algorithm = BluGenetic->new(
         type    => "BitVector",
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 }
 "Constructor: popSize undefined, die painfully";
@@ -81,61 +81,61 @@ dies_ok {
 dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 24,
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 }
 "Constructor: type undefined, die painfully";
 
-# If fitness undefined, die painfully
+# If myFitness undefined, die painfully
 dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 23,
         type    => "BitVector"
     );
 }
-"Constructor: fitness undefined, die painfully";
+"Constructor: myFitness undefined, die painfully";
 
-# If mutation defined but wrong, die painfully
+# If mutProb defined but wrong, die painfully
 dies_ok {
     my $algorithm = BluGenetic->new(
         popSize  => 24,
-        mutation => -4,
+        mutProb => -4,
         type     => "BitVector",
-        fitness  => \&fitness
+        myFitness  => \&fitness
     );
 }
-"Constructor: mutation defined but wrong, die painfully (negative)";
+"Constructor: mutProb defined but wrong, die painfully (negative)";
 
 dies_ok {
     my $algorithm = BluGenetic->new(
         popSize  => 24,
-        mutation => 1.1,
+        mutProb => 1.1,
         type     => "BitVector",
-        fitness  => \&fitness
+        myFitness  => \&fitness
     );
 }
-"Constructor: mutation defined but wrong, die painfully (more than 1)";
+"Constructor: mutProb defined but wrong, die painfully (more than 1)";
 
-# if crossover defined but wrong, die painfully
+# if crossProb defined but wrong, die painfully
 dies_ok {
     my $algorithm = BluGenetic->new(
         popSize   => 24,
-        crossover => -3,
+        crossProb => -3,
         type      => "BitVector",
-        fitness   => \&fitness
+        myFitness   => \&fitness
     );
 }
-"Constructor: crossover defined but wrong (negative), die painfully";
+"Constructor: crossProb defined but wrong (negative), die painfully";
 
 dies_ok {
     my $algorithm = BluGenetic->new(
         popSize   => 24,
-        crossover => 1.01,
+        crossProb => 1.01,
         type      => "BitVector",
-        fitness   => \&fitness
+        myFitness   => \&fitness
     );
 }
-"Constructor: crossover defined but wrong (more than 1), die painfully";
+"Constructor: crossProb defined but wrong (more than 1), die painfully";
 
 # Check that a call to the factory with BitVector in a mix of
 # cases, all upercase and all lowercase do not die and returns
@@ -146,7 +146,7 @@ dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 33,
         type    => 'BITVECTOR',
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 
     ok( $algorithm->isa('GABitVector'),
@@ -157,7 +157,7 @@ dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 33,
         type    => 'BitVector',
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 
     ok( $algorithm->isa('GABitVector'),
@@ -169,7 +169,7 @@ dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 33,
         type    => 'RANGEVECTOR',
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 
     ok( $algorithm->isa('GARangeVector'),
@@ -180,7 +180,7 @@ dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 33,
         type    => 'RangeVector',
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 
     ok( $algorithm->isa('GARangeVector'),
@@ -192,7 +192,7 @@ dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 33,
         type    => 'LISTVECTOR',
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 
     ok( $algorithm->isa('GAListVector'),
@@ -203,7 +203,7 @@ dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 33,
         type    => 'ListVector',
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 
     ok( $algorithm->isa('GAListVector'),
@@ -215,7 +215,7 @@ dies_ok {
     my $algorithm = BluGenetic->new(
         popSize => 33,
         type    => 'UNKNOWN',
-        fitness => \&fitness
+        myFitness => \&fitness
     );
 }
 "Constructor: unknown data type. Dies";
@@ -224,11 +224,11 @@ dies_ok {
 {
     my $algorithm = BluGenetic->new(
         popSize   => 12,
-        crossover => 0.9,
-        mutation  => 0.05,
+        crossProb => 0.9,
+        mutProb  => 0.05,
         type      => 'BITVECTOR',
-        fitness   => \&fitness,
-        terminate => \&terminate,
+        myFitness   => \&fitness,
+        myTerminate => \&terminate,
     );
 
     $algorithm->initialize(10);

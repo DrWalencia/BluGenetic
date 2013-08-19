@@ -71,9 +71,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->initialize() }
@@ -86,9 +86,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->evolve() }
@@ -99,9 +99,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->getFittest() }
@@ -112,9 +112,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->getPopulation() }
@@ -125,9 +125,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->insert(3) }
@@ -138,9 +138,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->delete(2) }
@@ -152,9 +152,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->insert(0) }
@@ -164,9 +164,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->insert(-4) }
@@ -178,9 +178,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(23);
@@ -202,9 +202,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(4);
@@ -238,9 +238,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(4);
@@ -276,9 +276,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(23);
@@ -293,9 +293,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->delete(-4) }
@@ -305,9 +305,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->insert(5) }
@@ -319,9 +319,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(20);
@@ -345,9 +345,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 4,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(20);
@@ -367,9 +367,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 54,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     ok(
@@ -383,9 +383,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 54,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     ok(
@@ -399,9 +399,9 @@ sub terminate {
 {
     my $algorithm6 = GABitVector->new(
         popSize   => 54,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     ok(
@@ -416,9 +416,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(3);
@@ -442,9 +442,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(30);
@@ -466,9 +466,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     my @array = undef;
@@ -480,9 +480,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     my @array;
@@ -498,9 +498,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     my @array;
@@ -530,9 +530,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     ok(
@@ -546,9 +546,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->createCrossoverStrategy( "Incredible", undef ) }
@@ -561,9 +561,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     sub selection {
@@ -596,9 +596,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     dies_ok { $algorithm->createSelectionStrategy( "Incredible", undef ) }
@@ -611,9 +611,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     sub cross {
@@ -642,8 +642,8 @@ sub terminate {
     my $algorithm = GABitVector->new(
         popSize   => 12,
         crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(30);
@@ -669,9 +669,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(30);
@@ -688,9 +688,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(30);
@@ -703,9 +703,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(30);
@@ -718,9 +718,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(4);
@@ -735,9 +735,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(4);
@@ -755,9 +755,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(4);
@@ -765,7 +765,7 @@ sub terminate {
     dies_ok {
         $algorithm->evolve(
             selection   => "foo",
-            crossover   => "onepoint",
+            crossProb   => "onepoint",
             generations => 33,
         );
     }
@@ -776,9 +776,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(4);
@@ -797,9 +797,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(4);
@@ -818,9 +818,9 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 12,
-        crossover => 0.3,
-        mutation  => 0.4,
-        fitness   => \&fitness,
+        crossProb => 0.3,
+        mutProb  => 0.4,
+        myFitness   => \&fitness,
     );
 
     $algorithm->initialize(4);
@@ -839,10 +839,10 @@ sub terminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 20,
-        crossover => 0.8,
-        mutation  => 0.05,
-        fitness   => \&fitness,
-        terminate => \&terminate,
+        crossProb => 0.8,
+        mutProb  => 0.05,
+        myFitness   => \&fitness,
+        myTerminate => \&terminate,
     );
 
     sub sel {
@@ -879,7 +879,7 @@ sub terminate {
 
 # _terminateFunc: implicit check of currentGeneration
 
-sub myTerminate {
+sub customTerminate {
 
     my $GA = shift;
 
@@ -899,10 +899,10 @@ sub myTerminate {
 {
     my $algorithm = GABitVector->new(
         popSize   => 20,
-        crossover => 0.9,
-        mutation  => 0.04,
-        fitness   => \&fitness,
-        terminate => \&myTerminate,
+        crossProb => 0.9,
+        mutProb  => 0.04,
+        myFitness   => \&fitness,
+        myTerminate => \&customTerminate,
     );
 
     $algorithm->initialize(20);
