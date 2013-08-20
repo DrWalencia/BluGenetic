@@ -4,8 +4,8 @@
 #         FILE: RangeVector.pm
 #
 #  DESCRIPTION: Concrete implementation of the Genotype::Genotype interface
-#  				that represents a genotype that only contents integers between
-#  				limits given by the ranges set.
+#               that represents a genotype that only contents integers between
+#               limits given by the ranges set.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -43,11 +43,11 @@ use fields
 #         NAME: new
 #
 #      PURPOSE: Creates a newly allocated RangeVector genotype randomly
-#				initializing its genes.
+#               initializing its genes.
 #
 #   PARAMETERS: ranges -> Array of references to arrays containing
-#				the maximum and minimum limits for each gen. As much genes as
-#				limits passed are going to be created.
+#               the maximum and minimum limits for each gen. As much genes as
+#               limits passed are going to be created.
 #
 #      RETURNS: A reference to the instance just created.
 #       THROWS: no exceptions
@@ -101,12 +101,12 @@ sub new {
 #       METHOD: setGen
 #
 #   PARAMETERS: position -> the position where the gen value is to be modified.
-#   			value -> the value to be inserted in the gen.
+#               value -> the value to be inserted in the gen.
 #
 #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
 #
 #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
-#  				by the position parameter.
+#               by the position parameter.
 #
 #       THROWS: no exceptions
 #     COMMENTS: locus -> value
@@ -150,7 +150,7 @@ sub setGen {
 #       METHOD: getGen
 #
 #   PARAMETERS: position -> the position of the gen value wanted to be
-#   			retrieved.
+#               retrieved.
 #
 #      RETURNS: The value stored in the gen.
 #
@@ -202,7 +202,7 @@ sub getLength {
 #   PARAMETERS: position -> indicates the position of the gen that will change.
 #      RETURNS: Nothing
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
-#  				mutation purposes only.
+#               mutation purposes only.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -256,5 +256,114 @@ sub getRanges {
     return $this->{ranges};
 
 }    ## --- end sub getRanges
+
+__END__
+
+=head1 DESCRIPTION
+
+Concrete implementation of the Genotype::Genotype interface
+that represents a genotype that only contents integers between
+limits given by the ranges set.
+
+=head1 METHODS
+
+    #===  FUNCTION  ================================================================
+    #         NAME: new
+    #
+    #      PURPOSE: Creates a newly allocated RangeVector genotype randomly
+    #               initializing its genes.
+    #
+    #   PARAMETERS: ranges -> Array of references to arrays containing
+    #               the maximum and minimum limits for each gen. As much genes as
+    #               limits passed are going to be created.
+    #
+    #      RETURNS: A reference to the instance just created.
+    #       THROWS: no exceptions
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: RangeVector
+    #       METHOD: setGen
+    #
+    #   PARAMETERS: position -> the position where the gen value is to be modified.
+    #               value -> the value to be inserted in the gen.
+    #
+    #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
+    #
+    #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
+    #               by the position parameter.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: locus -> value
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: RangeVector
+    #       METHOD: getGen
+    #
+    #   PARAMETERS: position -> the position of the gen value wanted to be
+    #               retrieved.
+    #
+    #      RETURNS: The value stored in the gen.
+    #
+    #  DESCRIPTION: Returns the gen specified by the position passed as a parameter.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: RangeVector
+    #       METHOD: getLength
+    #   PARAMETERS: None
+    #      RETURNS: The length of the genotype.
+    #  DESCRIPTION: Asks for the length of the genotype.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: RangeVector
+    #       METHOD: changeGen
+    #   PARAMETERS: position -> indicates the position of the gen that will change.
+    #      RETURNS: Nothing
+    #  DESCRIPTION: Changes the value of the gen given by the position. Used for
+    #               mutation purposes only.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: RangeVector
+    #       METHOD: getRanges
+    #   PARAMETERS: None
+    #      RETURNS: A reference to a list containing the possible values for a gen.
+    #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #===============================================================================
+
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;

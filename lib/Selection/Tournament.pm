@@ -4,10 +4,10 @@
 #         FILE: Tournament.pm
 #
 #  DESCRIPTION: Concrete implementation of the selection strategy Interface
-#  				comprising comprising the Tournament selection technique
-#				which consists on selecting small subsets of individuals and
-#				among them the fittest of each one will become part of the
-#				selected group.
+#               comprising comprising the Tournament selection technique
+#               which consists on selecting small subsets of individuals and
+#               among them the fittest of each one will become part of the
+#               selected group.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -43,7 +43,7 @@ use fields
 #        CLASS: Tournament
 #       METHOD: battlefieldSize
 #   PARAMETERS: numOfInd -> the amount of individuals that will fight
-#   			till death.
+#               till death.
 #      RETURNS: A reference to the instance just created.
 #  DESCRIPTION:	Creates a newly allocated Tournament selection strategy.
 #       THROWS: no exceptions
@@ -73,7 +73,7 @@ sub battlefieldSize {
 #        CLASS: Tournament
 #       METHOD: new
 #   PARAMETERS: numOfInd -> the amount of individuals that will fight
-#   			till death.
+#               till death.
 #      RETURNS: A reference to the instance just created.
 #  DESCRIPTION:	Creates a newly allocated Tournament selection strategy.
 #       THROWS: no exceptions
@@ -137,7 +137,7 @@ sub _fetchWinner {
 #        CLASS: Tournament
 #       METHOD: performSelection
 #   PARAMETERS: population -> the population on which the selection must be based
-#   			on.
+#               on.
 #      RETURNS: a list containing the result of the selection process.
 #  DESCRIPTION: Performs the Tournament selection technique.
 #       THROWS: no exceptions
@@ -176,5 +176,86 @@ sub performSelection {
 
     return @returnPopulation;
 }    ## --- end sub performSelection
+
+__END__
+
+=head1 DESCRIPTION
+
+Concrete implementation of the selection strategy Interface
+comprising comprising the Tournament selection technique
+which consists on selecting small subsets of individuals and
+among them the fittest of each one will become part of the
+selected group.
+
+=head1 METHODS
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: Tournament
+    #       METHOD: battlefieldSize
+    #   PARAMETERS: numOfInd -> the amount of individuals that will fight
+    #               till death.
+    #      RETURNS: A reference to the instance just created.
+    #  DESCRIPTION: Creates a newly allocated Tournament selection strategy.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: Tournament
+    #       METHOD: new
+    #   PARAMETERS: numOfInd -> the amount of individuals that will fight
+    #               till death.
+    #      RETURNS: A reference to the instance just created.
+    #  DESCRIPTION: Creates a newly allocated Tournament selection strategy.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: Tournament
+    #       METHOD: _fetchWinner
+    #   PARAMETERS: battlefield -> the set of individuals that'll fight till death.
+    #      RETURNS: An individual who is the winner of the tournament.
+    #  DESCRIPTION: Given a battlefield, act as a referee and decide who won.
+    #       THROWS: no exceptions
+    #     COMMENTS: THIS IS A PRIVATE METHOD
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: Tournament
+    #       METHOD: performSelection
+    #   PARAMETERS: population -> the population on which the selection must be based
+    #               on.
+    #      RETURNS: a list containing the result of the selection process.
+    #  DESCRIPTION: Performs the Tournament selection technique.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;   # Required for all packages in Perl

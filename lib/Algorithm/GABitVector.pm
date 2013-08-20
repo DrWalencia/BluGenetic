@@ -4,8 +4,8 @@
 #         FILE: GABitVector.pm
 #
 #  DESCRIPTION: Represents a GeneticAlgorithm implementation that works with
-#  				genotypes of the class BitVector, implementing the methods
-#  				that are custom for such data type.
+#               genotypes of the class BitVector, implementing the methods
+#               that are custom for such data type.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -37,12 +37,11 @@ our $log = Log::Log4perl::get_logger("GABitVector");
 #         NAME: new
 #      PURPOSE: Creates a newly allocated GABitVector genetic algorithm.
 #
-#   PARAMETERS: popSize 	-> size of the population (fixed)
-#				crossProb	-> crossover chance (0..1)
-#				mutProb	    -> mutation chance (0..1)
-#				myFitness	-> (function pointer) fitness function
-#				myTerminate	-> (function pointer) terminate function
-#
+#   PARAMETERS: popSize     -> size of the population (fixed)
+#               crossProb   -> crossover chance (0..1)
+#               mutProb     -> mutation chance (0..1)
+#               myFitness   -> (function pointer) fitness function
+#               myTerminate -> (function pointer) terminate function
 #
 #      RETURNS: A reference to the instance just created.
 #       THROWS: no exceptions
@@ -65,7 +64,7 @@ sub new {
         customCrossStrategies   => {},
         customSelStrategies     => {},
         # no function defined: terminate: undef
-        myTerminate               => $args{myTerminate}, 
+        myTerminate             => $args{myTerminate}, 
         initialized             => 0,
     };
 
@@ -86,7 +85,7 @@ sub new {
 #
 #      RETURNS: Nothing
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
-#				randomly generated.
+#               randomly generated.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -150,13 +149,13 @@ sub initialize {
 #       METHOD: evolve
 #
 #   PARAMETERS: selectionStr	-> Selection strategy to apply to the pop.
-#				crossoverStr	-> Crossover strategy to apply to the pop.
-#				numGenerations -> maximum number of generations.
-#           	DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
+#               crossoverStr	-> Crossover strategy to apply to the pop.
+#               numGenerations -> maximum number of generations.
+#               DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
 #
 #      RETURNS: NOTHING
 #  DESCRIPTION: Makes the population evolve until the terminate() function
-# 				returns 1 or the limit of generations is reached.
+#               returns 1 or the limit of generations is reached.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -242,17 +241,17 @@ sub evolve {
 #        CLASS: GABitVector
 #       METHOD: insert
 #
-#   PARAMETERS: n		-> number of individuals to insert in the population.
-#				args	-> reference to array of references that stores as many
-#						   as n custom arrays that store custom genotypes for
-#						   the inserted individuals. OPTIONAL: if no genotypes
-#						   are present then the individuals are going to be
-#						   randomly generated.
+#   PARAMETERS: n       -> number of individuals to insert in the population.
+#               args	-> reference to array of references that stores as many
+#                          as n custom arrays that store custom genotypes for
+#                          the inserted individuals. OPTIONAL: if no genotypes
+#                          are present then the individuals are going to be
+#                          randomly generated.
 #
 #      RETURNS: Nothing
 #
 #  DESCRIPTION: Inserts an individual in the population, increasing popSize in
-#				as many individuals as specified by n.
+#               as many individuals as specified by n.
 #
 #       THROWS: no exceptions
 #     COMMENTS: none
@@ -393,7 +392,7 @@ sub insert {
 #      RETURNS: Nothing
 #
 #  DESCRIPTION: Deletes the individual given by index, making the population
-#				one individual smaller.
+#               one individual smaller.
 #
 #       THROWS: no exceptions
 #     COMMENTS: none
@@ -442,5 +441,119 @@ sub delete {
 
     return;
 }    ## --- end sub delete
+
+__END__
+
+=head1 DESCRIPTION
+
+Represents a GeneticAlgorithm implementation that works with
+genotypes of the class BitVector, implementing the methods
+that are custom for such data type.
+
+=head1 METHODS
+
+    #===  FUNCTION  ================================================================
+    #         NAME: new
+    #      PURPOSE: Creates a newly allocated GABitVector genetic algorithm.
+    #
+    #   PARAMETERS: popSize     -> size of the population (fixed)
+    #               crossProb   -> crossover chance (0..1)
+    #               mutProb     -> mutation chance (0..1)
+    #               myFitness   -> (function pointer) fitness function
+    #               myTerminate -> (function pointer) terminate function
+    #
+    #      RETURNS: A reference to the instance just created.
+    #       THROWS: no exceptions
+    #===============================================================================
+
+    # ===  CLASS METHOD  ===========================================================
+    #        CLASS: GABitVector
+    #       METHOD: initialize
+    #
+    #   PARAMETERS: genotypeLength -> length of the genotype to be generated
+    #
+    #      RETURNS: Nothing
+    #  DESCRIPTION: Fills the populations with individuals whose genotype is
+    #               randomly generated.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GABitVector
+    #       METHOD: evolve
+    #
+    #   PARAMETERS: selectionStr    -> Selection strategy to apply to the pop.
+    #               crossoverStr    -> Crossover strategy to apply to the pop.
+    #               numGenerations  -> maximum number of generations.
+    #               DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
+    #
+    #      RETURNS: NOTHING
+    #  DESCRIPTION: Makes the population evolve until the terminate() function
+    #               returns 1 or the limit of generations is reached.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: GABitVector
+    #       METHOD: insert
+    #
+    #   PARAMETERS: n       -> number of individuals to insert in the population.
+    #               args    -> reference to array of references that stores as many
+    #                          as n custom arrays that store custom genotypes for
+    #                          the inserted individuals. OPTIONAL: if no genotypes
+    #                          are present then the individuals are going to be
+    #                          randomly generated.
+    #
+    #      RETURNS: Nothing
+    #
+    #  DESCRIPTION: Inserts an individual in the population, increasing popSize in
+    #               as many individuals as specified by n.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  ============================================================
+    #        CLASS: GABitVector
+    #       METHOD: delete
+    #
+    #   PARAMETERS: index -> the position of the individual to be deleted.
+    #
+    #      RETURNS: Nothing
+    #
+    #  DESCRIPTION: Deletes the individual given by index, making the population
+    #               one individual smaller.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;

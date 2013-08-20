@@ -257,4 +257,107 @@ sub getRanges {
 
 }    ## --- end sub getRanges
 
+__END__
+
+=head1 DESCRIPTION
+
+Concrete implementation of the Genotype::Genotype interface
+that represents a genotype that only contents binary data,
+this is, a list of zeros and ones.
+
+=head1 METHODS
+
+    #===  FUNCTION  ================================================================
+    #         NAME: new
+    #      PURPOSE: Creates a newly allocated BitVector genotype randomly
+    #               initializing its genes.
+    #   PARAMETERS: lengthGen -> length of the genotype to be created.
+    #      RETURNS: A reference to the instance just created.
+    #       THROWS: no exceptions
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: BitVector
+    #       METHOD: setGen
+    #
+    #   PARAMETERS: position -> the position where the gen value is to be modified.
+    #               value -> the value to be inserted in the gen.
+    #
+    #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
+    #
+    #     DESCRIPTION: Puts the value passed as a parameter in the gen specified
+    #                  by the position parameter.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: locus -> value
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: BitVector
+    #       METHOD: getGen
+    #
+    #   PARAMETERS: position -> the position of the gen value wanted to be
+    #               retrieved.
+    #
+    #      RETURNS: The value stored in the gen.
+    #
+    #  DESCRIPTION: Returns the gen specified by the position passed as a parameter.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: BitVector
+    #       METHOD: getLength
+    #   PARAMETERS: None
+    #      RETURNS: The length of the genotype.
+    #  DESCRIPTION: Asks for the length of the genotype.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: BitVector
+    #       METHOD: changeGen
+    #   PARAMETERS: position -> indicates the position of the gen that will change.
+    #      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
+    #  DESCRIPTION: Changes the value of the gen given by the position. Used for
+    #               mutation purposes only.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: BitVector
+    #       METHOD: getRanges
+    #   PARAMETERS: None
+    #      RETURNS: A list containing the possible values for a gen.
+    #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
+
 1;

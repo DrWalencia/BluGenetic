@@ -4,10 +4,10 @@
 #         FILE: TwoPoint.pm
 #
 #  DESCRIPTION: Concrete implementation of the CrossStrategy interface
-#  				comprising the two point crossover technique, which consists on
-#  				defining two random cut positions (which will be the same for
-#  				both individuals) and divide them and reconstruct each one
-#  				interchanging parts of both individuals.
+#               comprising the two point crossover technique, which consists on
+#               defining two random cut positions (which will be the same for
+#               both individuals) and divide them and reconstruct each one
+#               interchanging parts of both individuals.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -71,10 +71,10 @@ sub new {
 #        CLASS: TwoPoint
 #       METHOD: setCutPoints
 #   PARAMETERS: point1 -> the first cut point.
-#   			point2 -> the second cut point.
+#               point2 -> the second cut point.
 #      RETURNS: Nothing.
 #  DESCRIPTION: Manually sets a cut points to perform the crossover. For
-#				testing purposes only.
+#               testing purposes only.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -196,11 +196,11 @@ sub _getProperIndividual {
 #        CLASS: TwoPoint
 #       METHOD: crossIndividuals
 #   PARAMETERS: individualOne -> the first individual to be mated.
-#   			individualTwo -> the second individual to be mated.
+#               individualTwo -> the second individual to be mated.
 #      RETURNS: A vector of individuals containing the offspring of those passed
-#      			as parameters.
+#               as parameters.
 #  DESCRIPTION: Crosses a couple of individuals of the same length following
-#  				the two-point technique.
+#               the two-point technique.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -329,5 +329,104 @@ sub crossIndividuals {
     return @v;
 
 }    ## --- end sub crossIndividuals
+
+__END__
+
+=head1 DESCRIPTION
+
+Concrete implementation of the CrossStrategy interface
+comprising the two point crossover technique, which consists on
+defining two random cut positions (which will be the same for
+both individuals) and divide them and reconstruct each one
+interchanging parts of both individuals.
+
+=head1 METHODS
+
+    #===  FUNCTION  ================================================================
+    #         NAME: new
+    #      PURPOSE: Creates a newly allocated TwoPoint crossover strategy.
+    #   PARAMETERS: None.
+    #      RETURNS: A reference to the instance just created.
+    #       THROWS: no exceptions
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: TwoPoint
+    #       METHOD: setCutPoints
+    #   PARAMETERS: point1 -> the first cut point.
+    #               point2 -> the second cut point.
+    #      RETURNS: Nothing.
+    #  DESCRIPTION: Manually sets a cut points to perform the crossover. For
+    #               testing purposes only.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: TwoPoint
+    #       METHOD: _getProperGenotype
+    #   PARAMETERS: this -> The crossover strategy in which the decision of
+    #               instantiate one type of genotype or another is based on.
+    #      RETURNS: An instance of the proper Genotype type (BitVector, ListVector
+    #               or RangeVector)
+    #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
+    #               on the type of genotype of the individuals passed to the
+    #               crossover strategy.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: TwoPoint
+    #       METHOD: _getProperIndividual
+    #   PARAMETERS: this -> The crossover strategy in which the decision of
+    #               instantiate one type of genotype or another is based on.
+    #      RETURNS: An instance of the an individual with the proper genotype
+    #               type (BitVector, ListVector or RangeVector)
+    #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
+    #               on the type of genotype of the individuals passed to the
+    #               crossover strategy.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: TwoPoint
+    #       METHOD: crossIndividuals
+    #   PARAMETERS: individualOne -> the first individual to be mated.
+    #               individualTwo -> the second individual to be mated.
+    #      RETURNS: A vector of individuals containing the offspring of those passed
+    #               as parameters.
+    #  DESCRIPTION: Crosses a couple of individuals of the same length following
+    #               the two-point technique.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;   # Required for all packages in Perl

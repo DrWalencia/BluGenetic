@@ -4,8 +4,8 @@
 #         FILE: GARangeVector.pm
 #
 #  DESCRIPTION: Represents a GeneticAlgorithm implementation that works with
-#  				genotypes of the class RangeVector, implementing the methods
-#  				that are custom for such data type.
+#               genotypes of the class RangeVector, implementing the methods
+#               that are custom for such data type.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -37,11 +37,11 @@ our $log = Log::Log4perl::get_logger("GARangeVector");
 #         NAME: new
 #      PURPOSE: Creates a newly allocated GARangeVector genetic algorithm.
 #
-#   PARAMETERS: popSize 	-> size of the population (fixed)
-#				crossProb	-> crossover chance (0..1)
-#				mutProb	    -> mutation chance (0..1)
-#				myFitness	-> (function pointer) fitness function
-#				myTerminate	-> (function pointer) terminate function
+#   PARAMETERS: popSize     -> size of the population (fixed)
+#               crossProb   -> crossover chance (0..1)
+#               mutProb	    -> mutation chance (0..1)
+#               myFitness   -> (function pointer) fitness function
+#               myTerminate -> (function pointer) terminate function
 #
 #
 #      RETURNS: A reference to the instance just created.
@@ -66,8 +66,8 @@ sub new {
         customSelStrategies   => {},
 
         # no function defined: terminate: undef
-        myTerminate   => $args{myTerminate},
-        initialized => 0,
+        myTerminate          => $args{myTerminate},
+        initialized          => 0,
     };
 
     # Connect a class name with a hash is known as blessing an object
@@ -84,11 +84,11 @@ sub new {
 #       METHOD: initialize
 #
 #   PARAMETERS: valuesPerIndividual -> list of as many lists as  individuals in
-#				the population containing  a set of possible values.
+#               the population containing  a set of possible values.
 #
 #      RETURNS: Nothing
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
-#				randomly generated.
+#               randomly generated.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -140,20 +140,6 @@ sub initialize {
         push @pop, $individualTemp;
     }
 
-    #    foreach my $a (@pop){
-    #    	my $genotype = $a->getGenotype();
-    #    	my @gen = $genotype->{genotype};
-    #
-    #    	foreach my $gen (@gen){
-    #    		foreach my $g (@$gen){
-    #    			print $g;
-    #    			print " ";
-    #    		}
-    #    	}
-    #
-    #		print "\n";
-    #    }
-
     # Set the population just created inside the hash of fields
     # REFERENCE TO THE ARRAY, IF JUST PASS @POP THEN POPULATION WILL HAVE THE
     # AMOUNT OF ELEMENTS IN THE POPULATION.
@@ -178,13 +164,13 @@ sub initialize {
 #       METHOD: evolve
 #
 #   PARAMETERS: selectionStr	-> Selection strategy to apply to the pop.
-#				crossoverStr	-> Crossover strategy to apply to the pop.
-#				numGenerations -> maximum number of generations.
+#               crossoverStr	-> Crossover strategy to apply to the pop.
+#               numGenerations  -> maximum number of generations.
 #           	DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
 #
 #      RETURNS: NOTHING
 #  DESCRIPTION: Makes the population evolve until the terminate() function
-# 				returns 1 or the limit of generations is reached.
+#               returns 1 or the limit of generations is reached.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -270,17 +256,17 @@ sub evolve {
 #        CLASS: GARangeVector
 #       METHOD: insert
 #
-#   PARAMETERS: n		-> number of individuals to insert in the population.
-#				args	-> array of refs to array that specifies the values of
-#						   the genes of the individuals to be inserted. This
-#						   argument is OPTIONAL, if the user doesn't provide
-#						   it, genes will be filled randomly (with values from
-#						   the ranges obviously).
+#   PARAMETERS: n       -> number of individuals to insert in the population.
+#               args    -> array of refs to array that specifies the values of
+#                          the genes of the individuals to be inserted. This
+#                          argument is OPTIONAL, if the user doesn't provide
+#                          it, genes will be filled randomly (with values from
+#                          the ranges obviously).
 #
 #      RETURNS: Nothing
 #
 #  DESCRIPTION: Inserts an individual in the population, increasing popSize in
-#				as many individuals as specified by n.
+#               as many individuals as specified by n.
 #
 #       THROWS: no exceptions
 #     COMMENTS: none
@@ -420,7 +406,7 @@ sub insert {
 #      RETURNS: Nothing
 #
 #  DESCRIPTION: Deletes the individual given by index, making the population
-#				one individual smaller.
+#               one individual smaller.
 #
 #       THROWS: no exceptions
 #     COMMENTS: none
@@ -469,5 +455,121 @@ sub delete {
 
     return;
 }    ## --- end sub delete
+
+__END__
+
+=head1 DESCRIPTION
+
+Represents a GeneticAlgorithm implementation that works with
+genotypes of the class RangeVector, implementing the methods
+that are custom for such data type.
+
+=head1 METHODS
+
+    #===  FUNCTION  ================================================================
+    #         NAME: new
+    #      PURPOSE: Creates a newly allocated GARangeVector genetic algorithm.
+    #
+    #   PARAMETERS: popSize     -> size of the population (fixed)
+    #               crossProb   -> crossover chance (0..1)
+    #               mutProb     -> mutation chance (0..1)
+    #               myFitness   -> (function pointer) fitness function
+    #               myTerminate -> (function pointer) terminate function
+    #
+    #
+    #      RETURNS: A reference to the instance just created.
+    #       THROWS: no exceptions
+    #===============================================================================
+
+    # ===  CLASS METHOD  ===========================================================
+    #        CLASS: GARangeVector
+    #       METHOD: initialize
+    #
+    #   PARAMETERS: valuesPerIndividual -> list of as many lists as  individuals in
+    #               the population containing  a set of possible values.
+    #
+    #      RETURNS: Nothing
+    #  DESCRIPTION: Fills the populations with individuals whose genotype is
+    #               randomly generated.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GARangeVector
+    #       METHOD: evolve
+    #
+    #   PARAMETERS: selectionStr    -> Selection strategy to apply to the pop.
+    #               crossoverStr    -> Crossover strategy to apply to the pop.
+    #               numGenerations  -> maximum number of generations.
+    #               DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
+    #
+    #      RETURNS: NOTHING
+    #  DESCRIPTION: Makes the population evolve until the terminate() function
+    #               returns 1 or the limit of generations is reached.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: GARangeVector
+    #       METHOD: insert
+    #
+    #   PARAMETERS: n       -> number of individuals to insert in the population.
+    #               args    -> array of refs to array that specifies the values of
+    #                          the genes of the individuals to be inserted. This
+    #                          argument is OPTIONAL, if the user doesn't provide
+    #                          it, genes will be filled randomly (with values from
+    #                          the ranges obviously).
+    #
+    #      RETURNS: Nothing
+    #
+    #  DESCRIPTION: Inserts an individual in the population, increasing popSize in
+    #               as many individuals as specified by n.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  ============================================================
+    #        CLASS: GARangeVector
+    #       METHOD: delete
+    #
+    #   PARAMETERS: index -> the position of the individual to be deleted.
+    #
+    #      RETURNS: Nothing
+    #
+    #  DESCRIPTION: Deletes the individual given by index, making the population
+    #               one individual smaller.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;

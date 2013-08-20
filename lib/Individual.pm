@@ -41,6 +41,7 @@ our $log = Log::Log4perl::get_logger("Individual");
 # 				genotype 	-> the genotype of the individual
 #
 #      RETURNS: A reference to the instance just created.
+#     COMMENTS: ALL PARAMETERS ARE INTRODUCED VIA ANONYMOUS HASHES
 #       THROWS: no exceptions
 #===============================================================================
 sub new {
@@ -248,5 +249,107 @@ sub setGenotype {
 
     return 1;
 }    ## --- end sub setGenotype
+
+__END__
+
+=head1 DESCRIPTION
+
+Class that represents an Individual of a given population. It
+is comprised by a genotype and its score.
+
+=head1 METHODS
+
+    #=== FUNCTION  =================================================================
+    #         NAME: new
+    #      PURPOSE: Creates a newly allocated Individual.
+    #
+    # PARAMETERS_1: None (NEITHER SCORE NOR GENOTYPE)
+    #
+    # PARAMETERS_2: genotype    -> the genotype of the individual (NO SCORE)
+    #
+    # PARAMETERS_3: score       -> the score of the individual
+    #               genotype    -> the genotype of the individual
+    #
+    #      RETURNS: A reference to the instance just created.
+    #     COMMENTS: ALL PARAMETERS ARE INTRODUCED VIA ANONYMOUS HASHES
+    #       THROWS: no exceptions
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: Individual
+    #       METHOD: getScore
+    #   PARAMETERS: None.
+    #      RETURNS: FLOAT the score store in the individual as a field.
+    #  DESCRIPTION: Getter for the score of the individual.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: Individual
+    #       METHOD: setScore
+    #   PARAMETERS: newScore -> the score to be set.
+    #      RETURNS: Nothing.
+    #  DESCRIPTION: Setter for the score of the individual.
+    #       THROWS: no exceptions
+    #     COMMENTS: NEGATIVE SCORES ARE NOT ACCEPTED
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: Individual
+    #       METHOD: scoreSet
+    #   PARAMETERS: None.
+    #      RETURNS: 1 if the score has been set, 0 otherwise.
+    #  DESCRIPTION: Checks if the score has been calculated.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: Individual
+    #       METHOD: getGenotype
+    #   PARAMETERS: None.
+    #      RETURNS: REFERENCE the genotype of the individual.
+    #  DESCRIPTION: Getter for the genotype.
+    #       THROWS: no exceptions
+    #     COMMENTS: WARNING: THE ACTUAL GENOTYPE IS RETURNED. BE CAREFUL!!
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: Individual
+    #       METHOD: setGenotype
+    #   PARAMETERS: REFERENCE the genotype of the individual.
+    #      RETURNS: Nothing.
+    #  DESCRIPTION: Setter for the genotype.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;

@@ -5,7 +5,7 @@
 #
 #  DESCRIPTION:	STATIC class that works as a Factory, returning one of the
 #               types of genetic algorithms according to the arguments passed
-#               as parameters to its only method.
+#               as parameters to its only public method.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -29,7 +29,7 @@ use Algorithm::GARangeVector;
 # Get a logger from the singleton
 my $log = Log::Log4perl::get_logger("BluGenetic");
 
-# Default constants used throughout the whole library
+# Default constants used throughout the whole module
 use constant DEF_CROSS_CHANCE => 0.95;
 use constant DEF_MUT_CHANCE   => 0.05;
 
@@ -38,11 +38,11 @@ use constant DEF_MUT_CHANCE   => 0.05;
 #       METHOD: new
 #
 #   PARAMETERS: popSize     -> INTEGER size of the population
-#   		    crossProb   -> FLOAT chance of crossProb (default 0.95)
-#   		    mutProb     -> FLOAT chance of mutProb (default 0.05)
-#   		    type	    -> STRING type of data e.g: 'bitvector'
-#   		    myFitness	-> FUNCTION POINTER custom fitness function (MUST)
-#   		    myTerminate   -> FUNCTION POINTER custom terminate function
+#   		crossProb   -> FLOAT chance of crossProb (default 0.95)
+#   		mutProb     -> FLOAT chance of mutProb (default 0.05)
+#   		type	    -> STRING type of data e.g: 'bitvector'
+#   		myFitness   -> FUNCTION POINTER custom fitness function (MUST)
+#   		myTerminate -> FUNCTION POINTER custom terminate function
 #   			               (OPTIONAL)
 #
 #      RETURNS: A reference to the proper GA.
@@ -72,7 +72,7 @@ sub new {
 	);
 
     # Initialize logging behavior
-    Log::Log4perl->init( \$conf );
+#    Log::Log4perl->init( \$conf );
 
     $log->info("Factory job to create a Genetic Algorithm started.");
 
@@ -161,106 +161,195 @@ sub _getProperAlgorithm {
     return $algorithm;
 }
 
+__END__
+
 =head1 NAME
 
-BluGenetic - The great new BluGenetic!
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
+BluGenetic - Solve problems using genetic algorithms.
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use BluGenetic;
 
-    my $foo = BluGenetic->new();
-    ...
+    sub simpleFitness {
 
-=head1 EXPORT
+        ($individual) = @_;
+        $genotype = $individual->getGenotype();
+        $counter = 0;
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+        for ( $i = 0 ; $i < $genotype->getLength() ; $i++ ) {
+            $counter += $genotype->getGen($i);
+        }
 
-=head1 SUBROUTINES/METHODS
+        return $counter;
+    }
 
-=head2 function1
+    my $algorithm = BluGenetic->new(
+        popSize     => 20,
+        crossProb   => 0.9,
+        mutProb     => 0.06,
+        type        => 'BitVector',
+        myFitness   => \&simpleFitness,
+    );
 
-=cut
+    $algorithm->initialize(20);
 
-sub function1 {
-}
+    $algorithm->evolve(
+        selection   => "tournament",
+        crossover   => "onepoint",
+        generations => 10,
+    );
 
-=head2 function2
+    $ind = $algorithm->getFittest();
 
-=cut
+    print "Score of fittest:", $ind->getScore(), "\n";
 
-sub function2 {
-}
+=head1 DESCRIPTION
 
-=head1 AUTHOR
+B<BluGenetic> is a module for solving problems using Genetic
+Algorithms (GAs) written in pure Perl and focused on simplicity and
+clearness of use and development. It's pretty much a drop-in replacement
+for B<AI::Genetic>. For those wondering why reinventing the wheel, please
+read the section L<MOTIVATIONS>.
 
-Pablo Valencia Gonzalez, C<< <hybrid-rollert at lavabit.com> >>
+In a Genetic Algorithm, a population of individuals fight for survival. 
+Each individual is given a set of genes that define its behavior. Individuals 
+that perform better (as defined by a fitness function) have a higher 
+chance of mating with other individuals. When two individuals mate, 
+they swap some of their genes, resulting in an individual that has 
+properties from both of its parents. From time to time, a mutation
+occurs where some gene randomly changes value, resulting in a different 
+individual, perhaps fitter, perhaps less fit. 
 
-=head1 BUGS
+After a few generations, the population 
+should converge on an acceptable solution to the proposed problem.
 
-Please report any bugs or feature requests to C<bug-blugenetic at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=BluGenetic>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+So a basic implementation of a GA would be comprised by 
+three stages:
 
+=over 3
 
+=item 1.- Selection
 
+The performance of all the individuals comprising the population
+is evaluated by using the fitness function. For a given individual,
+the higher the fitness value, the bigger the chance to pass its
+genes on in future generations in the next stage.
 
-=head1 SUPPORT
+=item 2.- Crossover
 
-You can find documentation for this module with the perldoc command.
+Individuals given as a product of the previous stage are randomly
+paired to mate (equivalent of sexual reproduction). This is controlled
+by the crossover chance (0..1) and may result in new individuals
+for the current population, which contain genes from both parents
+and substitute them.
 
-    perldoc BluGenetic
+=item 3.- Mutation
 
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=BluGenetic>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/BluGenetic>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/BluGenetic>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/BluGenetic/>
+Controlled by a very small mutation chance, each individual is given
+a chance to mutate. If selected to mutate, a given individual will
+change one of its genes randomly selected.
 
 =back
 
+=head1 INSTALLATION
+
+In order to install it, the standard process for building and
+installing modules can be followed:
+
+  perl Build.PL
+  ./Build
+  ./Build test
+  ./Build install
+
+Or, on a platform like DOS or Windows that doesn't require
+the "./" notation, this can be done:  
+
+  perl Build.PL
+  Build
+  Build test
+  Build install
+
+=head1 MOTIVATIONS
+
+The main reason for implementing a module to solve problems
+using genetic algorithms was the same as many free software projects
+start out: scratching one's own itch.
+
+B<AI::Genetic> was to be used for a course at university, and an 
+inconsistency was found between what was explained in the
+documentation and the behavior of the module. So, the obvious
+was done: check the source code, which was poorly documented 
+and such fact made the bug catch much more difficult than
+expected.
+
+So, the developer of the current module thought he could come 
+up with a better solution for him and his classmates, and 
+started a well-documented and thoroughly tested module which
+is the current product.
+
+Also, it was a very good chance to experiment with OOP in Perl
+while at the same time a more understandable code was produced,
+which could help in the search for future bugs.
+
+=head1 METHODS
+
+The current class works as a Factory, returning one of the
+types of GA according to the arguments passed as parameters to 
+its only public method. Obviously because it's a factory, it works
+as a singleton, allowing only one instance of itself, globally
+accessible.
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: BluGenetic
+    #       METHOD: new
+    #
+    #   PARAMETERS: popSize     -> INTEGER size of the population
+    #               crossProb   -> FLOAT chance of crossProb (default 0.95)
+    #               mutProb     -> FLOAT chance of mutProb (default 0.05)
+    #               type        -> STRING type of data e.g: 'bitvector'
+    #               myFitness   -> FUNCTION POINTER custom fitness function (MUST)
+    #               myTerminate -> FUNCTION POINTER custom terminate function
+    #                              (OPTIONAL)
+    #
+    #      RETURNS: A reference to the proper GA.
+    #  DESCRIPTION: Returns one of the three types of Genetic Algorithm according
+    #               to the arguments passed.
+    #       THROWS: no exceptions
+    #     COMMENTS: THIS METHOD IS NOT A CONSTRUCTOR EVEN THOUGH ITS NAME IS NEW
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: BluGenetic
+    #       METHOD: _getProperAlgorithm
+    #   PARAMETERS: args -> a hash containing the needed arguments.
+    #      RETURNS: The needed instance of Genetic Algorithm.
+    #  DESCRIPTION: Factory method that instantiates the proper GA and returns it.
+    #       THROWS: no exceptions
+    #     COMMENTS: THIS IS A PRIVATE METHOD
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
 
 =head1 ACKNOWLEDGEMENTS
 
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
 
 =head1 LICENSE AND COPYRIGHT
 
 Copyright 2013 Pablo Valencia Gonzalez.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See L<http://dev.perl.org/licenses/> for more information.
-
+This module is distributed under the same terms as Perl itself.
 
 =cut
 

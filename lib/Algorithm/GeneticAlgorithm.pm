@@ -4,9 +4,9 @@
 #         FILE: GeneticAlgoritm.pm
 #
 #  DESCRIPTION: Abstract class that represents the common interface shared by
-#  				the different genotype types to be used. Some of the methods
-#  				implementation are going to be the same for all of them, that's
-#  				why it's an Abstract class.
+#               the different genotype types to be used. Some of the methods
+#               implementation are going to be the same for all of them, that's
+#               why it's an Abstract class.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -54,7 +54,7 @@ use fields 'population',      # ARRAY of individuals comprising the population.
 #       METHOD: _getProperCrossoverStr
 #
 #   PARAMETERS: crossover -> string containing the crossover strategy type
-#                wanted.
+#               wanted.
 #
 #      RETURNS: The adequate instance of a Crossover Strategy.
 #
@@ -100,7 +100,7 @@ sub _getProperCrossoverStr {
 #      RETURNS: The adequate instance of a Crossover Strategy.
 #  DESCRIPTION: Factory method that decides which crossover strategy
 #               instantiate. This time searching in the custom crossover
-#				strategies hash.
+#               strategies hash.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -136,7 +136,7 @@ sub _loadCustomCrossoverStr {
 #       METHOD: _getProperSelectionStr
 #
 #   PARAMETERS: selection -> string containing the selection strategy type
-#                             wanted.
+#               wanted.
 #
 #      RETURNS: The adequate instance of a Selection Strategy.
 #
@@ -183,7 +183,7 @@ sub _getProperSelectionStr {
 #      RETURNS: The adequate instance of a Selection Strategy.
 #  DESCRIPTION: Factory method that decides which selection strategy
 #               instantiate. This time searching in the custom selection
-#				strategies hash.
+#               strategies hash.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -448,9 +448,9 @@ sub getType {
 #        CLASS: GeneticAlgorithm
 #       METHOD: createCrossoverStrategy
 #
-#   PARAMETERS: strategyName -> name of the strategy to be added
-#				strategyRef	 -> a function pointer pointing to the custom
-#								strategy implementation.
+#   PARAMETERS: strategyName    -> name of the strategy to be added
+#               strategyRef     -> a function pointer pointing to the custom
+#                                  strategy implementation.
 #
 #      RETURNS: Nothing
 #  DESCRIPTION: Adds a custom crossover strategy to the algorithm
@@ -492,9 +492,9 @@ sub createCrossoverStrategy {
 #        CLASS: GeneticAlgorithm
 #       METHOD: createSelectionStrategy
 #
-#   PARAMETERS: strategyName -> name of the strategy to be added
-#				strategyRef	 -> a function pointer pointing to the custom
-#								strategy implementation.
+#   PARAMETERS: strategyName    -> name of the strategy to be added
+#               strategyRef     -> a function pointer pointing to the custom
+#                                  strategy implementation.
 #
 #      RETURNS: Nothing
 #  DESCRIPTION: Adds a custom selection strategy to the algorithm
@@ -537,7 +537,7 @@ sub createSelectionStrategy {
 #       METHOD: getFittest
 #
 #   PARAMETERS: N -> the number of fittest individuals wanted to be retrieved.
-#   			DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
+#               DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
 #
 #      RETURNS: A list containing as much as N individuals or just one
 #               individual if no parameter is passed.
@@ -729,7 +729,7 @@ sub sortPopulation {
 #   PARAMETERS: individuals -> array of individuals
 #      RETURNS: an array of individuals sorted.
 #  DESCRIPTION: Sorts the list of inidividuals passed as a parameter by
-#				ASCENDING fitness scores.
+#               ASCENDING fitness scores.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -761,9 +761,9 @@ sub sortIndividuals {
 #       METHOD: initialize
 #   PARAMETERS: None.
 #      RETURNS: 1 if the initialization was performed correctly. 0
-#				otherwise.
+#               otherwise.
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
-#				randomly generated.
+#               randomly generated.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -778,11 +778,11 @@ sub initialize {
 #        CLASS: GeneticAlgorithm
 #       METHOD: insert
 #
-#   PARAMETERS: individual -> the individual to be inserted.
-#				index 		-> the position where the individual will be placed.
+#   PARAMETERS: individual  -> the individual to be inserted.
+#               index       -> the position where the individual will be placed.
 #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
 #  DESCRIPTION: Inserts an individual in the population on the position given
-#				by index.
+#               by index.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -801,7 +801,7 @@ sub insert {
 #      RETURNS: 1 if the deletion was performed correctly. 0 otherwise.
 #
 #  DESCRIPTION: Deletes the individual given by index and inserts another
-#				individual randomly generated in the same position.
+#               individual randomly generated in the same position.
 #
 #       THROWS: no exceptions
 #     COMMENTS: none
@@ -817,14 +817,14 @@ sub delete {
 #       METHOD: _fitnessFunc
 #
 #   PARAMETERS: individual -> the individual whose fitness score is wanted
-#   			to be calculated.
+#               to be calculated.
 #
 #      RETURNS: FLOAT the fitness value of the individual.
 #  DESCRIPTION: Calculates the fitness value associated with the individual
-#  				passed as a parameter.
+#               passed as a parameter.
 #       THROWS: no exceptions
 #     COMMENTS: PROVIDE A DEFAULT IMPLEMENTATION FOR FITNESS FUNCTION IN
-#     			CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
+#               CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
 #     SEE ALSO: n/a
 #===============================================================================
 sub _fitnessFunc {
@@ -879,5 +879,343 @@ sub _terminateFunc {
     }
     return $result;
 }    ## --- end sub _terminateFunc
+
+__END__
+
+=head1 DESCRIPTION
+
+Abstract class that represents the common interface shared by
+the different genotype types to be used. Some of the methods
+implementation are going to be the same for all of them, that's
+why it's an Abstract class.
+
+=head1 METHODS
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: _getProperCrossoverStr
+    #
+    #   PARAMETERS: crossover -> string containing the crossover strategy type
+    #               wanted.
+    #
+    #      RETURNS: The adequate instance of a Crossover Strategy.
+    #
+    #  DESCRIPTION: Factory method that decides which crossover strategy
+    #               instantiate.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: _loadCustomCrossoverStr
+    #   PARAMETERS: crossoverString -> a string representation of the strategy.
+    #      RETURNS: The adequate instance of a Crossover Strategy.
+    #  DESCRIPTION: Factory method that decides which crossover strategy
+    #               instantiate. This time searching in the custom crossover
+    #               strategies hash.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: _getProperSelectionStr
+    #
+    #   PARAMETERS: selection -> string containing the selection strategy type
+    #               wanted.
+    #
+    #      RETURNS: The adequate instance of a Selection Strategy.
+    #
+    #  DESCRIPTION: Factory method to decide which Selection Strategy
+    #               instantiate.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: _loadCustomSelectionStr
+    #   PARAMETERS: selectionString -> a string representation of the strategy.
+    #      RETURNS: The adequate instance of a Selection Strategy.
+    #  DESCRIPTION: Factory method that decides which selection strategy
+    #               instantiate. This time searching in the custom selection
+    #               strategies hash.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: _performMutation
+    #
+    #   PARAMETERS: population -> the population in which the method operates.
+    #
+    #      RETURNS: an array of individuals that is the result of the mating
+    #               process.
+    #
+    #  DESCRIPTION: Encapsulates the logic regarding the mutation operation in
+    #               the GA.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  =============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: _performCrossover
+    #
+    #   PARAMETERS: crossoverStr    -> the crossover strategy to apply to the pop.
+    #               population      -> the population in which the method operates.
+    #
+    #      RETURNS: an array of individuals that is the result of the mating
+    #               process.
+    #
+    #  DESCRIPTION: Encapsulates the logic regarding the crossover operation in
+    #               the GA.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: it doesn't operate on the population stored at $this because
+    #               the latter hasn't suffered the selection process.
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: getType
+    #   PARAMETERS: None
+    #      RETURNS: A string representation of the data type the GA is operating
+    #               with.
+    #  DESCRIPTION: Returns the data type the GA is operating with.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: createCrossoverStrategy
+    #
+    #   PARAMETERS: strategyName    -> name of the strategy to be added
+    #               strategyRef     -> a function pointer pointing to the custom
+    #                                  strategy implementation.
+    #
+    #      RETURNS: Nothing
+    #  DESCRIPTION: Adds a custom crossover strategy to the algorithm
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: createSelectionStrategy
+    #
+    #   PARAMETERS: strategyName    -> name of the strategy to be added
+    #               strategyRef     -> a function pointer pointing to the custom
+    #                                  strategy implementation.
+    #
+    #      RETURNS: Nothing
+    #  DESCRIPTION: Adds a custom selection strategy to the algorithm
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: getFittest
+    #
+    #   PARAMETERS: N -> the number of fittest individuals wanted to be retrieved.
+    #               DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
+    #
+    #      RETURNS: A list containing as much as N individuals or just one
+    #               individual if no parameter is passed.
+    #  DESCRIPTION: Returns the N fittest individuals of the population
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: getPopulation
+    #   PARAMETERS: None.
+    #      RETURNS: A reference to the population with which the GA operates.
+    #  DESCRIPTION: Returns all the individuals in the population
+    #       THROWS: no exceptions
+    #     COMMENTS: CAREFUL! IT RETURNS THE POPULATION ITSELF. CHANGES WILL PERSIST
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: getPopSize
+    #   PARAMETERS: None.
+    #      RETURNS: The size of the population
+    #  DESCRIPTION: Getter for the population size
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: getCrossChance
+    #   PARAMETERS: None.
+    #      RETURNS: FLOAT the crossover chance
+    #  DESCRIPTION: Getter for the crossover chance 0..1
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: getMutChance
+    #   PARAMETERS: None.
+    #      RETURNS: FLOAT the mutation chance
+    #  DESCRIPTION: Getter for the mutation chance 0..1
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: getCurrentGeneration
+    #   PARAMETERS: None.
+    #      RETURNS: The current generation
+    #  DESCRIPTION: Getter for the current generation of the Genetic Algorithm
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: sortPopulation
+    #   PARAMETERS: None.
+    #      RETURNS: Nothing.
+    #  DESCRIPTION: Sorts the population of the current Genetic Algorithm
+    #       THROWS: no exceptions
+    #     COMMENTS: It sorts the population in ascending value of fitness
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: sortIndividuals
+    #   PARAMETERS: individuals -> array of individuals
+    #      RETURNS: an array of individuals sorted.
+    #  DESCRIPTION: Sorts the list of inidividuals passed as a parameter by
+    #               ASCENDING fitness scores.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: initialize
+    #   PARAMETERS: None.
+    #      RETURNS: 1 if the initialization was performed correctly. 0
+    #               otherwise.
+    #  DESCRIPTION: Fills the populations with individuals whose genotype is
+    #               randomly generated.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: insert
+    #
+    #   PARAMETERS: individual  -> the individual to be inserted.
+    #               index       -> the position where the individual will be placed.
+    #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
+    #  DESCRIPTION: Inserts an individual in the population on the position given
+    #               by index.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #=== CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: delete
+    #
+    #   PARAMETERS: index -> the position of the individual to be deleted.
+    #
+    #      RETURNS: 1 if the deletion was performed correctly. 0 otherwise.
+    #
+    #  DESCRIPTION: Deletes the individual given by index and inserts another
+    #               individual randomly generated in the same position.
+    #
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: _fitnessFunc
+    #
+    #   PARAMETERS: individual -> the individual whose fitness score is wanted
+    #               to be calculated.
+    #
+    #      RETURNS: FLOAT the fitness value of the individual.
+    #  DESCRIPTION: Calculates the fitness value associated with the individual
+    #               passed as a parameter.
+    #       THROWS: no exceptions
+    #     COMMENTS: PROVIDE A DEFAULT IMPLEMENTATION FOR FITNESS FUNCTION IN
+    #               CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: GeneticAlgorithm
+    #       METHOD: _terminateFunc
+    #   PARAMETERS: None.
+    #      RETURNS: 1 if the custom condition defined here is satisfied, 0
+    #               otherwise.
+    #  DESCRIPTION: Allows for a custom termination routine to be defined.
+    #       THROWS: no exceptions
+    #     COMMENTS: DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
+    #               TILL THE MAXIMUM NUMBER OF GENERATIONS. THIS IS A PRIVATE
+    #               METHOD.
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;

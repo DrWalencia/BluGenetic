@@ -4,9 +4,9 @@
 #         FILE: UserDefinedS.pm
 #
 #  DESCRIPTION: Concrete implementation of the selection strategy interface
-#				comprising the UserDefinedS selection strategy in which
-#				a reference to a custom selection strategy is passed as
-#				a parameter in the constructor of the class.
+#               comprising the UserDefinedS selection strategy in which
+#               a reference to a custom selection strategy is passed as
+#               a parameter in the constructor of the class.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -63,7 +63,7 @@ sub new {
 #        CLASS: UserDefinedS
 #       METHOD: performSelection
 #   PARAMETERS: population -> the population on which the selection must be based
-#   			on.
+#               on.
 #      RETURNS: a list containing the result of the selection process.
 #  DESCRIPTION: Performs the UserDefinedS selection technique.
 #       THROWS: no exceptions
@@ -83,5 +83,61 @@ sub performSelection {
     return @returnPopulation;
 
 }    ## --- end sub performSelection
+
+__END__
+
+=head1 DESCRIPTION
+
+Concrete implementation of the selection strategy interface
+comprising the UserDefinedS selection strategy in which
+a reference to a custom selection strategy is passed as
+a parameter in the constructor of the class.
+
+=head1 METHODS
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: UserDefinedS
+    #       METHOD: new
+    #   PARAMETERS: None.
+    #      RETURNS: A reference to the instance just created.
+    #  DESCRIPTION: Creates a newly allocated UserDefinedS selection strategy.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: UserDefinedS
+    #       METHOD: performSelection
+    #   PARAMETERS: population -> the population on which the selection must be based
+    #               on.
+    #      RETURNS: a list containing the result of the selection process.
+    #  DESCRIPTION: Performs the UserDefinedS selection technique.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;   # Required for all packages in Perl

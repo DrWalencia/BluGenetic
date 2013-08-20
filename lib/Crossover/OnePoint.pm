@@ -3,12 +3,12 @@
 #
 #         FILE: OnePoint.pm
 #
-#  DESCRIPTION: Concrete implementation of the CrossStrategy interface
-#  				comprising the one point crossover technique, which consists on
-#  				defining a random cut position (which will be the same for
-#  				both individuals) and split them and put the first half of the
-#  				first individual with the second half of the other and the
-#  				other way around.
+#  DESCRIPTION: Concrete implementation of the CrossoverStrategy interface
+#               comprising the one point crossover technique, which consists on
+#               defining a random cut position (which will be the same for
+#               both individuals) and split them and put the first half of the
+#               first individual with the second half of the other and the
+#               other way around.
 #
 #       AUTHOR: Pablo Valencia González (PVG), valeng.pablo@gmail.com
 # ORGANIZATION: Universidad de León
@@ -73,7 +73,7 @@ sub new {
 #   PARAMETERS: point -> The cut point.
 #      RETURNS: Nothing
 #  DESCRIPTION: Manually sets the cut point for the crossover operation. For
-#				testing purposes only.
+#               testing purposes only.
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -191,18 +191,18 @@ sub _getProperIndividual {
 #        CLASS: OnePoint
 #       METHOD: crossIndividuals
 #   PARAMETERS: individualOne -> The first individual to be mated
-#   			individualTwo -> The second individual to be mated
+#               individualTwo -> The second individual to be mated
 #      RETURNS: A vector of individuals containing the offspring of those
-#      			passed as parameters.
+#               passed as parameters.
 #  DESCRIPTION: Crosses a couple of individuals of the same length following
-#  				the one-point techniques
+#               the one-point techniques
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
 #===============================================================================
 sub crossIndividuals {
 
-    # EVERY METHOD OF A CLASS PASSES AS THE FIRST ARGUMENT THE FIELDS HASH
+    # EVERY METHOD OF A 
     my $this = shift;
 
     # Retrieve parameters...
@@ -302,5 +302,104 @@ sub crossIndividuals {
     return @v;
 
 }    ## --- end sub crossIndividuals
+
+__END__
+
+=head1 DESCRIPTION
+
+Concrete implementation of the CrossoverStrategy interface
+comprising the one point crossover technique, which consists on
+defining a random cut position (which will be the same for
+both individuals) and split them and put the first half of the
+first individual with the second half of the other and the
+other way around.
+
+=head1 METHODS
+
+    #===  FUNCTION  ================================================================
+    #         NAME: new
+    #      PURPOSE: Creates a newly allocated OnePoint crossover strategy.
+    #   PARAMETERS: None.
+    #      RETURNS: A reference to the instance just created.
+    #       THROWS: no exceptions
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: OnePoint
+    #       METHOD: setCutPoint
+    #   PARAMETERS: point -> The cut point.
+    #      RETURNS: Nothing
+    #  DESCRIPTION: Manually sets the cut point for the crossover operation. For
+    #               testing purposes only.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: OnePoint
+    #       METHOD: _getProperGenotype
+    #   PARAMETERS: this -> The crossover strategy in which the decision of
+    #               instantiate one type of genotype or another is based on.
+    #      RETURNS: An instance of the proper Genotype type (BitVector, ListVector
+    #               or RangeVector)
+    #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
+    #               on the type of genotype of the individuals passed to the
+    #               crossover strategy.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: OnePoint
+    #       METHOD: _getProperIndividual
+    #   PARAMETERS: this -> The crossover strategy in which the decision of
+    #               instantiate one type of genotype or another is based on.
+    #      RETURNS: An instance of the an individual with the proper genotype
+    #               type (BitVector, ListVector or RangeVector)
+    #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
+    #               on the type of genotype of the individuals passed to the
+    #               crossover strategy.
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+    #===  CLASS METHOD  ============================================================
+    #        CLASS: OnePoint
+    #       METHOD: crossIndividuals
+    #   PARAMETERS: individualOne -> The first individual to be mated
+    #               individualTwo -> The second individual to be mated
+    #      RETURNS: A vector of individuals containing the offspring of those
+    #               passed as parameters.
+    #  DESCRIPTION: Crosses a couple of individuals of the same length following
+    #               the one-point techniques
+    #       THROWS: no exceptions
+    #     COMMENTS: none
+    #     SEE ALSO: n/a
+    #===============================================================================
+
+=head1 AUTHOR
+
+Pablo Valencia Gonzalez, C<< <valeng.pablo at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<valeng.pablo at gmail.com>.
+
+=head1 ACKNOWLEDGEMENTS
+
+Special thanks to Julian Orfo and Hector Diez. The former because its 
+collaboration on an early version written in other language and the latter
+for stimulating discussion and provide good suggestions.
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 Pablo Valencia Gonzalez.
+
+This module is distributed under the same terms as Perl itself.
+
+=cut
 
 1;   # Required for all packages in Perl
