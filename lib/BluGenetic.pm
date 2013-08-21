@@ -34,6 +34,9 @@ my $log = Log::Log4perl::get_logger("BluGenetic");
 use constant DEF_CROSS_CHANCE => 0.95;
 use constant DEF_MUT_CHANCE   => 0.05;
 
+our $VERSION = '0.01';
+
+
 #===  CLASS METHOD  ============================================================
 #        CLASS: BluGenetic
 #       METHOD: new
