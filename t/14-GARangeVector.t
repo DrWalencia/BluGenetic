@@ -45,9 +45,6 @@ log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %p - %m%n
 ## Initialize logging behavior
 Log::Log4perl->init( \$conf );
 
-# This fitness function just counts the amount of characters
-# of the genotype and assigns fitness value according to
-# that value.
 sub fitness {
 
     my ($individual) = @_;
