@@ -31,9 +31,9 @@ our $log = Log::Log4perl::get_logger("Genotype");
 #       METHOD: setGen
 #
 #   PARAMETERS: position -> the position where the gen value is to be modified.
-#               value -> the value to be inserted in the gen.
+#               value    -> the value to be inserted in the gen.
 #
-#      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
+#      RETURNS: Nothing
 #
 #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
 #               by the position parameter.
@@ -85,7 +85,7 @@ sub getLength {
 #        CLASS: Genotype
 #       METHOD: changeGen
 #   PARAMETERS: position -> indicates the position of the gen that will change.
-#      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
+#      RETURNS: Nothing
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
 #               mutation purposes only.
 #       THROWS: no exceptions
@@ -126,9 +126,9 @@ by the library. So far implemented -> RangeVector, ListVector , BitVector
     #       METHOD: setGen
     #
     #   PARAMETERS: position -> the position where the gen value is to be modified.
-    #               value -> the value to be inserted in the gen.
+    #               value    -> the value to be inserted in the gen.
     #
-    #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
+    #      RETURNS: Nothing
     #
     #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
     #               by the position parameter.
@@ -139,16 +139,16 @@ by the library. So far implemented -> RangeVector, ListVector , BitVector
 
     #===  CLASS METHOD  ============================================================
     #        CLASS: Genotype
-    #       METHOD: getGen
+    #       METHOD: changeGen
     #
-    #   PARAMETERS: position -> the position of the gen value wanted to be
-    #               retrieved.
+    #   PARAMETERS: position -> indicates the position of the gen that will change.
     #
-    #      RETURNS: The value stored in the gen.
+    #      RETURNS: Nothing
     #
-    #  DESCRIPTION: Returns the gen specified by the position passed as a parameter.
+    #  DESCRIPTION: Changes the value of the gen given by the position. Used for
+    #               mutation purposes only.
     #       THROWS: no exceptions
-    #     COMMENTS: none
+    #     COMMENTS: none  
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================

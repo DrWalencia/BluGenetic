@@ -45,7 +45,7 @@ use fields
 #   PARAMETERS: numOfInd -> the amount of individuals that will fight
 #               till death.
 #      RETURNS: A reference to the instance just created.
-#  DESCRIPTION:	Creates a newly allocated Tournament selection strategy.
+#  DESCRIPTION:	Sets size of the battlefield (other than 2)
 #       THROWS: no exceptions
 #     COMMENTS: none
 #     SEE ALSO: n/a
@@ -195,7 +195,7 @@ selected group.
     #   PARAMETERS: numOfInd -> the amount of individuals that will fight
     #               till death.
     #      RETURNS: A reference to the instance just created.
-    #  DESCRIPTION: Creates a newly allocated Tournament selection strategy.
+    #  DESCRIPTION: Sets size of the battlefield (other than 2)
     #       THROWS: no exceptions
     #     COMMENTS: none
     #     SEE ALSO: n/a

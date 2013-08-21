@@ -286,9 +286,9 @@ limits given by the ranges set.
     #       METHOD: setGen
     #
     #   PARAMETERS: position -> the position where the gen value is to be modified.
-    #               value -> the value to be inserted in the gen.
+    #               value    -> the value to be inserted in the gen.
     #
-    #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
+    #      RETURNS: Nothing
     #
     #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
     #               by the position parameter.
@@ -324,8 +324,11 @@ limits given by the ranges set.
     #===  CLASS METHOD  ============================================================
     #        CLASS: RangeVector
     #       METHOD: changeGen
+    #
     #   PARAMETERS: position -> indicates the position of the gen that will change.
+    #
     #      RETURNS: Nothing
+    #
     #  DESCRIPTION: Changes the value of the gen given by the position. Used for
     #               mutation purposes only.
     #       THROWS: no exceptions

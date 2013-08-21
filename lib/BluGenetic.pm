@@ -21,7 +21,8 @@ use strict;
 use warnings FATAL => 'all';
 use diagnostics;
 
-use Log::Log4perl qw(get_logger);
+#use Log::Log4perl qw(get_logger);
+use Log::Log4perl qw(:easy);
 use Algorithm::GABitVector;
 use Algorithm::GAListVector;
 use Algorithm::GARangeVector;
@@ -60,7 +61,7 @@ sub new {
 	## A simple root logger with a Log::Log4perl::Appender::File 
 	## file appender in Perl.
 	#############################################################
-	log4perl.rootLogger=DEBUG, LOGFILE
+	log4perl.rootLogger=DEBUG, LOGFILE 
 	
 	log4perl.appender.LOGFILE=Log::Log4perl::Appender::File
 	log4perl.appender.LOGFILE.filename=./BluGenetic.log
@@ -72,7 +73,7 @@ sub new {
 	);
 
     # Initialize logging behavior
-#    Log::Log4perl->init( \$conf );
+    # Log::Log4perl->init( \$conf );
 
     $log->info("Factory job to create a Genetic Algorithm started.");
 

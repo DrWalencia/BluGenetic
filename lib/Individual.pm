@@ -35,10 +35,10 @@ our $log = Log::Log4perl::get_logger("Individual");
 #
 # PARAMETERS_1: None (NEITHER SCORE NOR GENOTYPE)
 #
-# PARAMETERS_2: genotype	-> the genotype of the individual (NO SCORE)
+# PARAMETERS_2: genotype    -> the genotype of the individual (NO SCORE)
 #
-# PARAMETERS_3: score		-> the score of the individual
-# 				genotype 	-> the genotype of the individual
+# PARAMETERS_3: score       -> the score of the individual
+#               genotype    -> the genotype of the individual
 #
 #      RETURNS: A reference to the instance just created.
 #     COMMENTS: ALL PARAMETERS ARE INTRODUCED VIA ANONYMOUS HASHES

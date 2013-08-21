@@ -46,7 +46,7 @@ use fields 'population',      # ARRAY of individuals comprising the population.
   'customSelStrategies',      # HASH that stores custom selection strategies
   'myFitness',                # REFERENCE to the fitness function passed as
                               # a parameter
-  'myTerminate';                # REFERENCE to the terminate function passed as
+  'myTerminate';              # REFERENCE to the terminate function passed as
                               # a parameter
 
 #=== CLASS METHOD  =============================================================
@@ -536,7 +536,7 @@ sub createSelectionStrategy {
 #        CLASS: GeneticAlgorithm
 #       METHOD: getFittest
 #
-#   PARAMETERS: N -> the number of fittest individuals wanted to be retrieved.
+#   PARAMETERS: n -> the number of fittest individuals wanted to be retrieved.
 #               DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
 #
 #      RETURNS: A list containing as much as N individuals or just one
@@ -760,8 +760,7 @@ sub sortIndividuals {
 #        CLASS: GeneticAlgorithm
 #       METHOD: initialize
 #   PARAMETERS: None.
-#      RETURNS: 1 if the initialization was performed correctly. 0
-#               otherwise.
+#      RETURNS: Nothing
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
 #               randomly generated.
 #       THROWS: no exceptions
@@ -780,7 +779,7 @@ sub initialize {
 #
 #   PARAMETERS: individual  -> the individual to be inserted.
 #               index       -> the position where the individual will be placed.
-#      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
+#      RETURNS: Nothing
 #  DESCRIPTION: Inserts an individual in the population on the position given
 #               by index.
 #       THROWS: no exceptions
@@ -798,7 +797,7 @@ sub insert {
 #
 #   PARAMETERS: index -> the position of the individual to be deleted.
 #
-#      RETURNS: 1 if the deletion was performed correctly. 0 otherwise.
+#      RETURNS: Nothing
 #
 #  DESCRIPTION: Deletes the individual given by index and inserts another
 #               individual randomly generated in the same position.
@@ -1033,7 +1032,7 @@ why it's an Abstract class.
     #        CLASS: GeneticAlgorithm
     #       METHOD: getFittest
     #
-    #   PARAMETERS: N -> the number of fittest individuals wanted to be retrieved.
+    #   PARAMETERS: n -> the number of fittest individuals wanted to be retrieved.
     #               DEFAULT VALUE IF NO PARAMETER IS PASSED: 1
     #
     #      RETURNS: A list containing as much as N individuals or just one
