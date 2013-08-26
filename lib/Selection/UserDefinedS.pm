@@ -38,9 +38,6 @@ use base qw(SelectionStrategy);
 #   PARAMETERS: None.
 #      RETURNS: A reference to the instance just created.
 #  DESCRIPTION:	Creates a newly allocated UserDefinedS selection strategy.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub new {
 
@@ -66,9 +63,6 @@ sub new {
 #               on.
 #      RETURNS: a list containing the result of the selection process.
 #  DESCRIPTION: Performs the UserDefinedS selection technique.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub performSelection {
 
@@ -101,9 +95,6 @@ a parameter in the constructor of the class.
     #   PARAMETERS: None.
     #      RETURNS: A reference to the instance just created.
     #  DESCRIPTION: Creates a newly allocated UserDefinedS selection strategy.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -113,9 +104,6 @@ a parameter in the constructor of the class.
     #               on.
     #      RETURNS: a list containing the result of the selection process.
     #  DESCRIPTION: Performs the UserDefinedS selection technique.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

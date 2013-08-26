@@ -46,9 +46,6 @@ use fields
 #               till death.
 #      RETURNS: A reference to the instance just created.
 #  DESCRIPTION:	Sets size of the battlefield (other than 2)
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub battlefieldSize {
 
@@ -76,9 +73,6 @@ sub battlefieldSize {
 #               till death.
 #      RETURNS: A reference to the instance just created.
 #  DESCRIPTION:	Creates a newly allocated Tournament selection strategy.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub new {
 
@@ -109,9 +103,7 @@ sub new {
 #   PARAMETERS: battlefield -> the set of individuals that'll fight till death.
 #      RETURNS: An individual who is the winner of the tournament.
 #  DESCRIPTION: Given a battlefield, act as a referee and decide who won.
-#       THROWS: no exceptions
 #     COMMENTS: THIS IS A PRIVATE METHOD
-#     SEE ALSO: n/a
 #===============================================================================
 sub _fetchWinner {
 
@@ -140,9 +132,6 @@ sub _fetchWinner {
 #               on.
 #      RETURNS: a list containing the result of the selection process.
 #  DESCRIPTION: Performs the Tournament selection technique.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub performSelection {
 
@@ -196,9 +185,6 @@ selected group.
     #               till death.
     #      RETURNS: A reference to the instance just created.
     #  DESCRIPTION: Sets size of the battlefield (other than 2)
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -208,9 +194,6 @@ selected group.
     #               till death.
     #      RETURNS: A reference to the instance just created.
     #  DESCRIPTION: Creates a newly allocated Tournament selection strategy.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -219,9 +202,7 @@ selected group.
     #   PARAMETERS: battlefield -> the set of individuals that'll fight till death.
     #      RETURNS: An individual who is the winner of the tournament.
     #  DESCRIPTION: Given a battlefield, act as a referee and decide who won.
-    #       THROWS: no exceptions
     #     COMMENTS: THIS IS A PRIVATE METHOD
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -231,9 +212,6 @@ selected group.
     #               on.
     #      RETURNS: a list containing the result of the selection process.
     #  DESCRIPTION: Performs the Tournament selection technique.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

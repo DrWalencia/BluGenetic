@@ -36,9 +36,6 @@ no warnings 'redefine';
 #   PARAMETERS: individualOne -> the first individual
 #               individualTwo -> the second individual.
 #      RETURNS: An array containing the offspring of the previous individuals.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub crossIndividuals {
     $log->logconfess(
@@ -62,9 +59,6 @@ implemented by the library. So far implemented -> OnePoint, TwoPoint, Uniform, C
     #   PARAMETERS: individualOne -> the first individual
     #               individualTwo -> the second individual.
     #      RETURNS: An array containing the offspring of the previous individuals.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

@@ -46,7 +46,6 @@ use fields 'indOne', 'indTwo',    # The two individuals to be mated.
 #      PURPOSE: Creates a newly allocated OnePoint crossover strategy.
 #   PARAMETERS: None.
 #      RETURNS: A reference to the instance just created.
-#       THROWS: no exceptions
 #===============================================================================
 sub new {
 
@@ -74,9 +73,6 @@ sub new {
 #      RETURNS: Nothing
 #  DESCRIPTION: Manually sets the cut point for the crossover operation. For
 #               testing purposes only.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub setCutPoint {
 
@@ -104,9 +100,6 @@ sub setCutPoint {
 #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
 #               on the type of genotype of the individuals passed to the
 #               crossover strategy.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _getProperGenotype {
 
@@ -148,9 +141,6 @@ sub _getProperGenotype {
 #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
 #               on the type of genotype of the individuals passed to the
 #               crossover strategy.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _getProperIndividual {
 
@@ -196,9 +186,6 @@ sub _getProperIndividual {
 #               passed as parameters.
 #  DESCRIPTION: Crosses a couple of individuals of the same length following
 #               the one-point techniques
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub crossIndividuals {
 
@@ -321,7 +308,6 @@ other way around.
     #      PURPOSE: Creates a newly allocated OnePoint crossover strategy.
     #   PARAMETERS: None.
     #      RETURNS: A reference to the instance just created.
-    #       THROWS: no exceptions
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -331,9 +317,6 @@ other way around.
     #      RETURNS: Nothing
     #  DESCRIPTION: Manually sets the cut point for the crossover operation. For
     #               testing purposes only.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -346,9 +329,6 @@ other way around.
     #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
     #               on the type of genotype of the individuals passed to the
     #               crossover strategy.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -361,9 +341,6 @@ other way around.
     #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
     #               on the type of genotype of the individuals passed to the
     #               crossover strategy.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -375,9 +352,6 @@ other way around.
     #               passed as parameters.
     #  DESCRIPTION: Crosses a couple of individuals of the same length following
     #               the one-point techniques
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

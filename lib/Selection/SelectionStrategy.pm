@@ -31,9 +31,6 @@ our $log = Log::Log4perl::get_logger("SelectionStrategy");
 #               is performed.
 #      RETURNS: An array of individuals of size popSize
 #  DESCRIPTION: Performs the selection process
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub performSelection {
     $log->logconfess(
@@ -58,9 +55,6 @@ implemented by the library.
     #               is performed.
     #      RETURNS: An array of individuals of size popSize
     #  DESCRIPTION: Performs the selection process
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

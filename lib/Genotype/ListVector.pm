@@ -43,7 +43,6 @@ use fields
 #               limits passed are going to be created.
 #   PARAMETERS: ranges -> set of possible values for each gen.
 #      RETURNS: A reference to the instance just created.
-#       THROWS: no exceptions
 #===============================================================================
 sub new {
 
@@ -96,9 +95,6 @@ sub new {
 #
 #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
 #               by the position parameter.
-#
-#       THROWS: no exceptions
-#     COMMENTS: locus -> value
 #===============================================================================
 sub setGen {
 
@@ -150,8 +146,6 @@ sub setGen {
 #      RETURNS: The value stored in the gen.
 #
 #  DESCRIPTION: Returns the gen specified by the position passed as a parameter.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getGen {
 
@@ -175,8 +169,6 @@ sub getGen {
 #   PARAMETERS: None
 #      RETURNS: The length of the genotype.
 #  DESCRIPTION: Asks for the length of the genotype.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getLength {
 
@@ -198,9 +190,6 @@ sub getLength {
 #      RETURNS: Nothing
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
 #               mutation purposes only.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub changeGen {
 
@@ -241,8 +230,6 @@ sub changeGen {
 #   PARAMETERS: None 
 #      RETURNS: A list containing the possible values for a gen.
 #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getRanges {
 
@@ -269,7 +256,6 @@ ones given by the ranges set.
     #               limits passed are going to be created.
     #   PARAMETERS: ranges -> set of possible values for each gen.
     #      RETURNS: A reference to the instance just created.
-    #       THROWS: no exceptions
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -283,9 +269,6 @@ ones given by the ranges set.
     #
     #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
     #               by the position parameter.
-    #
-    #       THROWS: no exceptions
-    #     COMMENTS: locus -> value
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -298,8 +281,6 @@ ones given by the ranges set.
     #      RETURNS: The value stored in the gen.
     #
     #  DESCRIPTION: Returns the gen specified by the position passed as a parameter.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -308,8 +289,6 @@ ones given by the ranges set.
     #   PARAMETERS: None
     #      RETURNS: The length of the genotype.
     #  DESCRIPTION: Asks for the length of the genotype.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -319,9 +298,6 @@ ones given by the ranges set.
     #      RETURNS: Nothing
     #  DESCRIPTION: Changes the value of the gen given by the position. Used for
     #               mutation purposes only.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -330,8 +306,6 @@ ones given by the ranges set.
     #   PARAMETERS: None 
     #      RETURNS: A list containing the possible values for a gen.
     #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
     #===============================================================================
 
 =head1 AUTHOR

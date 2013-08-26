@@ -51,7 +51,7 @@ our $VERSION = '0.01';
 #
 #      RETURNS: A reference to the proper GA.
 #  DESCRIPTION:	Returns one of the three types of Genetic Algorithm according
-#  				to the arguments passed.
+#  				to the HASH OF ARGUMENTS arguments passed.
 #       THROWS: no exceptions
 #     COMMENTS: THIS METHOD IS NOT A CONSTRUCTOR EVEN THOUGH ITS NAME IS NEW
 #     SEE ALSO: n/a
@@ -318,7 +318,7 @@ accessible.
     #
     #      RETURNS: A reference to the proper GA.
     #  DESCRIPTION: Returns one of the three types of Genetic Algorithm according
-    #               to the arguments passed.
+    #               to the HASH OF ARGUMENTS arguments passed.
     #       THROWS: no exceptions
     #     COMMENTS: THIS METHOD IS NOT A CONSTRUCTOR EVEN THOUGH ITS NAME IS NEW
     #     SEE ALSO: n/a

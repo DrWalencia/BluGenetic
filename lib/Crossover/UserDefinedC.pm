@@ -46,7 +46,6 @@ use fields
 #      PURPOSE: Creates a newly allocated UserDefinedC crossover strategy.
 #   PARAMETERS: None.
 #      RETURNS: A reference to the instance just created.
-#       THROWS: no exceptions
 #===============================================================================
 sub new {
 
@@ -76,9 +75,6 @@ sub new {
 #               as parameters.
 #  DESCRIPTION: Crosses a couple of individuals of the same length following
 #               the UserDefinedC technique.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub crossIndividuals {
 
@@ -136,7 +132,6 @@ a parameter in the constructor of the class.
     #      PURPOSE: Creates a newly allocated UserDefinedC crossover strategy.
     #   PARAMETERS: None.
     #      RETURNS: A reference to the instance just created.
-    #       THROWS: no exceptions
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -148,9 +143,6 @@ a parameter in the constructor of the class.
     #               as parameters.
     #  DESCRIPTION: Crosses a couple of individuals of the same length following
     #               the UserDefinedC technique.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

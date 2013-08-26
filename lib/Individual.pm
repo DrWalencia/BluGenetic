@@ -41,8 +41,7 @@ our $log = Log::Log4perl::get_logger("Individual");
 #               genotype    -> the genotype of the individual
 #
 #      RETURNS: A reference to the instance just created.
-#     COMMENTS: ALL PARAMETERS ARE INTRODUCED VIA ANONYMOUS HASHES
-#       THROWS: no exceptions
+#     COMMENTS: PARAMETERS INTRODUCED VIA ANONYMOUS HASH
 #===============================================================================
 sub new {
 
@@ -104,9 +103,6 @@ sub new {
 #   PARAMETERS: None.
 #      RETURNS: FLOAT the score store in the individual as a field.
 #  DESCRIPTION: Getter for the score of the individual.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub getScore {
 
@@ -133,9 +129,7 @@ sub getScore {
 #   PARAMETERS: newScore -> the score to be set.
 #      RETURNS: Nothing.
 #  DESCRIPTION: Setter for the score of the individual.
-#       THROWS: no exceptions
 #     COMMENTS: NEGATIVE SCORES ARE NOT ACCEPTED
-#     SEE ALSO: n/a
 #===============================================================================
 sub setScore {
 
@@ -170,9 +164,6 @@ sub setScore {
 #   PARAMETERS: None.
 #      RETURNS: 1 if the score has been set, 0 otherwise.
 #  DESCRIPTION: Checks if the score has been calculated.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub scoreSet {
 
@@ -199,8 +190,8 @@ sub scoreSet {
 #      RETURNS: REFERENCE the genotype of the individual.
 #  DESCRIPTION: Getter for the genotype.
 #       THROWS: no exceptions
-#     COMMENTS: WARNING: THE ACTUAL GENOTYPE IS RETURNED. BE CAREFUL!!
-#     SEE ALSO: n/a
+#     COMMENTS: WARNING: The actual genotype is returned. Changes will be
+#               reflected in the algorithm.
 #===============================================================================
 sub getGenotype {
 
@@ -230,9 +221,7 @@ sub getGenotype {
 #   PARAMETERS: REFERENCE the genotype of the individual.
 #      RETURNS: Nothing.
 #  DESCRIPTION: Setter for the genotype.
-#       THROWS: no exceptions
 #     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub setGenotype {
 
@@ -271,8 +260,7 @@ is comprised by a genotype and its score.
     #               genotype    -> the genotype of the individual
     #
     #      RETURNS: A reference to the instance just created.
-    #     COMMENTS: ALL PARAMETERS ARE INTRODUCED VIA ANONYMOUS HASHES
-    #       THROWS: no exceptions
+    #     COMMENTS: PARAMETERS INTRODUCED VIA ANONYMOUS HASH
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -281,9 +269,6 @@ is comprised by a genotype and its score.
     #   PARAMETERS: None.
     #      RETURNS: FLOAT the score store in the individual as a field.
     #  DESCRIPTION: Getter for the score of the individual.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -292,9 +277,7 @@ is comprised by a genotype and its score.
     #   PARAMETERS: newScore -> the score to be set.
     #      RETURNS: Nothing.
     #  DESCRIPTION: Setter for the score of the individual.
-    #       THROWS: no exceptions
     #     COMMENTS: NEGATIVE SCORES ARE NOT ACCEPTED
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -303,9 +286,6 @@ is comprised by a genotype and its score.
     #   PARAMETERS: None.
     #      RETURNS: 1 if the score has been set, 0 otherwise.
     #  DESCRIPTION: Checks if the score has been calculated.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -314,9 +294,8 @@ is comprised by a genotype and its score.
     #   PARAMETERS: None.
     #      RETURNS: REFERENCE the genotype of the individual.
     #  DESCRIPTION: Getter for the genotype.
-    #       THROWS: no exceptions
-    #     COMMENTS: WARNING: THE ACTUAL GENOTYPE IS RETURNED. BE CAREFUL!!
-    #     SEE ALSO: n/a
+    #     COMMENTS: WARNING: The actual genotype is returned. Changes will be 
+    #               reflected in the algorithm.
     #===============================================================================
 
     #=== CLASS METHOD  =============================================================
@@ -325,9 +304,6 @@ is comprised by a genotype and its score.
     #   PARAMETERS: REFERENCE the genotype of the individual.
     #      RETURNS: Nothing.
     #  DESCRIPTION: Setter for the genotype.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

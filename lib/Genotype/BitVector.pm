@@ -42,7 +42,6 @@ use fields
 #				initializing its genes.
 #   PARAMETERS: lengthGen -> length of the genotype to be created.
 #      RETURNS: A reference to the instance just created.
-#       THROWS: no exceptions
 #===============================================================================
 sub new {
 
@@ -90,7 +89,6 @@ sub new {
 #	  DESCRIPTION: Puts the value passed as a parameter in the gen specified
 #                  by the position parameter.
 #
-#       THROWS: no exceptions
 #     COMMENTS: locus -> value
 #===============================================================================
 sub setGen {
@@ -141,8 +139,6 @@ sub setGen {
 #      RETURNS: The value stored in the gen.
 #
 #  DESCRIPTION: Returns the gen specified by the position passed as a parameter.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getGen {
 
@@ -176,8 +172,6 @@ sub getGen {
 #   PARAMETERS: None
 #      RETURNS: The length of the genotype.
 #  DESCRIPTION: Asks for the length of the genotype.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getLength {
 
@@ -199,9 +193,6 @@ sub getLength {
 #      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
 #               mutation purposes only.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub changeGen {
 
@@ -247,8 +238,6 @@ sub changeGen {
 #   PARAMETERS: None
 #      RETURNS: A list containing the possible values for a gen.
 #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getRanges {
 
@@ -273,7 +262,6 @@ this is, a list of zeros and ones.
     #               initializing its genes.
     #   PARAMETERS: lengthGen -> length of the genotype to be created.
     #      RETURNS: A reference to the instance just created.
-    #       THROWS: no exceptions
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -287,9 +275,6 @@ this is, a list of zeros and ones.
     #
     #     DESCRIPTION: Puts the value passed as a parameter in the gen specified
     #                  by the position parameter.
-    #
-    #       THROWS: no exceptions
-    #     COMMENTS: locus -> value
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -302,8 +287,6 @@ this is, a list of zeros and ones.
     #      RETURNS: The value stored in the gen.
     #
     #  DESCRIPTION: Returns the gen specified by the position passed as a parameter.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -312,8 +295,6 @@ this is, a list of zeros and ones.
     #   PARAMETERS: None
     #      RETURNS: The length of the genotype.
     #  DESCRIPTION: Asks for the length of the genotype.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -323,9 +304,6 @@ this is, a list of zeros and ones.
     #      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
     #  DESCRIPTION: Changes the value of the gen given by the position. Used for
     #               mutation purposes only.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -334,8 +312,6 @@ this is, a list of zeros and ones.
     #   PARAMETERS: None
     #      RETURNS: A list containing the possible values for a gen.
     #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
     #===============================================================================
 
 =head1 AUTHOR

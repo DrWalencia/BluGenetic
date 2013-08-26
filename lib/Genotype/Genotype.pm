@@ -38,7 +38,6 @@ our $log = Log::Log4perl::get_logger("Genotype");
 #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
 #               by the position parameter.
 #
-#       THROWS: no exceptions
 #     COMMENTS: locus -> value
 #===============================================================================
 sub setGen {
@@ -57,8 +56,6 @@ sub setGen {
 #      RETURNS: The value stored in the gen.
 #
 #  DESCRIPTION: Returns the gen specified by the position passed as a parameter.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getGen {
     $log->logconfess(
@@ -72,8 +69,6 @@ sub getGen {
 #   PARAMETERS: None
 #      RETURNS: The length of the genotype.
 #  DESCRIPTION: Asks for the length of the genotype.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getLength {
     $log->logconfess(
@@ -88,8 +83,6 @@ sub getLength {
 #      RETURNS: Nothing
 #  DESCRIPTION: Changes the value of the gen given by the position. Used for
 #               mutation purposes only.
-#       THROWS: no exceptions
-#     COMMENTS: none 
 #===============================================================================
 sub changeGen {
     $log->logconfess(
@@ -103,8 +96,6 @@ sub changeGen {
 #   PARAMETERS: None
 #      RETURNS: A list containing the possible values for a gen.
 #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
-#       THROWS: no exceptions
-#     COMMENTS: none
 #===============================================================================
 sub getRanges {
     $log->logconfess(
@@ -133,7 +124,6 @@ by the library. So far implemented -> RangeVector, ListVector , BitVector
     #  DESCRIPTION: Puts the value passed as a parameter in the gen specified
     #               by the position parameter.
     #
-    #       THROWS: no exceptions
     #     COMMENTS: locus -> value
     #===============================================================================
 
@@ -147,8 +137,6 @@ by the library. So far implemented -> RangeVector, ListVector , BitVector
     #
     #  DESCRIPTION: Changes the value of the gen given by the position. Used for
     #               mutation purposes only.
-    #       THROWS: no exceptions
-    #     COMMENTS: none  
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -157,8 +145,6 @@ by the library. So far implemented -> RangeVector, ListVector , BitVector
     #   PARAMETERS: None
     #      RETURNS: The length of the genotype.
     #  DESCRIPTION: Asks for the length of the genotype.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -168,8 +154,6 @@ by the library. So far implemented -> RangeVector, ListVector , BitVector
     #      RETURNS: 1 if the operation was performed successfully. 0 otherwise.
     #  DESCRIPTION: Changes the value of the gen given by the position. Used for
     #               mutation purposes only.
-    #       THROWS: no exceptions
-    #     COMMENTS: none 
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -178,8 +162,6 @@ by the library. So far implemented -> RangeVector, ListVector , BitVector
     #   PARAMETERS: None
     #      RETURNS: A list containing the possible values for a gen.
     #  DESCRIPTION: Asks for all the possible values for the gens in the genotype.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
     #===============================================================================
 
 =head1 AUTHOR

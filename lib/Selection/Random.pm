@@ -38,9 +38,6 @@ use base qw(SelectionStrategy);
 #   PARAMETERS: None.
 #      RETURNS: A reference to the instance just created.
 #  DESCRIPTION:	Creates a newly allocated Random selection strategy.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub new {
 
@@ -63,9 +60,6 @@ sub new {
 #               on.
 #      RETURNS: a list containing the result of the selection process.
 #  DESCRIPTION: Performs the Random selection technique.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub performSelection {
 
@@ -104,9 +98,6 @@ parameter till a new population of the same size is complete.
     #   PARAMETERS: None.
     #      RETURNS: A reference to the instance just created.
     #  DESCRIPTION: Creates a newly allocated Random selection strategy.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -116,9 +107,6 @@ parameter till a new population of the same size is complete.
     #               on.
     #      RETURNS: a list containing the result of the selection process.
     #  DESCRIPTION: Performs the Random selection technique.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

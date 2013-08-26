@@ -40,7 +40,6 @@ use fields 'indOne', 'indTwo';    # The two individuals to be mated.
 #      PURPOSE: Creates a newly allocated Uniform crossover strategy.
 #   PARAMETERS: None.
 #      RETURNS: A reference to the instance just created.
-#       THROWS: no exceptions
 #===============================================================================
 sub new {
 
@@ -65,9 +64,6 @@ sub new {
 #      RETURNS: the value of the selected gen.
 #  DESCRIPTION: For a given position select randomly which parent a given gen
 #               is selected from.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _randomSel {
 
@@ -102,9 +98,6 @@ sub _randomSel {
 #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
 #               on the type of genotype of the individuals passed to the
 #               crossover strategy.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _getProperGenotype {
 
@@ -147,9 +140,6 @@ sub _getProperGenotype {
 #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
 #               on the type of genotype of the individuals passed to the
 #               crossover strategy.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _getProperIndividual {
 
@@ -196,9 +186,6 @@ sub _getProperIndividual {
 #               as parameters.
 #  DESCRIPTION: Crosses a couple of individuals of the same length following
 #               the uniform technique.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub crossIndividuals {
 
@@ -286,7 +273,6 @@ selecting one gen per parent for each one of the offspring.
     #      PURPOSE: Creates a newly allocated Uniform crossover strategy.
     #   PARAMETERS: None.
     #      RETURNS: A reference to the instance just created.
-    #       THROWS: no exceptions
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -296,9 +282,6 @@ selecting one gen per parent for each one of the offspring.
     #      RETURNS: the value of the selected gen.
     #  DESCRIPTION: For a given position select randomly which parent a given gen
     #               is selected from.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -311,9 +294,6 @@ selecting one gen per parent for each one of the offspring.
     #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
     #               on the type of genotype of the individuals passed to the
     #               crossover strategy.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -326,9 +306,6 @@ selecting one gen per parent for each one of the offspring.
     #  DESCRIPTION: Factory method to instantiate the proper Genotype type based
     #               on the type of genotype of the individuals passed to the
     #               crossover strategy.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -340,9 +317,6 @@ selecting one gen per parent for each one of the offspring.
     #               as parameters.
     #  DESCRIPTION: Crosses a couple of individuals of the same length following
     #               the uniform technique.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR

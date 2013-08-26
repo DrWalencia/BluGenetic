@@ -60,10 +60,6 @@ use fields 'population',      # ARRAY of individuals comprising the population.
 #
 #  DESCRIPTION: Factory method that decides which crossover strategy
 #               instantiate.
-#
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _getProperCrossoverStr {
 
@@ -101,9 +97,6 @@ sub _getProperCrossoverStr {
 #  DESCRIPTION: Factory method that decides which crossover strategy
 #               instantiate. This time searching in the custom crossover
 #               strategies hash.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _loadCustomCrossoverStr {
 
@@ -142,10 +135,6 @@ sub _loadCustomCrossoverStr {
 #
 #  DESCRIPTION: Factory method to decide which Selection Strategy
 #               instantiate.
-#
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _getProperSelectionStr {
 
@@ -184,9 +173,6 @@ sub _getProperSelectionStr {
 #  DESCRIPTION: Factory method that decides which selection strategy
 #               instantiate. This time searching in the custom selection
 #               strategies hash.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _loadCustomSelectionStr {
 
@@ -225,10 +211,6 @@ sub _loadCustomSelectionStr {
 #
 #  DESCRIPTION: Encapsulates the logic regarding the mutation operation in
 #               the GA.
-#
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub _performMutation {
 
@@ -289,10 +271,8 @@ sub _performMutation {
 #  DESCRIPTION: Encapsulates the logic regarding the crossover operation in
 #               the GA.
 #
-#       THROWS: no exceptions
 #     COMMENTS: it doesn't operate on the population stored at $this because
 #               the latter hasn't suffered the selection process.
-#     SEE ALSO: n/a
 #===============================================================================
 sub _performCrossover {
 
@@ -414,9 +394,6 @@ sub _performCrossover {
 #      RETURNS: A string representation of the data type the GA is operating
 #               with.
 #  DESCRIPTION: Returns the data type the GA is operating with.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub getType {
 
@@ -454,9 +431,6 @@ sub getType {
 #
 #      RETURNS: Nothing
 #  DESCRIPTION: Adds a custom crossover strategy to the algorithm
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub createCrossoverStrategy {
 
@@ -498,9 +472,6 @@ sub createCrossoverStrategy {
 #
 #      RETURNS: Nothing
 #  DESCRIPTION: Adds a custom selection strategy to the algorithm
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub createSelectionStrategy {
 
@@ -542,9 +513,6 @@ sub createSelectionStrategy {
 #      RETURNS: A list containing as much as N individuals or just one
 #               individual if no parameter is passed.
 #  DESCRIPTION: Returns the N fittest individuals of the population
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub getFittest {
 
@@ -606,8 +574,8 @@ sub getFittest {
 #      RETURNS: A reference to the population with which the GA operates.
 #  DESCRIPTION: Returns all the individuals in the population
 #       THROWS: no exceptions
-#     COMMENTS: CAREFUL! IT RETURNS THE POPULATION ITSELF. CHANGES WILL PERSIST
-#     SEE ALSO: n/a
+#     COMMENTS: WARNING: the actual population is returned. Changes will be 
+#               reflected in the algorithm.
 #===============================================================================
 sub getPopulation {
 
@@ -628,9 +596,6 @@ sub getPopulation {
 #   PARAMETERS: None.
 #      RETURNS: The size of the population
 #  DESCRIPTION: Getter for the population size
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub getPopSize {
 
@@ -647,9 +612,6 @@ sub getPopSize {
 #   PARAMETERS: None.
 #      RETURNS: FLOAT the crossover chance
 #  DESCRIPTION: Getter for the crossover chance 0..1
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub getCrossChance {
 
@@ -666,9 +628,6 @@ sub getCrossChance {
 #   PARAMETERS: None.
 #      RETURNS: FLOAT the mutation chance
 #  DESCRIPTION: Getter for the mutation chance 0..1
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub getMutChance {
 
@@ -685,9 +644,6 @@ sub getMutChance {
 #   PARAMETERS: None.
 #      RETURNS: The current generation
 #  DESCRIPTION: Getter for the current generation of the Genetic Algorithm
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub getCurrentGeneration {
 
@@ -704,9 +660,7 @@ sub getCurrentGeneration {
 #   PARAMETERS: None.
 #      RETURNS: Nothing.
 #  DESCRIPTION: Sorts the population of the current Genetic Algorithm
-#       THROWS: no exceptions
 #     COMMENTS: It sorts the population in ascending value of fitness
-#     SEE ALSO: n/a
 #===============================================================================
 sub sortPopulation {
 
@@ -730,9 +684,6 @@ sub sortPopulation {
 #      RETURNS: an array of individuals sorted.
 #  DESCRIPTION: Sorts the list of inidividuals passed as a parameter by
 #               ASCENDING fitness scores.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub sortIndividuals {
 
@@ -763,9 +714,6 @@ sub sortIndividuals {
 #      RETURNS: Nothing
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
 #               randomly generated.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub initialize {
     $log->logconfess(
@@ -782,9 +730,6 @@ sub initialize {
 #      RETURNS: Nothing
 #  DESCRIPTION: Inserts an individual in the population on the position given
 #               by index.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub insert {
     $log->logconfess('The function insert() must be defined in a subclass.\n');
@@ -801,10 +746,6 @@ sub insert {
 #
 #  DESCRIPTION: Deletes the individual given by index and inserts another
 #               individual randomly generated in the same position.
-#
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub delete {
     $log->logconfess('The function delete() must be defined in a subclass.\n');
@@ -821,10 +762,6 @@ sub delete {
 #      RETURNS: FLOAT the fitness value of the individual.
 #  DESCRIPTION: Calculates the fitness value associated with the individual
 #               passed as a parameter.
-#       THROWS: no exceptions
-#     COMMENTS: PROVIDE A DEFAULT IMPLEMENTATION FOR FITNESS FUNCTION IN
-#               CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
-#     SEE ALSO: n/a
 #===============================================================================
 sub _fitnessFunc {
 
@@ -853,11 +790,9 @@ sub _fitnessFunc {
 #      RETURNS: 1 if the custom condition defined here is satisfied, 0
 #               otherwise.
 #  DESCRIPTION: Allows for a custom termination routine to be defined.
-#       THROWS: no exceptions
 #     COMMENTS: DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
 #               TILL THE MAXIMUM NUMBER OF GENERATIONS. THIS IS A PRIVATE
 #               METHOD.
-#     SEE ALSO: n/a
 #===============================================================================
 sub _terminateFunc {
 
@@ -901,10 +836,6 @@ why it's an Abstract class.
     #
     #  DESCRIPTION: Factory method that decides which crossover strategy
     #               instantiate.
-    #
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  =============================================================
@@ -915,9 +846,6 @@ why it's an Abstract class.
     #  DESCRIPTION: Factory method that decides which crossover strategy
     #               instantiate. This time searching in the custom crossover
     #               strategies hash.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  =============================================================
@@ -931,10 +859,6 @@ why it's an Abstract class.
     #
     #  DESCRIPTION: Factory method to decide which Selection Strategy
     #               instantiate.
-    #
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  =============================================================
@@ -945,9 +869,6 @@ why it's an Abstract class.
     #  DESCRIPTION: Factory method that decides which selection strategy
     #               instantiate. This time searching in the custom selection
     #               strategies hash.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  =============================================================
@@ -961,10 +882,6 @@ why it's an Abstract class.
     #
     #  DESCRIPTION: Encapsulates the logic regarding the mutation operation in
     #               the GA.
-    #
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  =============================================================
@@ -980,10 +897,8 @@ why it's an Abstract class.
     #  DESCRIPTION: Encapsulates the logic regarding the crossover operation in
     #               the GA.
     #
-    #       THROWS: no exceptions
     #     COMMENTS: it doesn't operate on the population stored at $this because
     #               the latter hasn't suffered the selection process.
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -993,9 +908,6 @@ why it's an Abstract class.
     #      RETURNS: A string representation of the data type the GA is operating
     #               with.
     #  DESCRIPTION: Returns the data type the GA is operating with.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1008,9 +920,6 @@ why it's an Abstract class.
     #
     #      RETURNS: Nothing
     #  DESCRIPTION: Adds a custom crossover strategy to the algorithm
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1023,9 +932,6 @@ why it's an Abstract class.
     #
     #      RETURNS: Nothing
     #  DESCRIPTION: Adds a custom selection strategy to the algorithm
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1038,9 +944,6 @@ why it's an Abstract class.
     #      RETURNS: A list containing as much as N individuals or just one
     #               individual if no parameter is passed.
     #  DESCRIPTION: Returns the N fittest individuals of the population
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1049,9 +952,8 @@ why it's an Abstract class.
     #   PARAMETERS: None.
     #      RETURNS: A reference to the population with which the GA operates.
     #  DESCRIPTION: Returns all the individuals in the population
-    #       THROWS: no exceptions
-    #     COMMENTS: CAREFUL! IT RETURNS THE POPULATION ITSELF. CHANGES WILL PERSIST
-    #     SEE ALSO: n/a
+    #     COMMENTS: WARNING: the actual population is returned. Changes will be 
+    #               reflected in the algorithm.
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1060,9 +962,6 @@ why it's an Abstract class.
     #   PARAMETERS: None.
     #      RETURNS: The size of the population
     #  DESCRIPTION: Getter for the population size
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1071,9 +970,6 @@ why it's an Abstract class.
     #   PARAMETERS: None.
     #      RETURNS: FLOAT the crossover chance
     #  DESCRIPTION: Getter for the crossover chance 0..1
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1082,9 +978,6 @@ why it's an Abstract class.
     #   PARAMETERS: None.
     #      RETURNS: FLOAT the mutation chance
     #  DESCRIPTION: Getter for the mutation chance 0..1
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1093,9 +986,6 @@ why it's an Abstract class.
     #   PARAMETERS: None.
     #      RETURNS: The current generation
     #  DESCRIPTION: Getter for the current generation of the Genetic Algorithm
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -1104,9 +994,7 @@ why it's an Abstract class.
     #   PARAMETERS: None.
     #      RETURNS: Nothing.
     #  DESCRIPTION: Sorts the population of the current Genetic Algorithm
-    #       THROWS: no exceptions
     #     COMMENTS: It sorts the population in ascending value of fitness
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -1116,9 +1004,6 @@ why it's an Abstract class.
     #      RETURNS: an array of individuals sorted.
     #  DESCRIPTION: Sorts the list of inidividuals passed as a parameter by
     #               ASCENDING fitness scores.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -1129,9 +1014,6 @@ why it's an Abstract class.
     #               otherwise.
     #  DESCRIPTION: Fills the populations with individuals whose genotype is
     #               randomly generated.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -1143,9 +1025,6 @@ why it's an Abstract class.
     #      RETURNS: 1 if the insertion was performed correctly. 0 otherwise.
     #  DESCRIPTION: Inserts an individual in the population on the position given
     #               by index.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -1158,10 +1037,6 @@ why it's an Abstract class.
     #
     #  DESCRIPTION: Deletes the individual given by index and inserts another
     #               individual randomly generated in the same position.
-    #
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1175,9 +1050,6 @@ why it's an Abstract class.
     #  DESCRIPTION: Calculates the fitness value associated with the individual
     #               passed as a parameter.
     #       THROWS: no exceptions
-    #     COMMENTS: PROVIDE A DEFAULT IMPLEMENTATION FOR FITNESS FUNCTION IN
-    #               CASE IT'S NOT PROVIDED AS AN ARGUMENT BY THE USER.
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -1187,11 +1059,9 @@ why it's an Abstract class.
     #      RETURNS: 1 if the custom condition defined here is satisfied, 0
     #               otherwise.
     #  DESCRIPTION: Allows for a custom termination routine to be defined.
-    #       THROWS: no exceptions
     #     COMMENTS: DEFAULT IMPLEMENTATION ALWAYS MAKE THE ALGORITHM EVOLVE
     #               TILL THE MAXIMUM NUMBER OF GENERATIONS. THIS IS A PRIVATE
     #               METHOD.
-    #     SEE ALSO: n/a
     #===============================================================================
 
 

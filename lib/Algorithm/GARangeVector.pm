@@ -43,9 +43,7 @@ our $log = Log::Log4perl::get_logger("GARangeVector");
 #               myFitness   -> (function pointer) fitness function
 #               myTerminate -> (function pointer) terminate function
 #
-#
 #      RETURNS: A reference to the instance just created.
-#       THROWS: no exceptions
 #===============================================================================
 sub new {
 
@@ -89,9 +87,6 @@ sub new {
 #      RETURNS: Nothing
 #  DESCRIPTION: Fills the populations with individuals whose genotype is
 #               randomly generated.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub initialize {
 
@@ -171,9 +166,6 @@ sub initialize {
 #      RETURNS: NOTHING
 #  DESCRIPTION: Makes the population evolve until the terminate() function
 #               returns 1 or the limit of generations is reached.
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub evolve {
 
@@ -267,10 +259,6 @@ sub evolve {
 #
 #  DESCRIPTION: Inserts an individual in the population, increasing popSize in
 #               as many individuals as specified by n.
-#
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub insert {
 
@@ -407,10 +395,6 @@ sub insert {
 #
 #  DESCRIPTION: Deletes the individual given by index, making the population
 #               one individual smaller.
-#
-#       THROWS: no exceptions
-#     COMMENTS: none
-#     SEE ALSO: n/a
 #===============================================================================
 sub delete {
 
@@ -476,9 +460,7 @@ that are custom for such data type.
     #               myFitness   -> (function pointer) fitness function
     #               myTerminate -> (function pointer) terminate function
     #
-    #
     #      RETURNS: A reference to the instance just created.
-    #       THROWS: no exceptions
     #===============================================================================
 
     # ===  CLASS METHOD  ===========================================================
@@ -491,9 +473,6 @@ that are custom for such data type.
     #      RETURNS: Nothing
     #  DESCRIPTION: Fills the populations with individuals whose genotype is
     #               randomly generated.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #===  CLASS METHOD  ============================================================
@@ -508,9 +487,6 @@ that are custom for such data type.
     #      RETURNS: NOTHING
     #  DESCRIPTION: Makes the population evolve until the terminate() function
     #               returns 1 or the limit of generations is reached.
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  =============================================================
@@ -528,10 +504,6 @@ that are custom for such data type.
     #
     #  DESCRIPTION: Inserts an individual in the population, increasing popSize in
     #               as many individuals as specified by n.
-    #
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
     #=== CLASS METHOD  ============================================================
@@ -544,10 +516,6 @@ that are custom for such data type.
     #
     #  DESCRIPTION: Deletes the individual given by index, making the population
     #               one individual smaller.
-    #
-    #       THROWS: no exceptions
-    #     COMMENTS: none
-    #     SEE ALSO: n/a
     #===============================================================================
 
 =head1 AUTHOR
